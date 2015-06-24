@@ -41,8 +41,7 @@ void configFile::load(const char *path) {
   try {
     boost::property_tree::ini_parser::read_ini(path, dPtr->pt);
   }
-  catch (boost::property_tree::ini_parser::ini_parser_error perr) {
-    
+  catch (boost::property_tree::ini_parser::ini_parser_error perr) {    
     std::stringstream ss;
     if (perr.line()) {
       ss << perr.message() << " in " << perr.filename() << " line " << perr.line();
@@ -54,19 +53,28 @@ void configFile::load(const char *path) {
 }
   
 void configFile::getValue(const char *key,std::string &value){
-  value=dPtr->pt.get<std::string>(key);
+  try {
+    value=dPtr->pt.get<std::string>(key);
+  }
+  catch(const boost::property_tree::ptree_error &e) {
+    throw std::string(e.what());
+  }
 }
 
 void configFile::getValue(const char *key, int &value){
- value=dPtr->pt.get<int>(key);
+  try {
+    value=dPtr->pt.get<int>(key);
+  }
+  catch(const boost::property_tree::ptree_error &e) {
+    throw std::string(e.what());
+  }
 }
 
 void configFile::getValue(const char *key, float &value){
   try {
     value=dPtr->pt.get<float>(key);
- }
- catch(const boost::property_tree::ptree_error &e)
-    {
-        throw std::string(e.what());
-    }
   }
+  catch(const boost::property_tree::ptree_error &e) {
+    throw std::string(e.what());
+  }
+}
