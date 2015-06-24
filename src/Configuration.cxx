@@ -53,8 +53,8 @@ void configFile::load(const char *path) {
   }
 }
   
-void configFile::getValue(const char *key, char *&value){
-  value=dPtr->pt.get<char *>(key);
+void configFile::getValue(const char *key,std::string &value){
+  value=dPtr->pt.get<std::string>(key);
 }
 
 void configFile::getValue(const char *key, int &value){

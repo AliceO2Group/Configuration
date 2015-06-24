@@ -1,3 +1,5 @@
+#include <string>
+
 class configFilePrivate;
 
 class configFile {
@@ -7,7 +9,7 @@ public:
 
   void load(const char *path);
   
-  void getValue(const char *key, char *&value); 
+  void getValue(const char *key, std::string &value); 
   void getValue(const char *key, int &value);
   void getValue(const char *key, float &value);
 
