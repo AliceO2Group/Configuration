@@ -1,3 +1,8 @@
+/// \file testConfiguration.cxx
+/// \brief example usage of the C++ interface to retrieve configuration parameters from a local file.
+///
+/// \author Sylvain Chapeland, CERN
+
 #include <Configuration.h>
 #include <stdio.h>
 #include <string>
@@ -6,7 +11,7 @@ int main () {
 
   configFile cfg;
   try {
-    cfg.load("example.cfg"); 
+    cfg.load("file:example.cfg"); 
   
     int v1;
     float v2;
