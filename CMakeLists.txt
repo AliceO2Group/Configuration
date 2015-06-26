@@ -41,13 +41,17 @@ else()
 endif()
 
 
-include_directories(
-)
 file(
   GLOB_RECURSE
   source_files
   src/*
   test/*
+)
+
+file(
+  GLOB_RECURSE
+  PUBLIC_HEADERS
+  include/*
 )
 
 include_directories (
@@ -73,6 +77,12 @@ add_executable (
 target_link_libraries(
   testConfiguration
   Configuration-static
+)
+
+
+# Specify how/where to install this libraries and headers
+install(FILES ${PUBLIC_HEADERS}
+  DESTINATION include COMPONENT dev 
 )
 
 
