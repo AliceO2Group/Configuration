@@ -1,0 +1,31 @@
+# - Config file for the Configuration package
+# It defines the following variables
+#  Configuration_INCLUDE_DIR      - include directory
+#  Configuration_LIBRARY_DIR      - libraries directory
+#  Configuration_EXECUTABLE_DIR   - executables directory
+#  Configuration_SHARE_DIR        - share directory
+#  Configuration_LIBRARIES_STATIC - list of static libraries (without prefix and suffix)
+#  Configuration_LIBRARIES_SHARED - list of shared libraries (without prefix and suffix)
+#  Configuration_LIBRARIES        - list of shared libraries (without prefix and suffix)
+
+# Here you can set other variables, for example XXX_LIBRARIES (libraries
+# needed to use Configuration), XXX_DEFINITIONS (compiler switches required to use
+# Configuration).
+# Usually the user will then do stuff like: 
+#    if(XXX_FOUND) ... endif
+#    target_link_libraries(${XXX_LIBRARIES})
+#    include_directories(${XXX_INCLUDE_DIR})
+#    add_definitions(${XXX_DEFINITIONS})
+
+set(Configuration_VERSION "@VERSION@")
+message(STATUS "Configuration version: ${Configuration_VERSION}")
+
+set(Configuration_LIBRARIES_STATIC "Configuration-static")
+set(Configuration_LIBRARIES_SHARED "Configuration-shared")
+set(Configuration_LIBRARIES "Configuration-shared")
+
+@PACKAGE_INIT@
+set_and_check(Configuration_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(Configuration_LIBRARY_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+set_and_check(Configuration_SHARE_DIR "@PACKAGE_SHARE_INSTALL_DIR@")
+# More can be added of course...

@@ -1,4 +1,4 @@
-# INFOLOGGER CMAKELISTS.TXT
+# CONFIGURATION CMAKELISTS.TXT
 #
 # @author  sylvain.chapeland@cern.ch
 
@@ -81,8 +81,19 @@ target_link_libraries(
 
 
 # Specify how/where to install this libraries and headers
-install(FILES ${PUBLIC_HEADERS}
-  DESTINATION include COMPONENT dev 
+set_target_properties(Configuration-static PROPERTIES
+    VERSION ${VERSION}
+    PUBLIC_HEADER "${PUBLIC_HEADERS}"
+)
+set_target_properties(Configuration-shared PROPERTIES
+    VERSION ${VERSION}
+)
+install(TARGETS Configuration-shared Configuration-static
+  ARCHIVE DESTINATION lib COMPONENT dev   # static lib
+  RUNTIME DESTINATION bin COMPONENT libs  # binaries
+  LIBRARY DESTINATION lib COMPONENT libs  # shared lib
+  FRAMEWORK DESTINATION lib COMPONENT libs # for Mac
+  PUBLIC_HEADER DESTINATION include COMPONENT dev   # headers
 )
 
 
@@ -111,3 +122,25 @@ if(BUILD_DOCS AND DOXYGEN_FOUND)
 endif(BUILD_DOCS AND DOXYGEN_FOUND)
 
 file(COPY test/example.cfg DESTINATION .)
+
+
+
+# For other packages to find this one
+set(INCLUDE_INSTALL_DIR include/ CACHE STRING "INCLUDE_INSTALL_DIR")
+set(LIB_INSTALL_DIR lib/ CACHE STRING "LIB_INSTALL_DIR")
+set(SHARE_INSTALL_DIR share/ CACHE STRING "SHARE_INSTALL_DIR")
+include(CMakePackageConfigHelpers)
+configure_package_config_file(ConfigurationConfig.cmake.in
+                              ${CMAKE_CURRENT_BINARY_DIR}/ConfigurationConfig.cmake
+                              INSTALL_DESTINATION ${SHARE_INSTALL_DIR}/Configuration-${VERSION_MAJOR}/cmake
+                              PATH_VARS INCLUDE_INSTALL_DIR
+                                        LIB_INSTALL_DIR
+                                        SHARE_INSTALL_DIR)
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/ConfigurationConfigVersion.cmake
+                                 VERSION ${VERSION}
+                                 COMPATIBILITY SameMajorVersion )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ConfigurationConfig.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/ConfigurationConfigVersion.cmake
+        DESTINATION ${SHARE_INSTALL_DIR}/Configuration-${VERSION_MAJOR}/cmake )
+
+
