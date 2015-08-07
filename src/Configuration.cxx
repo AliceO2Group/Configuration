@@ -99,32 +99,39 @@ void ConfigFile::load(const std::string path)
   }
 }
 
-void ConfigFile::getValue(const std::string key, std::string &value)
-{
+
+template <typename T>
+void ConfigFile::getValue(const std::string key, T &value) {
   try {
-    value = dPtr->pt.get<std::string>(key);
+    value = dPtr->pt.get<T>(key);
   }
   catch (const boost::property_tree::ptree_error &e) {
     throw std::string(e.what());
   }
 }
 
-void ConfigFile::getValue(const std::string key, int &value)
-{
-  try {
-    value = dPtr->pt.get<int>(key);
-  }
-  catch (const boost::property_tree::ptree_error &e) {
-    throw std::string(e.what());
-  }
+  
+template <typename T>
+T ConfigFile::getValue(const std::string key) {
+  T res;
+  getValue(key,res);
+  return res;
 }
 
-void ConfigFile::getValue(const std::string key, float &value)
-{
-  try {
-    value = dPtr->pt.get<float>(key);
-  }
-  catch (const boost::property_tree::ptree_error &e) {
-    throw std::string(e.what());
-  }
+
+void getValueSpecialization(void) {
+  ConfigFile f;
+  const std::string s("");
+  int vInt;
+  f.getValue(s,vInt);
+  vInt=f.getValue<int>(s);
+  float vFloat;
+  f.getValue("",vFloat);
+  vFloat=f.getValue<float>(s);
+  std::string vString;
+  f.getValue("",vString);
+  vString=f.getValue<std::string>(s);
 }
+
+
+//template void ConfigFile::getValue<float>(std::string, float&);

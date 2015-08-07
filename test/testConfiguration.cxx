@@ -17,6 +17,8 @@ int main () {
     float v2;
     std::string v3;
 
+
+    // calls with result by reference
     cfg.getValue("section 1.keyStr1",v3);
     printf("section 1.keyStr1 = %s\n",v3.c_str());
   
@@ -29,10 +31,14 @@ int main () {
     cfg.getValue("section 2.keyFloat1",v2);
     printf("section 2.keyFloat1 = %f\n",v2);
 
+
+    // calls with direct result
+    printf("section 1.keyInt1 = %d\n",cfg.getValue<int>("section 1.keyInt1"));
+
+
+    // test non-existing value
     cfg.getValue("section 3.keyFloat1",v2);
     printf("section 2.keyFloat1 = %f\n",v2);
-
-
   }
   catch (std::string err) {
     printf("%s\n",err.c_str());

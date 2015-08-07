@@ -22,25 +22,23 @@ public:
   void load(const std::string path);
 
 
-  /// Get  the configuration from given path
-  /// \param key   key name (possibly hierarchical)
-  /// \param value Result (std::string) value found, by reference (this variable is modified in case of success)
+  /// Get the configuration value for given key path (by reference)
+  /// \param key   Key name (possibly hierarchical)
+  /// \param value Result value found (possible types: int, float, std::string), by reference (this variable is modified in case of success)
+  /// \returns     Nothing
   /// \exception   Throws a <std::string> exception on error.
-  void getValue(const std::string key, std::string &value); 
-  
-  /// Get  the configuration from given path
-  /// \param key   key name (possibly hierarchical)
-  /// \param value Result (int) value found, by reference (this variable is modified in case of success)
+  template <typename T>
+  void getValue(const std::string key, T &value);
+
+
+  /// Get the configuration value for given key path (by result)
+  /// \param key   Key name (possibly hierarchical)
+  /// \returns     Result value found (possible types: int, float, std::string)
   /// \exception   Throws a <std::string> exception on error.
-  void getValue(const std::string key, int &value);
-  
-  /// Get  the configuration from given path
-  /// \param key   key name (possibly hierarchical)
-  /// \param value Result (float) value found, by reference (this variable is modified in case of success)
-  /// \exception   Throws a <std::string> exception on error.
-  void getValue(const std::string key, float &value);
+  template <typename T>
+  T getValue(const std::string key);
+
 
 private:
     ConfigFilePrivate *dPtr;
 };
-
