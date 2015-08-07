@@ -4,12 +4,12 @@
 /// \author Sylvain Chapeland, CERN
 #include <string>
 
-class configFilePrivate;
+class ConfigFilePrivate;
 
-class configFile {
+class ConfigFile {
 public:
-  configFile();
-  ~configFile();
+  ConfigFile();
+  ~ConfigFile();
 
   /// Load the configuration from given path
   /// \param path  Path to configuration data.
@@ -41,6 +41,6 @@ public:
   void getValue(const char *key, float &value);
 
 private:
-  configFilePrivate *dPtr;
+    ConfigFilePrivate *dPtr;
 };
 

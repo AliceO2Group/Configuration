@@ -9,7 +9,7 @@
 
 int main () {
 
-  configFile cfg;
+  ConfigFile cfg;
   try {
     cfg.load("file:example.cfg"); 
   

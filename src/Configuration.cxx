@@ -12,26 +12,27 @@
 
 using namespace std;
 
-class configFilePrivate {
+class ConfigFilePrivate
+{
   public:
-  configFilePrivate();
-  ~configFilePrivate();
+  ConfigFilePrivate();
+  ~ConfigFilePrivate();
   
-  friend class configFile;
+  friend class ConfigFile;
   protected:
     boost::property_tree::ptree pt;    
     
 };
 
-configFilePrivate::configFilePrivate(){
+ConfigFilePrivate::ConfigFilePrivate(){
 }
 
-configFilePrivate::~configFilePrivate(){
+ConfigFilePrivate::~ConfigFilePrivate(){
 }
 
 
-configFile::configFile(){
-  dPtr=new configFilePrivate();
+ConfigFile::ConfigFile(){
+  dPtr=new ConfigFilePrivate();
   if (dPtr==NULL) {
     std::stringstream ss;
     ss << "new() error in " << __FILE__ << " line " << __LINE__;
@@ -39,7 +40,7 @@ configFile::configFile(){
   }
 }
 
-configFile::~configFile(){
+ConfigFile::~ConfigFile(){
   if (dPtr!=NULL) {
     delete dPtr;
   }
@@ -48,7 +49,7 @@ configFile::~configFile(){
 #define PREFIX_FILE "file:"
 #define SUFFIX_FILE_INI {".ini", ".cfg"}
 
-void configFile::load(const char *path) {
+void ConfigFile::load(const char *path) {
   if (path==NULL) throw std::string("Invalid argument");
 
   //
@@ -92,7 +93,7 @@ void configFile::load(const char *path) {
   }
 }
   
-void configFile::getValue(const char *key,std::string &value){
+void ConfigFile::getValue(const char *key,std::string &value){
   try {
     value=dPtr->pt.get<std::string>(key);
   }
@@ -101,7 +102,7 @@ void configFile::getValue(const char *key,std::string &value){
   }
 }
 
-void configFile::getValue(const char *key, int &value){
+void ConfigFile::getValue(const char *key, int &value){
   try {
     value=dPtr->pt.get<int>(key);
   }
@@ -110,7 +111,7 @@ void configFile::getValue(const char *key, int &value){
   }
 }
 
-void configFile::getValue(const char *key, float &value){
+void ConfigFile::getValue(const char *key, float &value){
   try {
     value=dPtr->pt.get<float>(key);
   }
