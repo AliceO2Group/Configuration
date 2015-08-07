@@ -12,27 +12,26 @@
 
 using namespace std;
 
-class ConfigFilePrivate
-{
+class configFilePrivate {
   public:
-  ConfigFilePrivate();
-  ~ConfigFilePrivate();
+  configFilePrivate();
+  ~configFilePrivate();
   
-  friend class ConfigFile;
+  friend class configFile;
   protected:
     boost::property_tree::ptree pt;    
     
 };
 
-ConfigFilePrivate::ConfigFilePrivate(){
+configFilePrivate::configFilePrivate(){
 }
 
-ConfigFilePrivate::~ConfigFilePrivate(){
+configFilePrivate::~configFilePrivate(){
 }
 
 
-ConfigFile::ConfigFile(){
-  dPtr=new ConfigFilePrivate();
+configFile::configFile(){
+  dPtr=new configFilePrivate();
   if (dPtr==NULL) {
     std::stringstream ss;
     ss << "new() error in " << __FILE__ << " line " << __LINE__;
@@ -40,7 +39,7 @@ ConfigFile::ConfigFile(){
   }
 }
 
-ConfigFile::~ConfigFile(){
+configFile::~configFile(){
   if (dPtr!=NULL) {
     delete dPtr;
   }
@@ -49,8 +48,8 @@ ConfigFile::~ConfigFile(){
 #define PREFIX_FILE "file:"
 #define SUFFIX_FILE_INI {".ini", ".cfg"}
 
-void ConfigFile::load(const char *path) {
-  if (path==NULL) throw std::string("Invalid argument");
+void configFile::load(const std::string path) {
+  if (path.length()==0) throw std::string("Invalid argument");
 
   //
   // open location according to prefix
@@ -58,7 +57,7 @@ void ConfigFile::load(const char *path) {
   
   
   // filesystem file
-  if (boost::algorithm::starts_with(path, PREFIX_FILE)) {
+  if (boost::algorithm::starts_with(path.c_str(), PREFIX_FILE)) {
     const char *filename;
     filename=&path[strlen(PREFIX_FILE)];
     
@@ -93,7 +92,7 @@ void ConfigFile::load(const char *path) {
   }
 }
   
-void ConfigFile::getValue(const char *key,std::string &value){
+void configFile::getValue(const std::string key,std::string &value){
   try {
     value=dPtr->pt.get<std::string>(key);
   }
@@ -102,7 +101,7 @@ void ConfigFile::getValue(const char *key,std::string &value){
   }
 }
 
-void ConfigFile::getValue(const char *key, int &value){
+void configFile::getValue(const std::string key, int &value){
   try {
     value=dPtr->pt.get<int>(key);
   }
@@ -111,7 +110,7 @@ void ConfigFile::getValue(const char *key, int &value){
   }
 }
 
-void ConfigFile::getValue(const char *key, float &value){
+void configFile::getValue(const std::string key, float &value){
   try {
     value=dPtr->pt.get<float>(key);
   }
