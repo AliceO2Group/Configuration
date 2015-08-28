@@ -3,7 +3,7 @@
 ///
 /// \author Sylvain Chapeland, CERN
 
-#include <Configuration.h>
+#include <Configuration/Configuration.h>
 #include <stdio.h>
 #include <string>
 
