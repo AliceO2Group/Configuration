@@ -2,7 +2,7 @@
 #
 # @author  sylvain.chapeland@cern.ch
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # main (top) cmake dir
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) # project specific cmake dir
 
@@ -39,6 +39,13 @@ else()
   message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
+# Mac needed variables (adapt according to your needs)
+set(CMAKE_MACOSX_RPATH ON)
+#set(CMAKE_SKIP_BUILD_RPATH FALSE)
+#set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+#set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 file(
   GLOB_RECURSE
   source_files
@@ -74,7 +81,7 @@ add_executable (
 
 target_link_libraries(
   testConfiguration
-  Configuration-static
+  Configuration-shared
 )
 
 
