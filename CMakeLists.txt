@@ -84,6 +84,9 @@ target_link_libraries(
   Configuration-shared
 )
 
+# Not sure why, but I need this to use the static lib from a shared lib. 
+# Can be removed once we generate a proper shared lib.
+add_definitions("-fPIC")
 
 # Specify how/where to install this libraries and headers
 set_target_properties(Configuration-static PROPERTIES
