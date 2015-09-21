@@ -7,7 +7,16 @@
 #include <stdio.h>
 #include <string>
 
-int main () {
+#define BOOST_TEST_MODULE hello test
+#define BOOST_TEST_MAIN
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+#include <assert.h>
+
+// TODO add assertions
+
+BOOST_AUTO_TEST_CASE(General_test)
+{
 
   ConfigFile cfg;
   try {
@@ -44,5 +53,4 @@ int main () {
     printf("%s\n",err.c_str());
   }
 
-  return 0;
 }

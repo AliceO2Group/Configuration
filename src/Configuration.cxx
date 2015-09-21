@@ -75,7 +75,7 @@ void ConfigFile::load(const std::string path)
     //
 
     // INI file
-    std::vector<const char*> suffix_ini SUFFIX_FILE_INI;
+    std::vector<const char*> suffix_ini {".ini", ".cfg"};//SUFFIX_FILE_INI;
     for (auto suffix : suffix_ini) {
       if (boost::algorithm::ends_with(filename, suffix)) {
         try {
