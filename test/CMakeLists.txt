@@ -12,4 +12,6 @@ foreach(FILE ${TEST_FILES})
     add_test(NAME ${NAME} COMMAND ${NAME})                              # this is how to add tests to CMake
 endforeach(FILE ${TEST_FILES})
 
+# TODO test against the shared libraries
+
 include(CTest)
