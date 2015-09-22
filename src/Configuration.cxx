@@ -4,26 +4,11 @@
 /// \author Sylvain Chapeland, CERN
 
 #include <Configuration/Configuration.h>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
 #include <iostream>
 #include <vector>
 #include <boost/algorithm/string/predicate.hpp>
 
 using namespace std;
-
-class ConfigFilePrivate
-{
-  public:
-    ConfigFilePrivate();
-    ~ConfigFilePrivate();
-
-    friend class ConfigFile;
-
-  protected:
-    boost::property_tree::ptree pt;
-
-};
 
 ConfigFilePrivate::ConfigFilePrivate()
 {
@@ -75,7 +60,7 @@ void ConfigFile::load(const std::string path)
     //
 
     // INI file
-    std::vector<const char*> suffix_ini {".ini", ".cfg"};//SUFFIX_FILE_INI;
+    std::vector<const char*> suffix_ini SUFFIX_FILE_INI;
     for (auto suffix : suffix_ini) {
       if (boost::algorithm::ends_with(filename, suffix)) {
         try {
@@ -98,26 +83,6 @@ void ConfigFile::load(const std::string path)
     throw std::string("Invalid path prefix");
   }
 }
-
-
-template <typename T>
-void ConfigFile::getValue(const std::string key, T &value) {
-  try {
-    value = dPtr->pt.get<T>(key);
-  }
-  catch (const boost::property_tree::ptree_error &e) {
-    throw std::string(e.what());
-  }
-}
-
-  
-template <typename T>
-T ConfigFile::getValue(const std::string key) {
-  T res;
-  getValue(key,res);
-  return res;
-}
-
 
 void getValueSpecialization(void) {
   ConfigFile f;

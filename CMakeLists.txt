@@ -20,20 +20,8 @@ set(VERSION_MINOR "0")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
+# Macros and variables for all O2 subprojects
 include(O2)
-
-# SVN (and its revision)
-#include(FindSubversion)
-#IF(Subversion_FOUND)
-#    if(EXISTS "${CMAKE_SOURCE_DIR}/.svn")
-#        Subversion_WC_INFO(${CMAKE_SOURCE_DIR} MY)
-#        SET(VCS_REVISION "${MY_WC_REVISION}")
-#    else ()
-#        SET(VCS_REVISION "-1")
-#    endif()
-#ELSE(Subversion_FOUND)
-#    SET(VCS_REVISION "-1")
-#ENDIF(Subversion_FOUND)
 
 ## Git (and its revision)
 find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.

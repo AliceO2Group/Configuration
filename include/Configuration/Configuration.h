@@ -3,42 +3,69 @@
 ///
 /// \author Sylvain Chapeland, CERN
 #include <string>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
-class ConfigFilePrivate;
+class ConfigFilePrivate
+{
+  public:
+    ConfigFilePrivate();
+    ~ConfigFilePrivate();
 
-class ConfigFile {
-public:
-  ConfigFile();
-  ~ConfigFile();
+    friend class ConfigFile;
 
-  /// Load the configuration from given path
-  /// \param path  Path to configuration data.
-  ///              Example: file:/configDir/example.cfg
-  ///              Accepted prefix:
-  ///                 file:     for a file accessible from the filesystem
-  ///              Accepted suffix, to define file format (TODO: separate doc for file formats):
-  ///                 .ini, .cfg    see example.cfg
-  /// \exception   Throws a <std::string> exception on error.
-  void load(const std::string path);
+  protected:
+    boost::property_tree::ptree pt;
 
+};
 
-  /// Get the configuration value for given key path (by reference)
-  /// \param key   Key name (possibly hierarchical)
-  /// \param value Result value found (possible types: int, float, std::string), by reference (this variable is modified in case of success)
-  /// \returns     Nothing
-  /// \exception   Throws a <std::string> exception on error.
-  template <typename T>
-  void getValue(const std::string key, T &value);
+class ConfigFile
+{
+  public:
+    ConfigFile();
 
+    ~ConfigFile();
 
-  /// Get the configuration value for given key path (by result)
-  /// \param key   Key name (possibly hierarchical)
-  /// \returns     Result value found (possible types: int, float, std::string)
-  /// \exception   Throws a <std::string> exception on error.
-  template <typename T>
-  T getValue(const std::string key);
+    /// Load the configuration from given path
+    /// \param path  Path to configuration data.
+    ///              Example: file:/configDir/example.cfg
+    ///              Accepted prefix:
+    ///                 file:     for a file accessible from the filesystem
+    ///              Accepted suffix, to define file format (TODO: separate doc for file formats):
+    ///                 .ini, .cfg    see example.cfg
+    /// \exception   Throws a <std::string> exception on error.
+    void load(const std::string path);
 
 
-private:
+    /// Get the configuration value for given key path (by reference)
+    /// \param key   Key name (possibly hierarchical)
+    /// \param value Result value found (possible types: int, float, std::string), by reference (this variable is modified in case of success)
+    /// \returns     Nothing
+    /// \exception   Throws a <std::string> exception on error.
+    template<typename T>
+    void getValue(const std::string key, T &value)
+    {
+      try {
+        value = dPtr->pt.get<T>(key);
+      }
+      catch (const boost::property_tree::ptree_error &e) {
+        throw std::string(e.what());
+      }
+    }
+
+
+    /// Get the configuration value for given key path (by result)
+    /// \param key   Key name (possibly hierarchical)
+    /// \returns     Result value found (possible types: int, float, std::string)
+    /// \exception   Throws a <std::string> exception on error.
+    template<typename T>
+    T getValue(const std::string key)
+    {
+      T res;
+      getValue(key, res);
+      return res;
+    }
+
+  private:
     ConfigFilePrivate *dPtr;
 };
