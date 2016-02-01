@@ -35,7 +35,8 @@ install(TARGETS ${LIBRARY_NAME_SHARED} ${LIBRARY_NAME_STATIC}
   ARCHIVE DESTINATION lib COMPONENT libs   # static lib
   RUNTIME DESTINATION bin COMPONENT libs   # binaries
   LIBRARY DESTINATION lib COMPONENT libs   # shared lib
-  PUBLIC_HEADER DESTINATION include/${PROJECT_NAME} COMPONENT devel   # headers (note the different component -> different package)
   FRAMEWORK DESTINATION bin COMPONENT libs # for mac
+  PUBLIC_HEADER DESTINATION include/${PROJECT_NAME} COMPONENT devel   # headers for mac (note the different component -> different package)
+  INCLUDES DESTINATION include             # headers
 )
 
