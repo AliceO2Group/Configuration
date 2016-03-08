@@ -3,9 +3,9 @@ set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/Configuration/Version.h" # Generated header
   ../include/Configuration/Configuration.h # Normal header
   ../include/Configuration/ConfigurationInterface.h # Normal header
-  ../include/Configuration/ConfigurationInterfaceT.h # Normal header
   ../include/Configuration/EtcdConfiguration.h # Normal header
-  ../include/Configuration/EtcdConfigurationT.h # Normal header
+  ../include/Configuration/ConfigurationFactory.h
+  ../include/Configuration/FileConfiguration.h
 )
 
 set(LIB_SOURCES
@@ -14,7 +14,6 @@ set(LIB_SOURCES
   ConfigurationFactory.cxx
   EtcdConfiguration.cxx
   FileConfiguration.cxx
- # Example.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
