@@ -1,0 +1,36 @@
+Configuration module
+
+
+## Dependencies
+The configuration module has some external dependencies, this section provides instructions for installing them.
+
+
+#### ETCD
+Follow instructions on: 
+https://github.com/coreos/etcd/releases/
+
+
+#### RapidJSON
+git clone https://github.com/miloyip/rapidjson.git
+cd rapidjson; mkdir build; cd build
+cmake ..
+make
+sudo make install
+
+
+#### etcdcppp
+NOTE: There are two ETCD C++ interface libraries listed on the ETCD github (https://github.com/coreos/etcd/blob/master/Documentation/libraries-and-tools.md)
+
+git clone https://github.com/suryanathan/etcdcpp
+cd etcdcpp
+sudo mkdir /usr/local/include/etcdcpp
+sudo cp etcd.hpp rapid_reply.hpp /usr/local/include/etcdcpp
+
+
+#### UriParser
+No need to anything currently, it is included in the project.
+
+
+#### libcurl
+Should be available in your OS's package manager, or else:
+https://curl.haxx.se/download.html
