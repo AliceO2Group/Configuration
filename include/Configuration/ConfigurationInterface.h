@@ -1,5 +1,5 @@
 /// \file ConfigurationInterface.h
-/// \brief Interface for getting and setting configuration parameters.
+/// \brief Interface for putting and getting configuration parameters.
 ///
 /// \author Pascal Boeschoten, CERN
 
@@ -8,6 +8,16 @@
 
 #include <string>
 
+/// \brief Interface for configuration back ends.
+///
+/// Interface for configuration back ends, to put and get configuration parameters.
+///
+/// The non-string put/get are not pure virtual and have default implementations that use the string put/get and
+/// boost::lexical_cast for conversion. This is because most back ends convert to/from strings anyway.
+///
+/// To maintain runtime polymorphism, while also having a convenient template-like interface,
+/// the implementations of put/get operations are in the virtual methods,
+/// and template methods are provided that redirect to these, functioning as a kind of syntactic sugar.
 class ConfigurationInterface
 {
   public:
@@ -21,11 +31,11 @@ class ConfigurationInterface
     virtual int getInt(std::string path);
     virtual double getFloat(std::string path);
 
-    // Template convenience interface for put operations
+    /// Template convenience interface for put operations. Redirects to the appropriate virtual method.
     template<typename T>
     void put(std::string path, T value);
 
-    // Template convenience interface for get operations
+    /// Template convenience interface for get operations. Redirects to the appropriate virtual method.
     template<typename T>
     T get(std::string path);
 };
