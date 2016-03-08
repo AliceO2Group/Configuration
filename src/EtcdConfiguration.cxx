@@ -16,14 +16,14 @@ using Client = etcd::Client<Reply>;
 
 std::pair<const std::string, std::string> getReplyKeyValue(Reply& reply)
 {
-  Reply::KvPairs kvPairs;
-  reply.GetAll(kvPairs);
+  Reply::KvPairs keyValuePairs;
+  reply.GetAll(keyValuePairs);
 
-  if (kvPairs.size() != 1) {
+  if (keyValuePairs.size() != 1) {
     throw std::runtime_error("ETCD reply invalid");
   }
 
-  return *kvPairs.begin();
+  return *keyValuePairs.begin();
 }
 
 EtcdConfiguration::EtcdConfiguration(std::string host, int port)
