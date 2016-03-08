@@ -2,10 +2,19 @@
 set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/Configuration/Version.h" # Generated header
   ../include/Configuration/Configuration.h # Normal header
+  ../include/Configuration/ConfigurationInterface.h # Normal header
+  ../include/Configuration/ConfigurationInterfaceT.h # Normal header
+  ../include/Configuration/EtcdConfiguration.h # Normal header
+  ../include/Configuration/EtcdConfigurationT.h # Normal header
 )
 
 set(LIB_SOURCES
   Configuration.cxx
+  ConfigurationInterface.cxx
+  ConfigurationFactory.cxx
+  EtcdConfiguration.cxx
+  FileConfiguration.cxx
+ # Example.cxx
 )
 
 # Define two variables in order not to repeat ourselves.
@@ -15,6 +24,10 @@ set(LIBRARY_NAME_STATIC Configuration-static)
 # Define the library
 add_library(${LIBRARY_NAME_SHARED} SHARED ${LIB_SOURCES})
 add_library(${LIBRARY_NAME_STATIC} STATIC ${LIB_SOURCES})
+
+# Link
+target_link_libraries(${LIBRARY_NAME_SHARED} ${CURL_LIBRARIES})
+target_link_libraries(${LIBRARY_NAME_STATIC} ${CURL_LIBRARIES})
 
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 

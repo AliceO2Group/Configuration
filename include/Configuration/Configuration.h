@@ -2,6 +2,10 @@
 /// \brief C++ interface to retrieve configuration parameters.
 ///
 /// \author Sylvain Chapeland, CERN
+
+#ifndef SRC_CONFIGURATION_H_
+#define SRC_CONFIGURATION_H_
+
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
@@ -69,3 +73,6 @@ class ConfigFile
   private:
     ConfigFilePrivate *dPtr;
 };
+
+#endif /* SRC_CONFIGURATION_H_ */
+
