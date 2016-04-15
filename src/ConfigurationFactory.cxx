@@ -1,16 +1,15 @@
-/*
- * ConfigurationDispatcher.cxx
- *
- *  Created on: Mar 7, 2016
- *      Author: pboescho
- */
+/// \file ConfigurationFactory.h
+/// \brief Factory for instantiating specialized configuration interfaces
+///
+/// \author Pascal Boeschoten, CERN
 
 #include <stdexcept>
-#include <boost/algorithm/string.hpp>
 #include <Configuration/ConfigurationFactory.h>
 #include <Configuration/UriParser/UriParser.hpp>
-#include <Configuration/EtcdConfiguration.h>
 #include <Configuration/FileConfiguration.h>
+#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
+#include <Configuration/EtcdConfiguration.h>
+#endif
 
 std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(std::string uri)
 {
@@ -23,7 +22,11 @@ std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(s
     auto path = parsed.host + parsed.path;
     return std::unique_ptr<FileConfiguration>(new FileConfiguration(path));
   } else if (parsed.protocol == "etcd") {
+#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
     return std::unique_ptr<EtcdConfiguration>(new EtcdConfiguration(parsed.host, parsed.port));
+#else
+    throw std::runtime_error("Back-end 'etcd' not enabled");
+#endif
   } else {
     throw std::runtime_error("Unrecognized URI scheme");
   }
