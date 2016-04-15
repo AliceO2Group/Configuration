@@ -1,9 +1,7 @@
-/*
- * EtcdConfiguration.cxx
- *
- *  Created on: Mar 7, 2016
- *      Author: pboescho
- */
+/// \file EtcdConfiguration.h
+/// \brief Configuration interface to the ETCD distributed key-value store
+///
+/// \author Pascal Boeschoten, CERN
 
 #include <Configuration/EtcdConfiguration.h>
 #include <stdexcept>
