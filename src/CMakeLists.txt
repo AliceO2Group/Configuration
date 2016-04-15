@@ -3,18 +3,30 @@ set(LIB_HEADERS
   "${CMAKE_CURRENT_BINARY_DIR}/../include/Configuration/Version.h" # Generated header
   ../include/Configuration/Configuration.h # Normal header
   ../include/Configuration/ConfigurationInterface.h # Normal header
-  ../include/Configuration/EtcdConfiguration.h # Normal header
-  ../include/Configuration/ConfigurationFactory.h
-  ../include/Configuration/FileConfiguration.h
+  ../include/Configuration/ConfigurationFactory.h # Normal header
+  ../include/Configuration/FileConfiguration.h # Normal header
 )
 
 set(LIB_SOURCES
   Configuration.cxx
   ConfigurationInterface.cxx
   ConfigurationFactory.cxx
-  EtcdConfiguration.cxx
   FileConfiguration.cxx
 )
+
+
+# Add ETCD backend interface if the RapidJSON dependency was found
+if(RapidJSON_FOUND)
+  add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCD_ENABLED)
+
+  list(APPEND LIB_SOURCES 
+    EtcdConfiguration.cxx
+  )
+
+  list(APPEND LIB_HEADERS
+    ../include/Configuration/EtcdConfiguration.h # Normal header
+  )
+endif()
 
 # Define two variables in order not to repeat ourselves.
 set(LIBRARY_NAME_SHARED Configuration-shared)
