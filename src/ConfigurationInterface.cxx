@@ -1,9 +1,7 @@
-/*
- * ConfigurationInterface.cxx
- *
- *  Created on: Mar 8, 2016
- *      Author: pboescho
- */
+/// \file ConfigurationInterface.h
+/// \brief Interface for putting and getting configuration parameters.
+///
+/// \author Pascal Boeschoten, CERN
 
 #include <Configuration/ConfigurationInterface.h>
 #include <boost/lexical_cast.hpp>
