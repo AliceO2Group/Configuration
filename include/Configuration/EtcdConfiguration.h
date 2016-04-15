@@ -7,6 +7,9 @@
 #define SRC_ETCDCONFIGURATION_H_
 
 #include <Configuration/ConfigurationInterface.h>
+#include <boost/scoped_ptr.hpp>
+
+struct EtcdState;
 
 class EtcdConfiguration: public ConfigurationInterface
 {
@@ -18,6 +21,7 @@ class EtcdConfiguration: public ConfigurationInterface
     virtual std::string getString(std::string path);
 
   private:
+    boost::scoped_ptr<EtcdState> etcdState;
     std::string host;
     int port;
 };

@@ -7,12 +7,19 @@
 
 #include <Configuration/EtcdConfiguration.h>
 #include <stdexcept>
-#include <boost/lexical_cast.hpp>
 #include <Configuration/etcdcpp/etcd.hpp>
 #include <Configuration/etcdcpp/rapid_reply.hpp>
 
 using Reply = example::RapidReply;
 using Client = etcd::Client<Reply>;
+
+struct EtcdState {
+	EtcdState(std::string host, int port) :
+			client(host, port)
+	{
+	}
+	Client client;
+};
 
 std::pair<const std::string, std::string> getReplyKeyValue(Reply& reply)
 {
@@ -27,7 +34,7 @@ std::pair<const std::string, std::string> getReplyKeyValue(Reply& reply)
 }
 
 EtcdConfiguration::EtcdConfiguration(std::string host, int port)
-    : host(host), port(port)
+    : host(host), port(port), etcdState(new EtcdState(host, port))
 {
 }
 
@@ -37,13 +44,11 @@ EtcdConfiguration::~EtcdConfiguration()
 
 void EtcdConfiguration::putString(std::string path, std::string value)
 {
-  Client client(host, port);
-  Reply reply = client.Set(path, value);
+  etcdState->client.Set(path, value);
 }
 
 std::string EtcdConfiguration::getString(std::string path)
 {
-  Client client(host, port);
-  Reply reply = client.Get(path);
+  Reply reply = etcdState->client.Get(path);
   return getReplyKeyValue(reply).second;
 }
