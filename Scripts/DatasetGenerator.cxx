@@ -131,34 +131,59 @@ int main(int argc, char** argv)
   description.add_options()
       ("help",
           "Produce help message")
-      ("num-pairs,n", po::value(&optionNumberOfPairs),
+      ("num-pairs,n", po::value(&optionNumberOfPairs)->required(),
           "Number of key-value pairs")
       ("value-length,l", po::value(&optionValueLength)->default_value(optionValueLengthDefault),
           "Size of each value in amount of characters")
-      ("structure,s", po::value(&optionStructure),
-          "Structure of data set (fragmented, blob, flat, tree")
+      ("structure,s", po::value(&optionStructure)->required(),
+          "Structure of data set: fragmented, blob, flat, tree")
       ("pairs-per-level,p", po::value(&optionPairsPerLevel)->default_value(optionPairsPerLevelDefault),
           "For nested structures, the amount of key-value pairs per level")
       ("key-prefix,k", po::value(&optionKeyPrefix),
-          "Prefix for keys")
-      ;
+          "Prefix for keys");
+
+  auto printHelp = [&]() {
+    cout << "Dataset Generator\n"
+    << "  Script for generating test datasets for the Configuration module.\n"
+    << "  Output is in CSV format with every line containing a key and value\n"
+    << "  separated by a comma.\n\n"
+    << description << "\n"
+    << "Example:\n"
+    << "  ./DatasetGenerator -n 20 -l 10 -p 3 -s tree > tree_n20_l10_p3.csv\n";
+  };
+
+  auto printErrorAndHelp = [&](std::string errorMessage) {
+    cout << "ERROR: " << errorMessage << "\n\n";
+    printHelp();
+  };
 
   po::variables_map variablesMap;
-  po::store(po::parse_command_line(argc, argv, description), variablesMap);
-  po::notify(variablesMap);
+
+  try {
+    po::store(po::parse_command_line(argc, argv, description), variablesMap);
+    po::notify(variablesMap);
+  } catch (std::exception& e) {
+    printErrorAndHelp(e.what());
+    return 1;
+  }
 
   if (variablesMap.count("help")) {
-      cout << description << "\n";
-      return 1;
+    printHelp();
+    return 1;
+  }
+
+  if (optionNumberOfPairs < 1) {
+    printErrorAndHelp("option '--num-pairs' must be >= 1");
+    return 1;
   }
 
   if (optionValueLength < optionValueLengthMinimum) {
-    cout << "Option --size below minimum of 10";
+    printErrorAndHelp("option '--size' below minimum of 10");
     return 1;
   }
 
   if (optionPairsPerLevel < 1) {
-    cout << "Option --pairs-per-level must be >= 1" << endl;
+    printErrorAndHelp("option '--pairs-per-level' must be >= 1");
     return 1;
   }
 
@@ -183,7 +208,7 @@ int main(int argc, char** argv)
   } else if (optionStructure == "tree") {
     keyValueMap = generateTree(optionNumberOfPairs, optionValueLength, optionKeyPrefix, optionPairsPerLevel);
   } else {
-    cout << "Invalid structure\n";
+    printErrorAndHelp("invalid '--structure' argument");
     return 1;
   }
 
