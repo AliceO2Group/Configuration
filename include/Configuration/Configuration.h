@@ -30,6 +30,13 @@ class ConfigFile
 
     ~ConfigFile();
 
+    // explicitely disable automatically generated methods
+    // disable copy constructor
+    ConfigFile(const ConfigFile&) =delete;
+    // disable copy assignment operator
+    ConfigFile& operator=(const ConfigFile&) =delete;
+
+
     /// Load the configuration from given path
     /// \param path  Path to configuration data.
     ///              Example: file:/configDir/example.cfg
