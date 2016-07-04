@@ -40,6 +40,12 @@ add_library(${LIBRARY_NAME_STATIC} STATIC ${LIB_SOURCES})
 target_link_libraries(${LIBRARY_NAME_SHARED} ${CURL_LIBRARIES})
 target_link_libraries(${LIBRARY_NAME_STATIC} ${CURL_LIBRARIES})
 
+# Example program
+set(ETCD_EXAMPLE_NAME EtcdExample)
+add_executable(${ETCD_EXAMPLE_NAME} EtcdExample.cxx)
+target_link_libraries(${ETCD_EXAMPLE_NAME} ${LIBRARY_NAME_SHARED})
+
+
 # Set the build version. It will be used in the name of the lib, with corresponding
 # symlinks created. SOVERSION could also be specified for api version. 
 set_target_properties(${LIBRARY_NAME_SHARED} PROPERTIES
