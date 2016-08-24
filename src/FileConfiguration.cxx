@@ -44,7 +44,7 @@ void loadConfigFile(const std::string filePath, boost::property_tree::ptree& pt)
       try {
         boost::property_tree::ini_parser::read_ini(filePath, pt);
       }
-      catch (boost::property_tree::ini_parser::ini_parser_error perr) {
+      catch (const boost::property_tree::ini_parser::ini_parser_error& perr) {
         std::stringstream ss;
         if (perr.line()) {
           ss << perr.message() << " in " << perr.filename() << " line " << perr.line();
@@ -56,7 +56,7 @@ void loadConfigFile(const std::string filePath, boost::property_tree::ptree& pt)
       return;
     }
   }
-  throw std::string("Invalid type in file name");
+  throw std::runtime_error("Invalid type in file name");
 }
 
 FileConfiguration::FileConfiguration(std::string filePath)
@@ -72,5 +72,6 @@ void FileConfiguration::putString(std::string path, std::string value)
 
 std::string FileConfiguration::getString(std::string path)
 {
-  return pt.get<std::string>(path);
+  // To use a '/' instead of the default '.' as separator, we need to construct the path object explicitly
+  return pt.get<std::string>(decltype(pt)::path_type(path, '/'));
 }
