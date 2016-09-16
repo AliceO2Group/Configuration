@@ -9,6 +9,12 @@
 #include <Configuration/ConfigurationInterface.h>
 #include <boost/scoped_ptr.hpp>
 
+
+namespace AliceO2
+{
+namespace Configuration
+{
+
 struct EtcdState;
 
 class EtcdConfiguration: public ConfigurationInterface
@@ -25,5 +31,8 @@ class EtcdConfiguration: public ConfigurationInterface
     std::string host;
     int port;
 };
+
+}
+}
 
 #endif /* SRC_ETCDCONFIGURATION_H_ */

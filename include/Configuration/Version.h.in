@@ -11,7 +11,6 @@
 #include <sstream>
 
 namespace AliceO2 {
-namespace ProjectTemplate {
 namespace Configuration {
 /// The current major version.
 #define CONFIGURATION_VERSION_MAJOR @VERSION_MAJOR@
@@ -92,7 +91,6 @@ public:
     return version.str();
   }
 };
-}
 }
 }
 

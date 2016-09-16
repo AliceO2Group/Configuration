@@ -8,6 +8,11 @@
 
 #include <string>
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 /// \brief Interface for configuration back ends.
 ///
 /// Interface for configuration back ends, to put and get configuration parameters.
@@ -39,5 +44,8 @@ class ConfigurationInterface
     template<typename T>
     T get(std::string path);
 };
+
+}
+}
 
 #endif /* INCLUDE_CONFIGURATION_CONFIGURATIONINTERFACE_H_ */

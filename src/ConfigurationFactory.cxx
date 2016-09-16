@@ -11,6 +11,11 @@
 #include <Configuration/EtcdConfiguration.h>
 #endif
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(std::string uri)
 {
   http::url parsed = http::ParseHttpUrl(uri);
@@ -32,3 +37,6 @@ std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(s
   }
 }
 
+
+}
+}

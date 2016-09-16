@@ -11,6 +11,11 @@
 using Reply = example::RapidReply;
 using Client = etcd::Client<Reply>;
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 struct EtcdState {
 	EtcdState(std::string host, int port) :
 			client(host, port)
@@ -49,4 +54,7 @@ std::string EtcdConfiguration::getString(std::string path)
 {
   Reply reply = etcdState->client.Get(path);
   return getReplyKeyValue(reply).second;
+}
+
+}
 }

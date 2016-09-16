@@ -8,6 +8,9 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
+namespace AliceO2 {
+namespace Configuration {
+
 FileConfiguration::~FileConfiguration()
 {
 }
@@ -23,7 +26,7 @@ FileConfiguration::~FileConfiguration()
 ///              Accepted suffix, to define file format (TODO: separate doc for file formats):
 ///                 .ini, .cfg    see example.cfg
 /// \exception   Throws a <std::string> exception on error.
-void loadConfigFile(const std::string filePath, boost::property_tree::ptree& pt)
+void loadConfigFile(const std::string filePath, boost::property_tree::ptree &pt)
 {
   if (filePath.length() == 0) { throw std::string("Invalid argument"); }
 
@@ -60,7 +63,7 @@ void loadConfigFile(const std::string filePath, boost::property_tree::ptree& pt)
 }
 
 FileConfiguration::FileConfiguration(std::string filePath)
-    : filePath(filePath)
+  : filePath(filePath)
 {
   loadConfigFile(filePath, pt);
 }
@@ -73,4 +76,7 @@ void FileConfiguration::putString(std::string path, std::string value)
 std::string FileConfiguration::getString(std::string path)
 {
   return pt.get<std::string>(path);
+}
+
+}
 }

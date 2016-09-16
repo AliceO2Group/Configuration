@@ -10,11 +10,19 @@
 #include <memory>
 #include <Configuration/ConfigurationInterface.h>
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 class ConfigurationFactory
 {
   public:
     /// Get a ConfigurationInterface suitable for the given URI
     static std::unique_ptr<ConfigurationInterface> getConfiguration(std::string uri);
 };
+
+}
+}
 
 #endif /* SRC_CONFIGURATIONFACTORY_H_ */

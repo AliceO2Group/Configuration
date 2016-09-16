@@ -6,6 +6,11 @@
 #include <Configuration/ConfigurationInterface.h>
 #include <boost/lexical_cast.hpp>
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 ConfigurationInterface::~ConfigurationInterface()
 {
 }
@@ -65,3 +70,6 @@ template<> double ConfigurationInterface::get(std::string path)
   return getFloat(path);
 }
 
+
+}
+}

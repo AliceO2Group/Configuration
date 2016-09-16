@@ -1,5 +1,5 @@
 /*
- * Example.cxx
+ * EtcdExample.cxx
  *
  *  Created on: Jul 1, 2016
  *      Author: pboescho
@@ -10,6 +10,7 @@
 
 using std::cout;
 using std::endl;
+using namespace AliceO2::Configuration;
 
 int main(int argc, char** argv)
 {

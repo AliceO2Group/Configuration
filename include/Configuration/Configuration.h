@@ -10,10 +10,16 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 class ConfigFilePrivate
 {
   public:
     ConfigFilePrivate();
+
     ~ConfigFilePrivate();
 
     friend class ConfigFile;
@@ -32,9 +38,10 @@ class ConfigFile
 
     // explicitely disable automatically generated methods
     // disable copy constructor
-    ConfigFile(const ConfigFile&) =delete;
+    ConfigFile(const ConfigFile &) = delete;
+
     // disable copy assignment operator
-    ConfigFile& operator=(const ConfigFile&) =delete;
+    ConfigFile &operator=(const ConfigFile &) = delete;
 
 
     /// Load the configuration from given path
@@ -80,6 +87,9 @@ class ConfigFile
   private:
     ConfigFilePrivate *dPtr;
 };
+
+}
+}
 
 #endif /* SRC_CONFIGURATION_H_ */
 
