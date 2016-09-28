@@ -4,12 +4,17 @@
 /// \author Pascal Boeschoten, CERN
 
 #include <stdexcept>
-#include <Configuration/ConfigurationFactory.h>
-#include <Configuration/UriParser/UriParser.hpp>
-#include <Configuration/FileConfiguration.h>
-#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
-#include <Configuration/EtcdConfiguration.h>
+#include "Configuration/ConfigurationFactory.h"
+#include "Configuration/UriParser/UriParser.hpp"
+#include "Configuration/FileConfiguration.h"
+#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
+#include "Configuration/EtcdConfiguration.h"
 #endif
+
+namespace AliceO2
+{
+namespace Configuration
+{
 
 std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(std::string uri)
 {
@@ -22,7 +27,7 @@ std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(s
     auto path = parsed.host + parsed.path;
     return std::unique_ptr<FileConfiguration>(new FileConfiguration(path));
   } else if (parsed.protocol == "etcd") {
-#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
+#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
     return std::unique_ptr<EtcdConfiguration>(new EtcdConfiguration(parsed.host, parsed.port));
 #else
     throw std::runtime_error("Back-end 'etcd' not enabled");
@@ -31,4 +36,8 @@ std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(s
     throw std::runtime_error("Unrecognized URI scheme");
   }
 }
+
+} // namespace Configuration
+} // namespace AliceO2
+
 

@@ -3,35 +3,36 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
-#include <Configuration/EtcdConfiguration.h>
+#include "Configuration/EtcdConfiguration.h"
 #include <stdexcept>
-#include <Configuration/etcdcpp/etcd.hpp>
-#include <Configuration/etcdcpp/rapid_reply.hpp>
+#include "Configuration/etcdcpp/etcd.hpp"
+#include "Configuration/etcdcpp/rapid_reply.hpp"
+
+namespace AliceO2
+{
+namespace Configuration
+{
+
 
 using Reply = example::RapidReply;
 using Client = etcd::Client<Reply>;
 
 struct EtcdState {
-	EtcdState(std::string host, int port) :
+	EtcdState(const std::string& host, int port) :
 			client(host, port)
 	{
 	}
 	Client client;
 };
 
-std::pair<const std::string, std::string> getReplyKeyValue(Reply& reply)
+Reply::KvPairs getReplyPairs(Reply& reply)
 {
   Reply::KvPairs keyValuePairs;
   reply.GetAll(keyValuePairs);
-
-  if (keyValuePairs.size() != 1) {
-    throw std::runtime_error("ETCD reply invalid");
-  }
-
-  return *keyValuePairs.begin();
+  return keyValuePairs;
 }
 
-EtcdConfiguration::EtcdConfiguration(std::string host, int port)
+EtcdConfiguration::EtcdConfiguration(const std::string& host, int port)
     : host(host), port(port), etcdState(new EtcdState(host, port))
 {
 }
@@ -40,13 +41,25 @@ EtcdConfiguration::~EtcdConfiguration()
 {
 }
 
-void EtcdConfiguration::putString(std::string path, std::string value)
+void EtcdConfiguration::putString(const std::string& path, const std::string& value)
 {
   etcdState->client.Set(path, value);
 }
 
-std::string EtcdConfiguration::getString(std::string path)
+auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::string>
 {
-  Reply reply = etcdState->client.Get(path);
-  return getReplyKeyValue(reply).second;
+  auto reply = etcdState->client.Get(path);
+  auto pairs = getReplyPairs(reply);
+
+  if (pairs.size() == 0) {
+    return boost::none;
+  }
+  else if (pairs.size() == 1) {
+    return pairs.begin()->second;
+  }
+  throw std::runtime_error("ETCD reply invalid");
 }
+
+} // namespace Configuration
+} // namespace AliceO2
+

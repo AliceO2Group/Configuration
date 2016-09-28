@@ -4,9 +4,14 @@
 /// \author Sylvain Chapeland, CERN
 /// \author Pascal Boeschoten, CERN
 
-#include <Configuration/FileConfiguration.h>
+#include "Configuration/FileConfiguration.h"
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+
+namespace AliceO2
+{
+namespace Configuration
+{
 
 FileConfiguration::~FileConfiguration()
 {
@@ -65,13 +70,17 @@ FileConfiguration::FileConfiguration(std::string filePath)
   loadConfigFile(filePath, pt);
 }
 
-void FileConfiguration::putString(std::string path, std::string value)
+void FileConfiguration::putString(const std::string&, const std::string&)
 {
   throw std::runtime_error("FileConfiguration does not support putting values");
 }
 
-std::string FileConfiguration::getString(std::string path)
+auto FileConfiguration::getString(const std::string& path) -> Optional<std::string>
 {
   // To use a '/' instead of the default '.' as separator, we need to construct the path object explicitly
-  return pt.get<std::string>(decltype(pt)::path_type(path, '/'));
+  //return pt.get<std::string>(decltype(pt)::path_type(path, '/'));
+  return pt.get<std::string>(path);
 }
+
+} // namespace Configuration
+} // namespace AliceO2

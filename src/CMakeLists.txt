@@ -17,7 +17,7 @@ set(LIB_SOURCES
 
 # Add ETCD backend interface if the RapidJSON dependency was found
 if(RapidJSON_FOUND)
-  add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCD_ENABLED)
+  add_definitions(-DALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED)
   include_directories(${RAPIDJSON_INCLUDE_DIRS})
 
   list(APPEND LIB_SOURCES 
