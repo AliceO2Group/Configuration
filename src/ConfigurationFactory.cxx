@@ -5,11 +5,11 @@
 
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
-#include "Configuration/UriParser/UriParser.hpp"
-#include "Configuration/FileConfiguration.h"
+#include "FileConfiguration.h"
 #ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
-#include "Configuration/EtcdConfiguration.h"
+#include "EtcdConfiguration.h"
 #endif
+#include "UriParser/UriParser.hpp"
 
 namespace AliceO2
 {

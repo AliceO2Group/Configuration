@@ -4,7 +4,7 @@
 /// \author Sylvain Chapeland, CERN
 /// \author Pascal Boeschoten, CERN
 
-#include "Configuration/FileConfiguration.h"
+#include "FileConfiguration.h"
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 

@@ -3,10 +3,10 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
-#include "Configuration/EtcdConfiguration.h"
+#include "EtcdConfiguration.h"
 #include <stdexcept>
-#include "Configuration/etcdcpp/etcd.hpp"
-#include "Configuration/etcdcpp/rapid_reply.hpp"
+#include "etcdcpp/etcd.hpp"
+#include "etcdcpp/rapid_reply.hpp"
 
 namespace AliceO2
 {
