@@ -4,7 +4,6 @@ set(LIB_HEADERS
   ../include/Configuration/Configuration.h # Normal header
   ../include/Configuration/ConfigurationInterface.h # Normal header
   ../include/Configuration/ConfigurationFactory.h # Normal header
-  ../include/Configuration/FileConfiguration.h # Normal header
 )
 
 set(LIB_SOURCES

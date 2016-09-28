@@ -40,7 +40,7 @@ endif()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost 1.42.0 COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 
 # include RapidJSON (dependency of ETCD API)
 find_package(RapidJSON)
