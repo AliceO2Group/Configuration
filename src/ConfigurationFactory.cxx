@@ -16,22 +16,37 @@ namespace AliceO2
 namespace Configuration
 {
 
-std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(std::string uri)
+std::unique_ptr<ConfigurationInterface> getFile(const http::url& uri)
 {
-  http::url parsed = http::ParseHttpUrl(uri);
+  // If the "authority" part of the URI is missing (host, port, etc), the parser
+  // will consider the thing before the first delimiter ('/') of the path as authority,
+  // so we have to include that in the path we use.
+  auto path = uri.host + uri.path;
+  return std::unique_ptr<FileConfiguration>(new FileConfiguration(path));
+}
+
+std::unique_ptr<ConfigurationInterface> getEtcd(const http::url& uri)
+{
+#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
+  auto etcd = std::unique_ptr<EtcdConfiguration>(new EtcdConfiguration(uri.host, uri.port));
+  if (!uri.path.empty()) {
+    etcd->setPrefix(uri.path);
+  }
+  return std::move(etcd);
+#else
+  throw std::runtime_error("Back-end 'etcd' not enabled");
+#endif
+}
+
+std::unique_ptr<ConfigurationInterface> ConfigurationFactory::getConfiguration(const std::string& uri)
+{
+  auto string = uri; // The http library needs a non-const string for some reason
+  http::url parsed = http::ParseHttpUrl(string);
 
   if (parsed.protocol == "file") {
-    // If the "authority" part of the URI is missing (host, port, etc), the parser
-    // will consider the thing before the first delimiter ('/') of the path as authority,
-    // so we have to include that in the path we use.
-    auto path = parsed.host + parsed.path;
-    return std::unique_ptr<FileConfiguration>(new FileConfiguration(path));
+    return getFile(parsed);
   } else if (parsed.protocol == "etcd") {
-#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
-    return std::unique_ptr<EtcdConfiguration>(new EtcdConfiguration(parsed.host, parsed.port));
-#else
-    throw std::runtime_error("Back-end 'etcd' not enabled");
-#endif
+    return getEtcd(parsed);
   } else {
     throw std::runtime_error("Unrecognized URI scheme");
   }

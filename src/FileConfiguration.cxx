@@ -17,7 +17,6 @@ FileConfiguration::~FileConfiguration()
 {
 }
 
-//#define PREFIX_FILE "file:"
 #define SUFFIX_FILE_INI {".ini", ".cfg"}
 
 /// Load the configuration from given path
@@ -28,9 +27,9 @@ FileConfiguration::~FileConfiguration()
 ///              Accepted suffix, to define file format (TODO: separate doc for file formats):
 ///                 .ini, .cfg    see example.cfg
 /// \exception   Throws a <std::string> exception on error.
-void loadConfigFile(const std::string filePath, boost::property_tree::ptree& pt)
+void loadConfigFile(const std::string& filePath, boost::property_tree::ptree& pt)
 {
-  if (filePath.length() == 0) { throw std::string("Invalid argument"); }
+  if (filePath.length() == 0) { throw std::runtime_error("Invalid argument"); }
 
   //
   // open location according to prefix
@@ -64,10 +63,10 @@ void loadConfigFile(const std::string filePath, boost::property_tree::ptree& pt)
   throw std::runtime_error("Invalid type in file name");
 }
 
-FileConfiguration::FileConfiguration(std::string filePath)
-    : filePath(filePath)
+FileConfiguration::FileConfiguration(const std::string& filePath)
+    : mFilePath(filePath)
 {
-  loadConfigFile(filePath, pt);
+  loadConfigFile(filePath, mPropertyTree);
 }
 
 void FileConfiguration::putString(const std::string&, const std::string&)
@@ -79,7 +78,13 @@ auto FileConfiguration::getString(const std::string& path) -> Optional<std::stri
 {
   // To use a '/' instead of the default '.' as separator, we need to construct the path object explicitly
   //return pt.get<std::string>(decltype(pt)::path_type(path, '/'));
-  return pt.get<std::string>(path);
+  return mPropertyTree.get<std::string>(path);
+}
+
+void FileConfiguration::setPrefix(const std::string& path)
+{
+  mFilePath = path;
+  loadConfigFile(mFilePath, mPropertyTree);
 }
 
 } // namespace Configuration

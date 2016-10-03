@@ -25,10 +25,13 @@ class EtcdConfiguration final : public ConfigurationInterface
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual Optional<std::string> getString(const std::string& path) override;
 
+    virtual void setPrefix(const std::string& path) override;
+
   private:
-    std::string host;
-    int port;
-    boost::scoped_ptr<EtcdState> etcdState;
+    std::string mHost;
+    int mPort;
+    boost::scoped_ptr<EtcdState> mEtcdState;
+    std::string mPrefix;
 };
 
 } // namespace Configuration

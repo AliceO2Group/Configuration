@@ -33,7 +33,7 @@ Reply::KvPairs getReplyPairs(Reply& reply)
 }
 
 EtcdConfiguration::EtcdConfiguration(const std::string& host, int port)
-    : host(host), port(port), etcdState(new EtcdState(host, port))
+    : mHost(host), mPort(port), mEtcdState(new EtcdState(host, port))
 {
 }
 
@@ -43,21 +43,36 @@ EtcdConfiguration::~EtcdConfiguration()
 
 void EtcdConfiguration::putString(const std::string& path, const std::string& value)
 {
-  etcdState->client.Set(path, value);
+  mEtcdState->client.Set(mPrefix + path, value);
 }
 
 auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::string>
 {
-  auto reply = etcdState->client.Get(path);
-  auto pairs = getReplyPairs(reply);
+  try {
+    auto reply = mEtcdState->client.Get(mPrefix + path);
+    auto pairs = getReplyPairs(reply);
 
-  if (pairs.size() == 0) {
-    return boost::none;
+    if (pairs.size() == 0) {
+      return boost::none;
+    }
+    else if (pairs.size() == 1) {
+      return pairs.begin()->second;
+    }
+    throw std::runtime_error("ETCD reply invalid");
   }
-  else if (pairs.size() == 1) {
-    return pairs.begin()->second;
+  catch (const etcd::ReplyException& e) {
+    if (e.error_code == 100) { // Key not found error code
+      // If the key was not found, we return an empty optional.
+      return boost::none;
+    }
+    // Otherwise, we rethrow (there might be a connection issue, etc.)
+    throw;
   }
-  throw std::runtime_error("ETCD reply invalid");
+}
+
+void EtcdConfiguration::setPrefix(const std::string& path)
+{
+  mPrefix = path;
 }
 
 } // namespace Configuration

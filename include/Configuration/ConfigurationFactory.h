@@ -23,9 +23,10 @@ class ConfigurationFactory
     /// Examples of URIs:
     ///  - "etcd://myetcdserver:4001"
     ///  - "file://home/me/some/local/file.ini"
+    ///  - "etcd://myetcdserver:4001/some/prefix/to/my/values"
     /// \param uri The URI
     /// \retrun A unique_ptr containing a pointer to an interface to the requested back-end
-    static std::unique_ptr<ConfigurationInterface> getConfiguration(std::string uri);
+    static std::unique_ptr<ConfigurationInterface> getConfiguration(const std::string& uri);
 };
 
 } // Configuration

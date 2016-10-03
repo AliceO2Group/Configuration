@@ -19,15 +19,17 @@ namespace Configuration
 class FileConfiguration final : public ConfigurationInterface
 {
   public:
-    FileConfiguration(std::string filePath);
+    FileConfiguration(const std::string& filePath);
     virtual ~FileConfiguration();
 
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual Optional<std::string> getString(const std::string& path) override;
 
+    virtual void setPrefix(const std::string& path) override;
+
   private:
-    std::string filePath;
-    boost::property_tree::ptree pt;
+    std::string mFilePath;
+    boost::property_tree::ptree mPropertyTree;
 };
 
 } // namespace Configuration

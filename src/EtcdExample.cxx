@@ -13,18 +13,37 @@ int main(int, char**)
 {
   using namespace AliceO2::Configuration;
 
-  auto conf = ConfigurationFactory::getConfiguration("etcd://aido2qc10:4001");
+  std::string myDir = "/test_dir/";
+  std::string myKey = "test_key";
 
-  std::string key = "/test_dir/test_value";
-  int putValue = 123;
-  cout << "Assigning value '" << putValue << "' to key '" << key << "'" << endl;
-  conf->put<int>(key, 123);
+  {
+    auto conf = ConfigurationFactory::getConfiguration("etcd://aido2qc10:4001");
+    auto myPath = myDir + myKey;
 
-  int getValue = conf->get<int>(key).value();
-  cout << "Got key '" << key << "' with value '" << getValue << "'" << endl;
+    cout << "Assigning value '111' to key '" << myKey << "'" << endl;
+    conf->put<int>(myPath, 111);
 
-  int getValueWithDefault = conf->get<int>("/this/key/does/not/exist").value_or(-1);
-  cout << "Got key '" << key << "' with value '" << getValueWithDefault << "'" << endl;
+    int getValue = conf->get<int>(myPath).value();
+    cout << "Got key '" << myPath<< "' with value '" << getValue << "'" << endl;
+
+    int getValueWithDefault = conf->get<int>("/this/key/does/not/exist").value_or(-1);
+    cout << "Got key '" << myPath << "' with value '" << getValueWithDefault << "'" << endl;
+  }
+
+  // Another way to access the same values
+  {
+    auto conf = ConfigurationFactory::getConfiguration("etcd://aido2qc10:4001/test_dir/");
+    conf->put<int>(myKey, 222);
+    cout << "Should be 222: " << conf->get<int>(myKey).value() << '\n';
+  }
+
+  // Yet another way to access the same values
+  {
+    auto conf = ConfigurationFactory::getConfiguration("etcd://aido2qc10:4001");
+    conf->setPrefix("/test_dir/");
+    conf->put<int>(myKey, 333);
+    cout << "Should be 333: " << conf->get<int>(myKey).value() << '\n';
+  }
 
   return 0;
 }

@@ -81,6 +81,12 @@ class ConfigurationInterface
     /// \param path The path of the value
     /// \return A boolean: true indicates it exists, false indicates it doesn't
     virtual bool exists(const std::string& path);
+
+    /// Sets a 'prefix' or 'directory' for the backend.
+    /// After this call, all paths given to this object will be prefixed with this.
+    /// The implementation of this is very backend-dependent and it may not be a trivial call.
+    /// \param path The prefix path
+    virtual void setPrefix(const std::string& path) = 0;
 };
 
 } // namespace Configuration
