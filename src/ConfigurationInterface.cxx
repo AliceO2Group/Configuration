@@ -49,6 +49,12 @@ auto ConfigurationInterface::getFloat(const std::string& path) -> Optional<doubl
   return convertOptional<double>(getString(path));
 }
 
+// Default implementation of exists()
+bool ConfigurationInterface::exists(const std::string& path)
+{
+  return getString(path).is_initialized();
+}
+
 // Template convenience interface methods
 
 template<> void ConfigurationInterface::put(const std::string& path, const std::string& value)
