@@ -7,6 +7,27 @@ The configuration module has some external dependencies, this section provides i
 ### etcd
 Follow instructions on: https://github.com/coreos/etcd/releases/
 
+### Protocol Buffer & gRPC
+Needed for etcd-v3 back-end.
+
+~~~
+wget https://github.com/google/protobuf/releases/download/v3.0.0/protobuf-cpp-3.0.0.tar.gz
+tar zxf protobuf-cpp-3.0.0.tar.gz
+cd protobuf-3.0.0
+./configure
+make -j
+make install
+~~~
+
+~~~
+git clone -b $(curl -L http://grpc.io/release) https://github.com/grpc/grpc
+cd grpc
+git submodule update --init
+make -j
+make install
+~~~
+
+
 ### RapidJSON
 
 ~~~

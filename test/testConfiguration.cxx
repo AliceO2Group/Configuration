@@ -15,6 +15,8 @@
 #include <boost/test/unit_test.hpp>
 #include <assert.h>
 
+using namespace AliceO2::Configuration;
+
 // TODO add assertions
 
 //BOOST_AUTO_TEST_CASE(General_test)
@@ -118,6 +120,22 @@ BOOST_AUTO_TEST_CASE(fake_test)
 //    BOOST_FAIL("Runtime error:" + std::string(e.what()));
 //  }
 //}
+
+BOOST_AUTO_TEST_CASE(EtcdV3Test)
+{
+  // Get file configuration interface from factory
+  auto conf = ConfigurationFactory::getConfiguration("etcd-v3://localhost:2379");
+
+  std::string key {"/test/key"};
+  std::string value {"test_value"};
+
+  conf->put(key, value);
+  auto returnedValue = conf->get<std::string>(key);
+
+  BOOST_CHECK(returnedValue.is_initialized());
+  BOOST_CHECK(returnedValue.get_value_or("") == value);
+}
+
 
 
 

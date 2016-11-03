@@ -62,12 +62,12 @@ template<> void ConfigurationInterface::put(const std::string& path, const std::
   putString(path, value);
 }
 
-template<> void ConfigurationInterface::put(const std::string& path, int value)
+template<> void ConfigurationInterface::put(const std::string& path, const int& value)
 {
   putInt(path, value);
 }
 
-template<> void ConfigurationInterface::put(const std::string& path, double value)
+template<> void ConfigurationInterface::put(const std::string& path, const double& value)
 {
   putFloat(path, value);
 }

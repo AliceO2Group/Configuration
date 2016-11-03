@@ -13,18 +13,41 @@ set(LIB_SOURCES
   FileConfiguration.cxx
 )
 
+set(CONF_LINK_LIBS
+  Common
+  InfoLogger-shared
+  ${CURL_LIBRARIES}
+  pthread
+)
 
 # Add ETCD backend interface if the RapidJSON dependency was found
 if(RapidJSON_FOUND)
   add_definitions(-DALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED)
   include_directories(${RAPIDJSON_INCLUDE_DIRS})
+  list(APPEND LIB_SOURCES EtcdConfiguration.cxx)
+  list(APPEND LIB_HEADERS ../include/Configuration/EtcdConfiguration.h) # Normal header
+endif()
 
+# Add ETCD v3 backend if the protocol buffer dependency was found 
+if(PROTOBUF_FOUND)
+  add_definitions(-DALICEO2_CONFIGURATION_BACKEND_ETCDV3_ENABLED)
+  include_directories(${PROTOBUF_INCLUDE_DIRS})
+  list(APPEND CONF_LINK_LIBS ${PROTOBUF_LIBRARY})
+  list(APPEND CONF_LINK_LIBS grpc grpc++)
   list(APPEND LIB_SOURCES 
-    EtcdConfiguration.cxx
+    EtcdV3/proto/auth.grpc.pb.cc
+    EtcdV3/proto/auth.pb.cc
+    EtcdV3/proto/kv.grpc.pb.cc
+    EtcdV3/proto/kv.pb.cc
+    EtcdV3/proto/rpc.grpc.pb.cc
+    EtcdV3/proto/rpc.pb.cc
   )
-
-  list(APPEND LIB_HEADERS
-    ../include/Configuration/EtcdConfiguration.h # Normal header
+  # Note: these should probably be replaced by a google api lib installed in the system.
+  list(APPEND LIB_SOURCES 
+    EtcdV3/proto/googleapis/google/api/annotations.grpc.pb.cc
+    EtcdV3/proto/googleapis/google/api/annotations.pb.cc
+    EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
+    EtcdV3/proto/googleapis/google/api/http.pb.cc
   )
 endif()
 
@@ -37,8 +60,8 @@ add_library(${LIBRARY_NAME_SHARED} SHARED ${LIB_SOURCES})
 add_library(${LIBRARY_NAME_STATIC} STATIC ${LIB_SOURCES})
 
 # Link
-target_link_libraries(${LIBRARY_NAME_SHARED} ${CURL_LIBRARIES})
-target_link_libraries(${LIBRARY_NAME_STATIC} ${CURL_LIBRARIES})
+target_link_libraries(${LIBRARY_NAME_SHARED} ${CONF_LINK_LIBS})
+target_link_libraries(${LIBRARY_NAME_STATIC} ${CONF_LINK_LIBS})
 
 # Example program
 set(ETCD_EXAMPLE_NAME EtcdExample)

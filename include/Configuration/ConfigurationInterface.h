@@ -65,7 +65,7 @@ class ConfigurationInterface
     /// \param path The path of the value
     /// \param value The value to put
     template<typename T>
-    void put(const std::string& path, T value);
+    void put(const std::string& path, const T& value);
 
     /// Template convenience interface for get operations. Redirects to the appropriate virtual method.
     /// \tparam T The type of the value. Supported types are "std::string", "int" and "double"

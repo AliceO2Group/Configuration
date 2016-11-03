@@ -45,6 +45,13 @@ find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRE
 # include RapidJSON (dependency of ETCD API)
 find_package(RapidJSON)
 
+# include Protocol Buffers (dependency of ETCD v3 API)
+find_package(Protobuf 3.0.0)
+
+# Other sub-projects
+link_o2_subproject(Common)
+link_o2_subproject(InfoLogger)
+
 # CURL
 find_package(CURL REQUIRED)
 
