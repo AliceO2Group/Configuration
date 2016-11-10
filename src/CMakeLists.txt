@@ -28,13 +28,9 @@ if(RapidJSON_FOUND)
   list(APPEND LIB_HEADERS ../include/Configuration/EtcdConfiguration.h) # Normal header
 endif()
 
-# Add ETCD v3 backend if the protocol buffer dependency was found 
+# Add ETCD v3 backend if the protocol buffer dependency was found
 if(PROTOBUF_FOUND AND GRPC_FOUND)
-  #if(${PROTOBUF_VERSION} VERSION_EQUAL "3.0.0")
-  #  message(${PROTOBUF_VERSION} "equal to 3.0.0")
-  #else()
-  #  message(${PROTOBUF_VERSION} "not equal to 3.0.0") 
-  #endif()
+  message("Configuration etcd-v3 backend enabled")
   add_definitions(-DALICEO2_CONFIGURATION_BACKEND_ETCDV3_ENABLED)
   include_directories(${PROTOBUF_INCLUDE_DIRS} ${GRPC_INCLUDE_DIR})
   list(APPEND CONF_LINK_LIBS ${PROTOBUF_LIBRARY})
@@ -54,6 +50,8 @@ if(PROTOBUF_FOUND AND GRPC_FOUND)
     EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
     EtcdV3/proto/googleapis/google/api/http.pb.cc
   )
+else()
+  message("Configuration etcd-v3 backend NOT enabled")
 endif()
 
 # Define two variables in order not to repeat ourselves.
