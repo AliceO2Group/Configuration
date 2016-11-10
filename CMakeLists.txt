@@ -2,7 +2,7 @@
 #
 # @author Barthélémy von Haller
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8) # should be 3.7 for Protobuf version checking
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake) # main (top) cmake dir
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) # project specific cmake dir
 
@@ -45,8 +45,9 @@ find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRE
 # include RapidJSON (dependency of ETCD API)
 find_package(RapidJSON)
 
-# include Protocol Buffers (dependency of ETCD v3 API)
-find_package(Protobuf 3.0.0)
+# include Protocol Buffers and gRPC (dependency of ETCD v3 API)
+find_package(Protobuf REQUIRED 3.0.0)
+find_package(GRPC)
 
 # Other sub-projects
 link_o2_subproject(Common)
