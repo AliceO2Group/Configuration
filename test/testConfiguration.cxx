@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(fake_test)
 BOOST_AUTO_TEST_CASE(EtcdV3Test)
 {
   // Get file configuration interface from factory
-  auto conf = ConfigurationFactory::getConfiguration("etcd-v3://localhost:2379");
+  auto conf = ConfigurationFactory::getConfiguration("etcd-v3://aido2qc10:2379");
 
   std::string key {"/test/key"};
   std::string value {"test_value"};
