@@ -10,6 +10,11 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 class ConfigFilePrivate
 {
   public:
@@ -80,6 +85,9 @@ class ConfigFile
   private:
     ConfigFilePrivate *dPtr;
 };
+
+}
+}
 
 #endif /* SRC_CONFIGURATION_H_ */
 

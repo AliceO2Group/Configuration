@@ -10,6 +10,11 @@
 
 using namespace std;
 
+namespace AliceO2
+{
+namespace Configuration
+{
+
 ConfigFilePrivate::ConfigFilePrivate()
 {
 }
@@ -100,3 +105,6 @@ void getValueSpecialization(void) {
 
 
 //template void ConfigFile::getValue<float>(std::string, float&);
+
+} // namespace Configuration
+} // namespace AliceO2

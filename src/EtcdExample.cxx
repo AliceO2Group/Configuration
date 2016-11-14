@@ -1,4 +1,4 @@
-/// \file EtcdExample.h
+/// \file EtcdExample.cxx
 /// \brief Example for using the etcd backend
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
@@ -8,6 +8,7 @@
 
 using std::cout;
 using std::endl;
+using namespace AliceO2::Configuration;
 
 int main(int, char**)
 {
