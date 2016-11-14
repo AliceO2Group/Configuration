@@ -6,6 +6,9 @@ The configuration module has some external dependencies, this section provides i
 
 ### etcd
 Follow instructions on: https://github.com/coreos/etcd/releases/
+Or use Docker: 
+docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
+
 
 ### Protocol Buffer & gRPC
 Needed for etcd-v3 back-end.
