@@ -90,7 +90,7 @@ set(HEADERS # needed for the dictionary generation
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
-if (RapidJSON_FOUND)
+if (RAPIDJSON_FOUND)
 
     if(PROTOBUF_FOUND AND GRPC_FOUND)
       # Add ETCD v3 backend if the protocol buffer dependency was found
@@ -115,10 +115,10 @@ if (RapidJSON_FOUND)
       # Add ETCD backend interface if the RapidJSON dependency was found
       set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson)
       list(APPEND SRCS
-            EtcdConfiguration.cxx
+            src/EtcdConfiguration.cxx
             )
       list(APPEND HEADERS
-            ../include/Configuration/EtcdConfiguration.h
+            include/Configuration/EtcdConfiguration.h
             )
     endif()
 else ()

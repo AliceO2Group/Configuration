@@ -59,23 +59,3 @@ o2_define_bucket(
     ${GRPC_INCLUDE_DIR}
 )
 
-#o2_define_bucket(
-#    NAME
-#    ExampleModule1_bucket
-#
-#    DEPENDENCIES # library names
-#    common_boost_bucket
-#    ${Boost_PROGRAM_OPTIONS_LIBRARY}
-#
-#    INCLUDE_DIRECTORIES
-#    ${ROOT_INCLUDE_DIR}
-#
-#    SYSTEMINCLUDE_DIRECTORIES
-#    ${ZMQ_INCLUDE_DIR}
-#)
-
-# TO BE ADDED
-
-# Other sub-projects
-#link_o2_subproject(Common)
-#link_o2_subproject(InfoLogger)
