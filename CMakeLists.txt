@@ -78,6 +78,7 @@ configure_file("include/${MODULE_NAME}/Version.h.in"
 
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}/include
+        ${Boost_INCLUDE_DIRS}
 )
 
 set(HEADERS # needed for the dictionary generation
@@ -93,6 +94,7 @@ set(LIBRARY_NAME ${MODULE_NAME})
 if(PROTOBUF_FOUND AND GRPC_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_etcd3)
+    include_directories(src/EtcdV3/proto/googleapis)
     list(APPEND SRCS
             src/EtcdV3/proto/auth.grpc.pb.cc
             src/EtcdV3/proto/auth.pb.cc
@@ -112,6 +114,7 @@ if(PROTOBUF_FOUND AND GRPC_FOUND)
 elseif(RAPIDJSON_FOUND)
     # Add ETCD backend interface if the RapidJSON dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson)
+    include_directories(${CURL_INCLUDE_DIRS})
     list(APPEND SRCS
             src/EtcdConfiguration.cxx
             )
