@@ -78,7 +78,6 @@ configure_file("include/${MODULE_NAME}/Version.h.in"
 
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}/include
-        ${Boost_INCLUDE_DIRS}
 )
 
 set(HEADERS # needed for the dictionary generation
@@ -114,7 +113,6 @@ if(PROTOBUF_FOUND AND GRPC_FOUND)
 elseif(RAPIDJSON_FOUND)
     # Add ETCD backend interface if the RapidJSON dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson)
-    include_directories(${CURL_INCLUDE_DIRS})
     list(APPEND SRCS
             src/EtcdConfiguration.cxx
             )
