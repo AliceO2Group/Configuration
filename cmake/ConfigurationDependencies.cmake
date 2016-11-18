@@ -44,14 +44,16 @@ o2_define_bucket(
     ${RAPIDJSON_INCLUDE_DIRS}
 )
 
+# This bucket does not inherit from configuration_bucket because we want to enforce a certain order of includes.
 o2_define_bucket(
     NAME
     configuration_bucket_with_etcd3
 
     DEPENDENCIES
     ${PROTOBUF_LIBRARY}
-    grpc 
-    grpc++
+    ${GRPC_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${CURL_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${PROTOBUF_INCLUDE_DIRS}
