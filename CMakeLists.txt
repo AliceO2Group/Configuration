@@ -77,7 +77,7 @@ configure_file("include/${MODULE_NAME}/Version.h.in"
         @ONLY)
 
 include_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}/include
+        ${CMAKE_CURRENT_BINARY_DIR}/include
 )
 
 set(HEADERS # needed for the dictionary generation
@@ -85,44 +85,43 @@ set(HEADERS # needed for the dictionary generation
         include/${MODULE_NAME}/Configuration.h # Normal header
         include/${MODULE_NAME}/ConfigurationInterface.h # Normal header
         include/${MODULE_NAME}/ConfigurationFactory.h # Normal header
-        include/${MODULE_NAME}/FileConfiguration.h # Normal header  
+        include/${MODULE_NAME}/FileConfiguration.h # Normal header
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
-if (RAPIDJSON_FOUND)
-
-    if(PROTOBUF_FOUND AND GRPC_FOUND)
-      # Add ETCD v3 backend if the protocol buffer dependency was found
-      message("Configuration etcd-v3 backend enabled")
-      set(BUCKET_NAME_CONFIG configuration_bucket_with_etcd3)
-      list(APPEND SRCS 
-	      EtcdV3/proto/auth.grpc.pb.cc
-	      EtcdV3/proto/auth.pb.cc
-	      EtcdV3/proto/kv.grpc.pb.cc
-	      EtcdV3/proto/kv.pb.cc
-	      EtcdV3/proto/rpc.grpc.pb.cc
-	      EtcdV3/proto/rpc.pb.cc
-  	      )
-      # Note: these should probably be replaced by a google api lib installed in the system.
-      list(APPEND SRCS 
-              EtcdV3/proto/googleapis/google/api/annotations.grpc.pb.cc
-	      EtcdV3/proto/googleapis/google/api/annotations.pb.cc
-	      EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
-	      EtcdV3/proto/googleapis/google/api/http.pb.cc
-              )	      
-    else()
-      # Add ETCD backend interface if the RapidJSON dependency was found
-      set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson)
-      list(APPEND SRCS
+if(PROTOBUF_FOUND AND GRPC_FOUND)
+    # Add ETCD v3 backend if the protocol buffer dependency was found
+    set(BUCKET_NAME_CONFIG configuration_bucket_with_etcd3)
+    list(APPEND SRCS
+            src/EtcdV3/proto/auth.grpc.pb.cc
+            src/EtcdV3/proto/auth.pb.cc
+            src/EtcdV3/proto/kv.grpc.pb.cc
+            src/EtcdV3/proto/kv.pb.cc
+            src/EtcdV3/proto/rpc.grpc.pb.cc
+            src/EtcdV3/proto/rpc.pb.cc
+            )
+    # Note: these should probably be replaced by a google api lib installed in the system.
+    list(APPEND SRCS
+            src/EtcdV3/proto/googleapis/google/api/annotations.grpc.pb.cc
+            src/EtcdV3/proto/googleapis/google/api/annotations.pb.cc
+            src/EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
+            src/EtcdV3/proto/googleapis/google/api/http.pb.cc
+            )
+    message(STATUS "etcd-v3 backend enabled")
+elseif(RAPIDJSON_FOUND)
+    # Add ETCD backend interface if the RapidJSON dependency was found
+    set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson)
+    list(APPEND SRCS
             src/EtcdConfiguration.cxx
             )
-      list(APPEND HEADERS
-            include/Configuration/EtcdConfiguration.h
+    list(APPEND HEADERS
+            ../include/Configuration/EtcdConfiguration.h
             )
-    endif()
+    message(STATUS "etcd-v2 enabled")
 else ()
     set(BUCKET_NAME_CONFIG configuration_bucket)
+    message(STATUS "etcd v2 and v3 dependencies missing, compilation skipped for corresponding classes")
 endif ()
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
