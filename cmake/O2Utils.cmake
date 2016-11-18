@@ -40,6 +40,9 @@ function(O2_DEFINE_BUCKET)
 #  foreach (inc_dir ${PARSED_ARGS_INCLUDE_DIRECTORIES})
 #    message(STATUS "   - ${inc_dir} (inc_dir)")
 #  endforeach ()
+#      foreach (inc_dir ${PARSED_ARGS_SYSTEMINCLUDE_DIRECTORIES})
+#    message(STATUS "   - ${inc_dir} (sysinc_dir)")
+#  endforeach ()
 
   # Save this information
   set("bucket_map_${PARSED_ARGS_NAME}" "${PARSED_ARGS_NAME}" PARENT_SCOPE) # emulation of a map
@@ -168,8 +171,9 @@ function(O2_TARGET_LINK_BUCKET)
   set(RESULT_inc_dirs "")
   set(RESULT_systeminc_dirs "")
   GET_BUCKET_CONTENT(${PARSED_ARGS_BUCKET} RESULT_libs RESULT_inc_dirs RESULT_systeminc_dirs) # RESULT_lib_dirs)
-#  message(STATUS "All dependencies of the bucket : ${RESULT_libs}")
+#  message(STATUS "All dependencies of the bucket ${PARSED_ARGS_BUCKET} : ${RESULT_libs}")
 #  message(STATUS "All inc_dirs of the bucket ${PARSED_ARGS_BUCKET} : ${RESULT_inc_dirs}")
+#  message(STATUS "All sysinc_dirs of the bucket ${PARSED_ARGS_BUCKET} : ${RESULT_systeminc_dirs}")
 
   # for each dependency in the bucket invoke target_link_library
   #  set(DEPENDENCIES ${bucket_map_libs_${PARSED_ARGS_BUCKET}})
