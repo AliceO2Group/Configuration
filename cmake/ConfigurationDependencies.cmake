@@ -8,6 +8,13 @@ find_package(CURL REQUIRED)
 find_package(Protobuf REQUIRED 3.0.0)
 find_package(GRPC)
 
+# Message as Protobuf is silent
+if(PROTOBUF_FOUND)
+    message(STATUS "ProtoBuf found : ${PROTOBUF_LIBRARY}")
+else()
+    message(STATUS "ProtoBuf not found")
+endif()
+
 ########## General definitions and flags ##########
 
 if (RapidJSON_FOUND)
