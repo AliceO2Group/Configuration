@@ -16,7 +16,7 @@
 #include <grpc++/create_channel.h>
 #include <grpc++/security/credentials.h>
 #include "proto/rpc.grpc.pb.h"
-#include "InfoLogger/InfoLogger.hxx"
+//#include "InfoLogger/InfoLogger.hxx"
 
 namespace AliceO2
 {
@@ -49,8 +49,8 @@ class EtcdV3Configuration final : public ConfigurationInterface
       auto status = mStub->Put(&context, request, &response);
 
       if (!status.ok()) {
-        mLogger << "Failed to put key-value:{" << request.key() << "," << request.value() << "} error_code:"
-            << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
+        //mLogger << "Failed to put key-value:{" << request.key() << "," << request.value() << "} error_code:"
+        //    << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
         throw std::runtime_error("etcd-v3 response status not OK");
       }
     }
@@ -64,8 +64,8 @@ class EtcdV3Configuration final : public ConfigurationInterface
       auto status = mStub->Range(&context, request, &response);
 
       if (!status.ok()) {
-        mLogger << "Failed to get key:" << request.key() << " error_code:"
-            << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
+        //mLogger << "Failed to get key:" << request.key() << " error_code:"
+        //    << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
         throw std::runtime_error("etcd-v3 response status not OK");
       }
 
@@ -98,7 +98,7 @@ class EtcdV3Configuration final : public ConfigurationInterface
     std::string mPrefix;
     std::shared_ptr<grpc::Channel> mChannel;
     std::unique_ptr<etcdserverpb::KV::Stub> mStub;
-    InfoLogger::InfoLogger mLogger;
+    //InfoLogger::InfoLogger mLogger;
 };
 
 } // namespace EtcdV3
