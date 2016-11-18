@@ -49,13 +49,14 @@ o2_define_bucket(
     configuration_bucket_with_etcd3
 
     DEPENDENCIES
-    configuration_bucket_with_rapidjson
     ${PROTOBUF_LIBRARY}
     grpc 
     grpc++
 
     SYSTEMINCLUDE_DIRECTORIES
-    ${PROTOBUF_INCLUDE_DIRS} 
+    ${PROTOBUF_INCLUDE_DIRS}
     ${GRPC_INCLUDE_DIR}
+    ${CURL_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIR}
 )
 
