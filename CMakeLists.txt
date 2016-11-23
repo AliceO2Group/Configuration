@@ -95,6 +95,7 @@ if(PROTOBUF_FOUND AND GRPC_FOUND)
     set(BUCKET_NAME_CONFIG configuration_bucket_with_etcd3)
     include_directories(src/EtcdV3/proto/googleapis)
     list(APPEND SRCS
+            src/EtcdV3/EtcdV3Configuration.cxx
             src/EtcdV3/proto/auth.grpc.pb.cc
             src/EtcdV3/proto/auth.pb.cc
             src/EtcdV3/proto/kv.grpc.pb.cc
