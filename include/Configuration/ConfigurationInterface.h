@@ -85,8 +85,19 @@ class ConfigurationInterface
     /// Sets a 'prefix' or 'directory' for the backend.
     /// After this call, all paths given to this object will be prefixed with this.
     /// The implementation of this is very backend-dependent and it may not be a trivial call.
-    /// \param path The prefix path
-    virtual void setPrefix(const std::string& path) = 0;
+    /// \param prefix The prefix path
+    virtual void setPrefix(const std::string& prefix) = 0;
+
+    /// Sets a custom separator for paths.
+    /// After this call, all paths given to this object will use the given separator.
+    /// Note that because of compatibility reasons, only the paths given to the put/get functions will use the custom
+    /// separator. Any prefixes given with setPrefix() or the initial URI at the factory will still use the default
+    /// separator '/'.
+    /// \param separator Separator character
+    virtual void setPathSeparator(char separator) = 0;
+
+    /// Resets the separator to the default '/'
+    virtual void resetPathSeparator() = 0;
 };
 
 } // namespace Configuration

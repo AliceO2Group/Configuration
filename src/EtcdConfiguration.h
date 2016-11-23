@@ -6,7 +6,7 @@
 #ifndef SRC_ETCDCONFIGURATION_H_
 #define SRC_ETCDCONFIGURATION_H_
 
-#include "Configuration/ConfigurationInterface.h"
+#include "ConfigurationBase.h"
 #include <boost/scoped_ptr.hpp>
 
 namespace AliceO2
@@ -16,16 +16,17 @@ namespace Configuration
 
 struct EtcdState;
 
-class EtcdConfiguration final : public ConfigurationInterface
+/// Note: since we've moved to the etcd v3 API, this class is now legacy code
+class EtcdConfiguration final : public ConfigurationBase
 {
   public:
     EtcdConfiguration(const std::string& host, int port);
     virtual ~EtcdConfiguration();
-
     virtual void putString(const std::string& path, const std::string& value) override;
-    virtual Optional<std::string> getString(const std::string& path) override;
-
+    virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
+    auto addPrefix(const std::string& path) -> std::string;
+    auto makeChannelString(const std::string& host, int port) -> std::string;
 
   private:
     std::string mHost;

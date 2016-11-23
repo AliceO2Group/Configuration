@@ -9,22 +9,20 @@
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
-#include "Configuration/ConfigurationInterface.h"
+#include "ConfigurationBase.h"
 
 namespace AliceO2
 {
 namespace Configuration
 {
 
-class FileConfiguration final : public ConfigurationInterface
+class FileConfiguration final : public ConfigurationBase
 {
   public:
     FileConfiguration(const std::string& filePath);
     virtual ~FileConfiguration();
-
     virtual void putString(const std::string& path, const std::string& value) override;
-    virtual Optional<std::string> getString(const std::string& path) override;
-
+    virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
 
   private:

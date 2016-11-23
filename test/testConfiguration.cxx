@@ -3,11 +3,11 @@
 ///
 /// \author Sylvain Chapeland, CERN
 
-#include <Configuration/Configuration.h>
+#include <fstream>
 #include <stdio.h>
 #include <string>
-#include <Configuration/ConfigurationFactory.h>
 #include <unistd.h>
+#include <Configuration/ConfigurationFactory.h>
 
 #define BOOST_TEST_MODULE hello test
 #define BOOST_TEST_MAIN
@@ -59,11 +59,6 @@ using namespace AliceO2::Configuration;
 //
 //}
 
-BOOST_AUTO_TEST_CASE(fake_test)
-{
-  BOOST_CHECK_EQUAL(0,0);
-}
-
 
 //BOOST_AUTO_TEST_CASE(ETCD_test)
 //{
@@ -90,6 +85,7 @@ BOOST_AUTO_TEST_CASE(fake_test)
 //  BOOST_CHECK_MESSAGE(conf->get<double>(path3) == value3, "double: " + message);
 //}
 //
+
 //BOOST_AUTO_TEST_CASE(File_test)
 //{
 //  try {
@@ -136,16 +132,43 @@ BOOST_AUTO_TEST_CASE(EtcdV3Test)
   BOOST_CHECK(returnedValue.get_value_or("") == value);
 }
 
+BOOST_AUTO_TEST_CASE(FileTest)
+{
+  // Put stuff in temp file
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.ini";
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream <<
+        "key=value\n"
+        "[section]\n"
+        "key_int=123\n"
+        "key_float=4.56\n"
+        "key_string=hello\n";
+  }
+
+  // Get file configuration interface from factory
+  auto conf = ConfigurationFactory::getConfiguration("file:/"+TEMP_FILE);
+
+  std::string key {"/test/key"};
+  std::string value {"test_value"};
+
+  // File backend does not support putting values
+  BOOST_CHECK_THROW(conf->put(key, value), std::runtime_error);
+
+  // Check with default separator
+  BOOST_CHECK(conf->get<std::string>("key").get_value_or("") == "value");
+  BOOST_CHECK(conf->get<int>("section/key_int").get_value_or(-1) == 123);
+  BOOST_CHECK(conf->get<double>("section/key_float").get_value_or(-1.0) == 4.56);
+  BOOST_CHECK(conf->get<std::string>("section/key_string").get_value_or("") == "hello");
 
 
-
-
-
-
-
-
-
-
+  // Check with custom separator
+  conf->setPathSeparator('.');
+  BOOST_CHECK(conf->get<std::string>("key").get_value_or("") == "value");
+  BOOST_CHECK(conf->get<int>("section.key_int").get_value_or(-1) == 123);
+  BOOST_CHECK(conf->get<double>("section.key_float").get_value_or(-1.0) == 4.56);
+  BOOST_CHECK(conf->get<std::string>("section.key_string").get_value_or("") == "hello");
+}
 
 
 

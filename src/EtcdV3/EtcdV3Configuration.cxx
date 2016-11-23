@@ -24,7 +24,7 @@ void EtcdV3Configuration::putString(const std::string& path, const std::string& 
 {
   grpc::ClientContext context;
   etcdserverpb::PutRequest request;
-  request.set_key(prefix(path));
+  request.set_key(addPrefix(replaceSeparator(path)));
   request.set_value(value);
   etcdserverpb::PutResponse response;
   auto status = mStub->Put(&context, request, &response);
@@ -40,7 +40,7 @@ auto EtcdV3Configuration::getString(const std::string& path) -> Optional<std::st
 {
   grpc::ClientContext context;
   etcdserverpb::RangeRequest request;
-  request.set_key(prefix(path));
+  request.set_key(addPrefix(replaceSeparator(path)));
   etcdserverpb::RangeResponse response;
   auto status = mStub->Range(&context, request, &response);
 
@@ -66,9 +66,17 @@ void EtcdV3Configuration::setPrefix(const std::string& path)
 }
 
 /// Prefix the prefix to the path
-auto EtcdV3Configuration::prefix(const std::string& path) -> std::string
+auto EtcdV3Configuration::addPrefix(const std::string& path) -> std::string
 {
   return mPrefix + path;
+}
+
+/// Replace separators in the path
+auto EtcdV3Configuration::replaceSeparator(const std::string& path) -> std::string
+{
+  auto p = path;
+  std::replace(p.begin(), p.end(), '/', getSeparator());
+  return p;
 }
 
 /// Make the URI string for the channel

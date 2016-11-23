@@ -43,13 +43,13 @@ EtcdConfiguration::~EtcdConfiguration()
 
 void EtcdConfiguration::putString(const std::string& path, const std::string& value)
 {
-  mEtcdState->client.Set(mPrefix + path, value);
+  mEtcdState->client.Set(addPrefix(replaceSeparator(path)), value);
 }
 
 auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::string>
 {
   try {
-    auto reply = mEtcdState->client.Get(mPrefix + path);
+    auto reply = mEtcdState->client.Get(addPrefix(replaceSeparator(path)));
     auto pairs = getReplyPairs(reply);
 
     if (pairs.size() == 0) {
@@ -70,10 +70,20 @@ auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::stri
   }
 }
 
-void EtcdConfiguration::setPrefix(const std::string& path)
+/// Prefix the prefix to the path
+auto EtcdConfiguration::addPrefix(const std::string& path) -> std::string
 {
-  mPrefix = path;
+  return mPrefix + path;
 }
+
+/// Replace separators in the path
+auto EtcdConfiguration::replaceSeparator(const std::string& path) -> std::string
+{
+  auto p = path;
+  std::replace(p.begin(), p.end(), '/', getSeparator());
+  return p;
+}
+
 
 } // namespace Configuration
 } // namespace AliceO2

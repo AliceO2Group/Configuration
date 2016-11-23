@@ -6,7 +6,7 @@
 #ifndef ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
 #define ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
 
-#include "Configuration/ConfigurationInterface.h"
+#include "../ConfigurationBase.h"
 #include <iostream>
 #include <memory>
 #include <grpc/grpc.h>
@@ -22,7 +22,7 @@ namespace EtcdV3
 {
 
 /// Configuration backend using the etcd v3 API
-class EtcdV3Configuration final : public ConfigurationInterface
+class EtcdV3Configuration final : public ConfigurationBase
 {
   public:
     EtcdV3Configuration(const std::string& host, int port);
@@ -31,8 +31,9 @@ class EtcdV3Configuration final : public ConfigurationInterface
     virtual void setPrefix(const std::string& path) override;
 
   private:
-    std::string prefix(const std::string& path);
-    std::string makeChannelString(const std::string& host, int port);
+    auto replaceSeparator(const std::string& path) -> std::string;
+    auto addPrefix(const std::string& path) -> std::string;
+    auto makeChannelString(const std::string& host, int port) -> std::string;
 
     std::string mPrefix;
     std::shared_ptr<grpc::Channel> mChannel;
