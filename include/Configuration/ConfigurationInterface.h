@@ -8,6 +8,7 @@
 
 #include <string>
 #include <boost/optional.hpp>
+#include "Tree.h"
 
 namespace AliceO2
 {
@@ -98,6 +99,14 @@ class ConfigurationInterface
 
     /// Resets the separator to the default '/'
     virtual void resetPathSeparator() = 0;
+
+    // Prototype interface for getRecursive()
+
+    /// Gets key-values recursively from the given path and converts them into a tree structure
+    virtual Tree::Node getRecursive(const std::string& path)
+    {
+      throw std::runtime_error("getRecursive() unsupported by backend");
+    }
 };
 
 } // namespace Configuration

@@ -6,10 +6,13 @@
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
 #include "FileConfiguration.h"
-#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
+#ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
+# include "JsonConfiguration.h"
+#endif
+#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
 # include "EtcdConfiguration.h"
 #endif
-#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCDV3_ENABLED
+#ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
 # include "EtcdV3/EtcdV3Configuration.h"
 #endif
 #include "UriParser/UriParser.hpp"
@@ -31,6 +34,19 @@ auto getFile(const http::url& uri) -> UniqueConfiguration
   return UniqueConfiguration(new FileConfiguration(path));
 }
 
+auto getJson(const http::url& uri) -> UniqueConfiguration
+{
+  // If the "authority" part of the URI is missing (host, port, etc), the parser
+  // will consider the thing before the first delimiter ('/') of the path as authority,
+  // so we have to include that in the path we use.
+#ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
+  auto path = "/" + uri.host + uri.path;
+  return UniqueConfiguration(new JsonConfiguration(path));
+#else
+  throw std::runtime_error("Back-end 'json' not enabled");
+#endif
+}
+
 template <typename Backend>
 auto getEtcd(const http::url& uri) -> UniqueConfiguration
 {
@@ -43,7 +59,7 @@ auto getEtcd(const http::url& uri) -> UniqueConfiguration
 
 auto getEtcdV2(const http::url& uri) -> UniqueConfiguration
 {
-#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCD_ENABLED
+#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
   return getEtcd<EtcdConfiguration>(uri);
 #else
   throw std::runtime_error("Back-end 'etcd-v2' not enabled");
@@ -52,7 +68,7 @@ auto getEtcdV2(const http::url& uri) -> UniqueConfiguration
 
 auto getEtcdV3(const http::url& uri) -> UniqueConfiguration
 {
-#ifdef ALICEO2_CONFIGURATION_BACKEND_ETCDV3_ENABLED
+#ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
   return getEtcd<EtcdV3::EtcdV3Configuration>(uri);
 #else
   throw std::runtime_error("Back-end 'etcd-v3' not enabled");
@@ -67,6 +83,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
 
   const std::map<std::string, UniqueConfiguration(*)(const http::url&)> map = {
       {"file",    getFile},
+      {"json",    getJson},
       {"etcd",    getEtcdV3},  // Default etcd is now V3
       {"etcd-v2", getEtcdV2},  // Legacy etcd option still available
       {"etcd-v3", getEtcdV3}};

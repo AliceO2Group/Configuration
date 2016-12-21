@@ -38,17 +38,17 @@ set(VERSION_MINOR "0")
 set(VERSION_PATCH "0")
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
-# C++11
+# C++14
 IF (CMAKE_VERSION VERSION_LESS 3.1)
     include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG(-std=c++11 COMPILER_SUPPORTS_CXX11)
-    if (COMPILER_SUPPORTS_CXX11)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    CHECK_CXX_COMPILER_FLAG(-std=c++14 COMPILER_SUPPORTS_CXX14)
+    if (COMPILER_SUPPORTS_CXX14)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
     else ()
-        message(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+        message(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. Please use a different C++ compiler.")
     endif ()
 ELSE ()
-    set(CMAKE_CXX_STANDARD 11)  # proper way in CMake >= 3.1
+    set(CMAKE_CXX_STANDARD 14)  # proper way in CMake >= 3.1
 ENDIF ()
 
 # Add compiler flags for warnings and (more importantly) fPIC and debug symbols
@@ -68,6 +68,7 @@ set(SRCS
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
         src/FileConfiguration.cxx
+        src/Tree.cxx
         )
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
@@ -85,14 +86,15 @@ set(HEADERS # needed for the dictionary generation
         include/${MODULE_NAME}/Configuration.h # Normal header
         include/${MODULE_NAME}/ConfigurationInterface.h # Normal header
         include/${MODULE_NAME}/ConfigurationFactory.h # Normal header
-        include/${MODULE_NAME}/FileConfiguration.h # Normal header
+        include/${MODULE_NAME}/Tree.h # Normal header
+        include/${MODULE_NAME}/Visitor.h # Normal header
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
-if(PROTOBUF_FOUND AND GRPC_FOUND)
+if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
-    set(BUCKET_NAME_CONFIG configuration_bucket_with_etcd3)
+    set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
     include_directories(src/EtcdV3/proto/googleapis)
     list(APPEND SRCS
             src/EtcdV3/EtcdV3Configuration.cxx
@@ -111,19 +113,21 @@ if(PROTOBUF_FOUND AND GRPC_FOUND)
             src/EtcdV3/proto/googleapis/google/api/http.pb.cc
             )
     message(STATUS "etcd-v3 backend enabled")
-elseif(RAPIDJSON_FOUND)
-    # Add ETCD backend interface if the RapidJSON dependency was found
-    set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson)
+
+    # Add ETCD backend if the RapidJSON dependency was found
     list(APPEND SRCS
             src/EtcdConfiguration.cxx
             )
-    list(APPEND HEADERS
-            ../include/Configuration/EtcdConfiguration.h
+    message(STATUS "etcd-v2 backend enabled")
+    
+    # Add JSON file backend if the RapidJSON dependency was found
+    list(APPEND SRCS
+            src/JsonConfiguration.cxx
             )
-    message(STATUS "etcd-v2 enabled")
+    message(STATUS "json file backend enabled")
 else ()
     set(BUCKET_NAME_CONFIG configuration_bucket)
-    message(STATUS "etcd v2 and v3 dependencies missing, compilation skipped for corresponding classes")
+    message(STATUS "json file, etcd v2, etcd v3 dependencies missing, compilation skipped for corresponding classes")
 endif ()
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 

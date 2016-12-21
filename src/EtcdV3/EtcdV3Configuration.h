@@ -29,6 +29,7 @@ class EtcdV3Configuration final : public ConfigurationBase
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual Optional<std::string> getString(const std::string& path) override;
     virtual void setPrefix(const std::string& path) override;
+    virtual auto getRecursive(const std::string& path) -> Tree::Node override;
 
   private:
     auto replaceSeparator(const std::string& path) -> std::string;

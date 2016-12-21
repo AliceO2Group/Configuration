@@ -41,6 +41,11 @@ EtcdConfiguration::~EtcdConfiguration()
 {
 }
 
+void EtcdConfiguration::setPrefix(const std::string& path)
+{
+  mPrefix = path;
+}
+
 void EtcdConfiguration::putString(const std::string& path, const std::string& value)
 {
   mEtcdState->client.Set(addPrefix(replaceSeparator(path)), value);

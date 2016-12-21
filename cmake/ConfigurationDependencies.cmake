@@ -17,12 +17,13 @@ endif()
 
 ########## General definitions and flags ##########
 
-if (RapidJSON_FOUND)
+if (RAPIDJSON_FOUND)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCD_ENABLED)
+    add_definitions(-DFLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED)
 endif()
 
 if(PROTOBUF_FOUND AND GRPC_FOUND)
-    add_definitions(-DALICEO2_CONFIGURATION_BACKEND_ETCDV3_ENABLED)	  
+    add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED)	  
 endif()
 
 ########## Bucket definitions ############
@@ -40,21 +41,10 @@ o2_define_bucket(
     ${CURL_INCLUDE_DIRS}
 )
 
-o2_define_bucket(
-    NAME
-    configuration_bucket_with_rapidjson
-
-    DEPENDENCIES
-    configuration_bucket
-
-    SYSTEMINCLUDE_DIRECTORIES
-    ${RAPIDJSON_INCLUDE_DIRS}
-)
-
 # This bucket does not inherit from configuration_bucket because we want to enforce a certain order of includes.
 o2_define_bucket(
     NAME
-    configuration_bucket_with_etcd3
+    configuration_bucket_with_rapidjson_etcd3
 
     DEPENDENCIES
     ${PROTOBUF_LIBRARY}
@@ -67,5 +57,6 @@ o2_define_bucket(
     ${GRPC_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
+    ${RAPIDJSON_INCLUDE_DIRS}
 )
 

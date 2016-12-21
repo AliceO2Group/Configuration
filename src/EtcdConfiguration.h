@@ -25,10 +25,12 @@ class EtcdConfiguration final : public ConfigurationBase
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
-    auto addPrefix(const std::string& path) -> std::string;
-    auto makeChannelString(const std::string& host, int port) -> std::string;
 
   private:
+    auto addPrefix(const std::string& path) -> std::string;
+    auto makeChannelString(const std::string& host, int port) -> std::string;
+    auto replaceSeparator(const std::string& path) -> std::string;
+
     std::string mHost;
     int mPort;
     boost::scoped_ptr<EtcdState> mEtcdState;
