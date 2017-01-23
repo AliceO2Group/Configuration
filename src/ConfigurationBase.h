@@ -29,6 +29,11 @@ class ConfigurationBase: public ConfigurationInterface
       return mSeparator;
     }
 
+    virtual Tree::Node getRecursive(const std::string& path)
+    {
+      throw std::runtime_error("getRecursive() unsupported by backend");
+    }
+
   private:
     static constexpr char DEFAULT_SEPARATOR = '/';
     char mSeparator = DEFAULT_SEPARATOR;

@@ -8,6 +8,7 @@
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
+#include "Configuration/ConfigurationInterface.h"
 #include "ConfigurationBase.h"
 
 namespace AliceO2

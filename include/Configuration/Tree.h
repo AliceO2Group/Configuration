@@ -86,28 +86,37 @@ T convert(const Leaf& variant)
 
 /// Helper function to extract and convert a Leaf type from the Node variant
 template <class T>
-T get(const Node& node)
+T getRequired(const Node& node)
 {
   return convert<T>(getLeaf(node));
 }
 
 /// Helper function to extract and convert a Leaf type from a Branch
 template <class T>
-T get(const Branch& branch, const std::string& key)
+T getRequired(const Branch& branch, const std::string& key)
 {
   return convert<T>(getLeaf(branch.at(key)));
 }
 
 /// Helper function to extract and convert a Leaf type from a Branch
 template <class T>
-T get(const Node& node, const std::string& key)
+T getRequired(const Node& node, const std::string& key)
 {
-  return get<T>(getBranch(node), key);
+  return getRequired<T>(getBranch(node), key);
+}
+
+/// Helper function to extract and convert a Leaf type from the Node variant
+template <class T>
+boost::optional<T> get(const Node& node)
+{
+  return Visitor::apply<boost::optional<T>>(node,
+      [](const Branch&) {return boost::none;},
+      [](const Leaf& leaf) {return convert<T>(leaf);});
 }
 
 /// Helper function to extract and convert a Leaf type from a Branch
 template <class T>
-boost::optional<T> getOptional(const Branch& node, const std::string& key)
+boost::optional<T> get(const Branch& node, const std::string& key)
 {
   auto iter = node.find(key);
   if (iter != node.end()) {
@@ -119,11 +128,10 @@ boost::optional<T> getOptional(const Branch& node, const std::string& key)
 
 /// Helper function to extract and convert a Leaf type from a Branch
 template <class T>
-boost::optional<T> getOptional(const Node& node, const std::string& key)
+boost::optional<T> get(const Node& node, const std::string& key)
 {
-  return getOptional<T>(getBranch(node), key);
+  return get<T>(getBranch(node), key);
 }
-
 
 /// Prints a tree
 inline void printTree(const Node& node, std::ostream& stream, int level = 0)

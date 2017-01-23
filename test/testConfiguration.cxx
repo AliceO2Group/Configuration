@@ -5,22 +5,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
-#include <string>
-#include <vector>
-#include <unistd.h>
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/optional.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/variant/get.hpp>
-#include <boost/variant/recursive_variant.hpp>
-#include <map>
-#include <vector>
-#include <iostream>
-#include <typeinfo>
 #include "Configuration/ConfigurationFactory.h"
 #include "Configuration/ConfigurationInterface.h"
 #include "Configuration/Visitor.h"
@@ -137,7 +121,7 @@ namespace
 //  }
 //}
 
-BOOST_AUTO_TEST_CASE(FileTest)
+BOOST_AUTO_TEST_CASE(IniFileTest)
 {
   // Put stuff in temp file
   const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.ini";
@@ -272,12 +256,12 @@ BOOST_AUTO_TEST_CASE(RecursiveTest3)
   for (const auto& keyValue : Tree::getBranch(tree)) {
     const auto& equipment = Tree::getBranch(keyValue.second);
     stream << "Equipment '" << keyValue.first << "' \n"
-      << "serial  " << Tree::get<int>(equipment, "serial") << '\n'
-      << "channel " << Tree::get<int>(equipment, "channel") << '\n'
-      << "enabled " << Tree::get<bool>(equipment, "enabled") << '\n'
-      << "type    " << Tree::get<std::string>(equipment, "type") << '\n';
+      << "serial  " << Tree::getRequired<int>(equipment, "serial") << '\n'
+      << "channel " << Tree::getRequired<int>(equipment, "channel") << '\n'
+      << "enabled " << Tree::getRequired<bool>(equipment, "enabled") << '\n'
+      << "type    " << Tree::getRequired<std::string>(equipment, "type") << '\n';
 
-    BOOST_CHECK(!Tree::getOptional<int>(equipment, "nope").is_initialized());
+    BOOST_CHECK(!Tree::get<int>(equipment, "nope").is_initialized());
   }
 }
 
@@ -313,15 +297,15 @@ BOOST_AUTO_TEST_CASE(TreeTest)
 
   // Get a branch and some values from it
   Branch eq1 = getBranch(tree, "equipment_1");
-  BOOST_CHECK(get<bool>(eq1, "enabled") == true);
-  BOOST_CHECK(get<std::string>(eq1, "type") == "rorc"s);
+  BOOST_CHECK(getRequired<bool>(eq1, "enabled") == true);
+  BOOST_CHECK(getRequired<std::string>(eq1, "type") == "rorc"s);
 
 
   // Get optional value (wrapped in boost::optional)
-  BOOST_CHECK(getOptional<int>(eq1, "nothing_here").get_value_or(-1) == -1);
+  BOOST_CHECK(get<int>(eq1, "nothing_here").get_value_or(-1) == -1);
 
   // Extract subtree and get an int value from a leaf
-  BOOST_CHECK(get<int>(getSubtree(tree, "equipment_1/stuff/abc")) == 123);
+  BOOST_CHECK(getRequired<int>(getSubtree(tree, "equipment_1/stuff/abc")) == 123);
 }
 
 BOOST_AUTO_TEST_CASE(EtcdV3Test)
@@ -344,17 +328,17 @@ BOOST_AUTO_TEST_CASE(EtcdV3Test)
   {
     auto tree = conf->getRecursive("/");
     Tree::printTree(tree, std::cout);
-    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/test/key1")) == 1);
-    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/test/key2")) == 2);
-    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/test/dir/key4")) == 4);
+    BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/test/key1")) == 1);
+    BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/test/key2")) == 2);
+    BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/test/dir/key4")) == 4);
   }
 
   {
     auto tree = conf->getRecursive("/test");
     Tree::printTree(tree, std::cout);
-    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/key1")) == 1);
-    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/key2")) == 2);
-    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/dir/key4")) == 4);
+    BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/key1")) == 1);
+    BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/key2")) == 2);
+    BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/dir/key4")) == 4);
   }
 }
 

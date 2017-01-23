@@ -8,7 +8,7 @@
 
 #include <string>
 #include <boost/optional.hpp>
-#include "Tree.h"
+#include "Configuration/Tree.h"
 
 namespace AliceO2
 {
@@ -103,10 +103,8 @@ class ConfigurationInterface
     // Prototype interface for getRecursive()
 
     /// Gets key-values recursively from the given path and converts them into a tree structure
-    virtual Tree::Node getRecursive(const std::string& path)
-    {
-      throw std::runtime_error("getRecursive() unsupported by backend");
-    }
+    /// \param path The path of the values to get
+    virtual Tree::Node getRecursive(const std::string& path) = 0;
 };
 
 } // namespace Configuration
