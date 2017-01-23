@@ -34,6 +34,7 @@ class EtcdV3Configuration final : public ConfigurationBase
   private:
     auto replaceSeparator(const std::string& path) -> std::string;
     auto addPrefix(const std::string& path) -> std::string;
+    auto stripRequestKey(const std::string& key, const std::string& response) -> std::string;
     auto makeChannelString(const std::string& host, int port) -> std::string;
 
     std::string mPrefix;

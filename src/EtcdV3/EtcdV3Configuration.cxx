@@ -10,10 +10,27 @@
 #include <grpc++/client_context.h>
 #include <grpc++/create_channel.h>
 #include <grpc++/security/credentials.h>
+#include <sstream>
+
+using namespace std::string_literals;
 
 namespace AliceO2 {
 namespace Configuration {
 namespace EtcdV3 {
+namespace {
+void setRangeRequestGetRecursive(std::string key, etcdserverpb::RangeRequest& request)
+{
+  request.set_key(key);
+
+  // To do a recursive get (or "prefix" get) we need to give the same key to the range_end, except with the last byte
+  // incremented by 1.
+  // See: https://github.com/coreos/etcd/blob/master/Documentation/dev-guide/api_reference_v3.md
+  if (!key.empty()) {
+    key[key.size() - 1]++;
+  }
+  request.set_range_end(key);
+}
+} // Anonymous namespace
 
 EtcdV3Configuration::EtcdV3Configuration(const std::string& host, int port)
     : mChannel(grpc::CreateChannel(makeChannelString(host, port), grpc::InsecureChannelCredentials())), mStub(
@@ -31,9 +48,10 @@ void EtcdV3Configuration::putString(const std::string& path, const std::string& 
   auto status = mStub->Put(&context, request, &response);
 
   if (!status.ok()) {
-    //mLogger << "Failed to put key-value:{" << request.key() << "," << request.value() << "} error_code:"
-    //    << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
-    throw std::runtime_error("etcd-v3 response status not OK");
+    std::stringstream stream;
+    stream << "etcd-v3 response status not OK, failed to put key-value:{" << request.key() << "," << request.value()
+        << "} error_code:" << status.error_code() << " error_message:" << status.error_message();
+    throw std::runtime_error(stream.str());
   }
 }
 
@@ -46,9 +64,10 @@ auto EtcdV3Configuration::getString(const std::string& path) -> Optional<std::st
   auto status = mStub->Range(&context, request, &response);
 
   if (!status.ok()) {
-    //mLogger << "Failed to get key:" << request.key() << " error_code:"
-    //    << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
-    throw std::runtime_error("etcd-v3 response status not OK");
+    std::stringstream stream;
+    stream << "etcd-v3 response status not OK, failed to get key:" << request.key() << " error_code:"
+        << status.error_code() << " error_message:" << status.error_message();
+    throw std::runtime_error(stream.str());
   }
 
   switch (response.count()) {
@@ -61,6 +80,32 @@ auto EtcdV3Configuration::getString(const std::string& path) -> Optional<std::st
   }
 }
 
+auto EtcdV3Configuration::getRecursive(const std::string& path) -> Tree::Node
+{
+  grpc::ClientContext context;
+  etcdserverpb::RangeRequest request;
+  auto requestKey = addPrefix(replaceSeparator(path));
+  setRangeRequestGetRecursive(requestKey, request);
+
+  etcdserverpb::RangeResponse response;
+  auto status = mStub->Range(&context, request, &response);
+
+  if (!status.ok()) {
+    std::stringstream stream;
+    stream << "etcd-v3 response status not OK, failed to get key:" << request.key() << " error_code:"
+        << status.error_code() << " error_message:" << status.error_message();
+    throw std::runtime_error(stream.str());
+  }
+
+  std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs;
+  for (int i = 0; i < response.count(); ++i) {
+    auto strippedKey = stripRequestKey(requestKey, response.kvs(i).key());
+    keyValuePairs.emplace_back(strippedKey, response.kvs(i).value());
+  }
+
+  return Tree::keyValuesToTree(keyValuePairs);
+}
+
 void EtcdV3Configuration::setPrefix(const std::string& path)
 {
   mPrefix = path;
@@ -70,6 +115,13 @@ void EtcdV3Configuration::setPrefix(const std::string& path)
 auto EtcdV3Configuration::addPrefix(const std::string& path) -> std::string
 {
   return mPrefix + path;
+}
+
+/// The request key is prefixed to the response keys, this strips that from it.
+auto EtcdV3Configuration::stripRequestKey(const std::string& key, const std::string& response) -> std::string
+{
+  assert(response.find(key) == 0);
+  return response.substr(key.length());
 }
 
 /// Replace separators in the path
@@ -84,52 +136,6 @@ auto EtcdV3Configuration::replaceSeparator(const std::string& path) -> std::stri
 auto EtcdV3Configuration::makeChannelString(const std::string& host, int port) -> std::string
 {
   return host + ':' + std::to_string(port);
-}
-
-auto EtcdV3Configuration::getRecursive(const std::string& path) -> Tree::Node
-{
-//  grpc::ClientContext context;
-//  etcdserverpb::RangeRequest request;
-//  request.set_key(addPrefix(replaceSeparator(path)));
-//  etcdserverpb::RangeResponse response;
-//  auto status = mStub->Range(&context, request, &response);
-//
-//  if (!status.ok()) {
-//    //mLogger << "Failed to get key:" << request.key() << " error_code:"
-//    //    << status.error_code() << " error_message:" << status.error_message() << '\n' << mLogger.endm;
-//    throw std::runtime_error("etcd-v3 response status not OK");
-//  }
-
-  Tree::Branch tree;
-
-//  auto getOrPutMap = [&](std::string key) {
-//  };
-//
-//  for (auto& kv : response.kvs()) {
-//    // Split key into directories
-//    // Note: this can be done much more efficiently by just "walking" through the string. But this is easier for now.
-//    std::vector<std::string> directories;
-//    boost::split(directories, kv.key(), boost::is_any_of("/"));
-//
-//    // Convert directories into maps
-//    _TreeMap& node = tree;
-//    for (int i = 0; i < directories.size(); ++i) {
-//      const auto& dir = directories[i];
-//      if ((i + 1) < directories.size()) {
-//        // Last iteration is a special case, because we need to put a value instead of a map
-//        node[dir] = _Variant(kv.value());
-//      } else {
-//        if (!node.count(directories[i])) {
-//          // We have to create it
-//          node[dir] = _TreeMap();
-//        } else {
-//          node = node.at(dir);
-//        }
-//      }
-//    }
-//  }
-
-  return tree;
 }
 
 } // namespace EtcdV3

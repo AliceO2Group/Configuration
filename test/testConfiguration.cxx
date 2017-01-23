@@ -137,21 +137,6 @@ namespace
 //  }
 //}
 
-BOOST_AUTO_TEST_CASE(EtcdV3Test)
-{
-  // Get file configuration interface from factory
-  auto conf = ConfigurationFactory::getConfiguration("etcd-v3://aido2qc10:2379");
-
-  std::string key {"/test/key"};
-  std::string value {"test_value"};
-
-  conf->put(key, value);
-  auto returnedValue = conf->get<std::string>(key);
-
-  BOOST_CHECK(returnedValue.is_initialized());
-  BOOST_CHECK(returnedValue.get_value_or("") == value);
-}
-
 BOOST_AUTO_TEST_CASE(FileTest)
 {
   // Put stuff in temp file
@@ -293,6 +278,83 @@ BOOST_AUTO_TEST_CASE(RecursiveTest3)
       << "type    " << Tree::get<std::string>(equipment, "type") << '\n';
 
     BOOST_CHECK(!Tree::getOptional<int>(equipment, "nope").is_initialized());
+  }
+}
+
+BOOST_AUTO_TEST_CASE(TreeTest)
+{
+  using namespace Tree;
+
+  Node tree = Branch
+  {
+    {"equipment_1", Branch
+      {
+        {"enabled", true},
+        {"type", "rorc"s},
+        {"serial", 33333},
+        {"channel", 0},
+        {"stuff", Branch
+          {
+            {"abc", 123},
+            {"xyz", 456}
+          }
+        }
+      }
+    },
+    {"equipment_2", Branch
+      {
+        {"enabled", true},
+        {"type", "dummy"s},
+        {"serial", -1},
+        {"channel", 0}
+      }
+    }
+  };
+
+  // Get a branch and some values from it
+  Branch eq1 = getBranch(tree, "equipment_1");
+  BOOST_CHECK(get<bool>(eq1, "enabled") == true);
+  BOOST_CHECK(get<std::string>(eq1, "type") == "rorc"s);
+
+
+  // Get optional value (wrapped in boost::optional)
+  BOOST_CHECK(getOptional<int>(eq1, "nothing_here").get_value_or(-1) == -1);
+
+  // Extract subtree and get an int value from a leaf
+  BOOST_CHECK(get<int>(getSubtree(tree, "equipment_1/stuff/abc")) == 123);
+}
+
+BOOST_AUTO_TEST_CASE(EtcdV3Test)
+{
+  // Get file configuration interface from factory
+  auto conf = ConfigurationFactory::getConfiguration("etcd-v3://localhost:2379");
+
+  std::string key {"/test/key"};
+  std::string value {"test_value"};
+
+  conf->putString("/test/key1", "1");
+  conf->putString("/test/key2", "2");
+  conf->putString("/test/key3", "3");
+  conf->putString("/test/dir/key4", "4");
+  conf->putString("/test/dir/key5", "5");
+
+  conf->put(key, value);
+  auto returnedValue = conf->get<std::string>(key);
+
+  {
+    auto tree = conf->getRecursive("/");
+    Tree::printTree(tree, std::cout);
+    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/test/key1")) == 1);
+    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/test/key2")) == 2);
+    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/test/dir/key4")) == 4);
+  }
+
+  {
+    auto tree = conf->getRecursive("/test");
+    Tree::printTree(tree, std::cout);
+    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/key1")) == 1);
+    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/key2")) == 2);
+    BOOST_CHECK(Tree::get<int>(Tree::getSubtree(tree, "/dir/key4")) == 4);
   }
 }
 

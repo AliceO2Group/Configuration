@@ -26,16 +26,16 @@ namespace Tree
 /// key-value hierarchies.
 using Node = boost::make_recursive_variant<
     boost::variant<std::string, int, double, bool>, // Leaf node
-    std::map<std::string, boost::recursive_variant_> // Branch node
+    std::map<std::string, boost::recursive_variant_> // Branch node; mapped_type is recursive (can be Leaf or Branch)
     >::type;
 
-/// Type for "leaf" nodes in Tree that contain the values
+/// Type for "leaf" nodes in the tree that contain the values
 /// The boost::variant allows us to accommodate different value types
-using Leaf = Node::types::item; // This refers to the first type of the Tree variant;
+using Leaf = Node::types::item; // This refers to the first type of the Node variant;
 
-/// The map used for branch nodes in Tree
+/// The map used for branch nodes in the tree
 /// It can contain a TreeLeaf or another TreeBranch
-using Branch = Node::types::next::item; // This refers to the second type of the Tree variant
+using Branch = Node::types::next::item; // This refers to the second type of the Node variant
 
 /// Helper function to extract a Branch type from the Node variant
 inline const Branch& getBranch(const Node& node)
@@ -43,10 +43,22 @@ inline const Branch& getBranch(const Node& node)
   return boost::get<Branch>(node);
 }
 
+/// Helper function to get a Branch value from the Node (which is assumed to be a Branch)
+inline const Branch& getBranch(const Node& node, const std::string& key)
+{
+  return getBranch(boost::get<Branch>(node).at(key));
+}
+
 /// Helper function to extract a Leaf type from the Node variant
 inline const Leaf& getLeaf(const Node& node)
 {
   return boost::get<Leaf>(node);
+}
+
+/// Helper function to get a Leaf value from the Node (which is assumed to be a Branch)
+inline const Leaf& getLeaf(const Node& node, const std::string& key)
+{
+  return getLeaf(boost::get<Branch>(node).at(key));
 }
 
 /// Helper function to convert a Leaf variant to another data type using boost::lexical_cast.
