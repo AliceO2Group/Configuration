@@ -327,7 +327,6 @@ BOOST_AUTO_TEST_CASE(EtcdV3Test)
 
   {
     auto tree = conf->getRecursive("/");
-    Tree::printTree(tree, std::cout);
     BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/test/key1")) == 1);
     BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/test/key2")) == 2);
     BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/test/dir/key4")) == 4);
@@ -335,11 +334,35 @@ BOOST_AUTO_TEST_CASE(EtcdV3Test)
 
   {
     auto tree = conf->getRecursive("/test");
-    Tree::printTree(tree, std::cout);
     BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/key1")) == 1);
     BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/key2")) == 2);
     BOOST_CHECK(Tree::getRequired<int>(Tree::getSubtree(tree, "/dir/key4")) == 4);
   }
+}
+
+/// Tests the conversion of key value pairs to a tree
+BOOST_AUTO_TEST_CASE(KeyValuePairConversionTest)
+{
+  using namespace Tree;
+
+  std::vector<std::pair<std::string, Leaf>> pairs {
+      {"/dir/bool", false},
+      {"/dir/double", 45.6},
+      {"/dir/subdir/int", 123},
+      {"/dir/subdir/subsubdir/string", "string"s}};
+
+  Node referenceTree = Branch {
+      {"dir", Branch {
+        {"bool", false},
+        {"double", 45.6},
+        {"subdir", Branch {
+          {"int", 123},
+          {"subsubdir", Branch {
+            {"string", "string"s}}}}}}}};
+
+  Node convertedTree = keyValuesToTree(pairs);
+
+  BOOST_CHECK(referenceTree == convertedTree);
 }
 
 } // Anonymous namespace

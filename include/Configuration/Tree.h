@@ -19,6 +19,17 @@ namespace AliceO2
 {
 namespace Configuration
 {
+
+/// This namespace contains the Tree data structure returned by getRecursive() and various helper functions to interact
+/// with it.
+///
+/// Example of creating a tree manually:
+///   \snippet test/Examples.cxx [Tree declaration]
+/// Examples of how to access that tree:
+///   \snippet test/Examples.cxx [Tree getters]
+/// Example of traversing a tree
+///   \snippet test/Examples.cxx [Tree traversal]
+/// Also see the printTree() function how to traverse the tree using a visitor
 namespace Tree
 {
 
@@ -73,10 +84,10 @@ T convert(const Leaf& variant)
     // Else, try to convert
     try {
       return Visitor::apply<T>(variant,
-          [&](const std::string& value) { return boost::lexical_cast<T>(value); },
-          [&](int value) { return boost::lexical_cast<T>(value); },
-          [&](bool value) { return boost::lexical_cast<T>(value); },
-          [&](double value) { return boost::lexical_cast<T>(value); });
+          [](const std::string& value) { return boost::lexical_cast<T>(value); },
+          [](int value) { return boost::lexical_cast<T>(value); },
+          [](bool value) { return boost::lexical_cast<T>(value); },
+          [](double value) { return boost::lexical_cast<T>(value); });
     }
     catch (const boost::bad_lexical_cast& e) {
       BOOST_THROW_EXCEPTION(e);
@@ -133,7 +144,11 @@ boost::optional<T> get(const Node& node, const std::string& key)
   return get<T>(getBranch(node), key);
 }
 
-/// Prints a tree
+/// Traverses and prints a tree, starting at the given node.
+///
+/// \param node Node to start printing from
+/// \param stream Output stream to print to
+/// \param level Indentation level
 inline void printTree(const Node& node, std::ostream& stream, int level = 0)
 {
   // The visitor is applied recursively to the tree.
@@ -161,14 +176,31 @@ inline void printTree(const Node& node, std::ostream& stream, int level = 0)
   );
 }
 
-/// Split path into segments (either directories or the name of the key)
+/// Split path into segments (either directories or the name of the key).
+/// For example, turns "/my/path" into a vector of "my" and "path.
+///
+/// \param path Path to split
+/// \return Vector of split path segments
 auto splitPath(const std::string& path) -> std::vector<std::string>;
 
-/// Gets a subtree based on a path string
+/// Gets a subtree based on a path string.
+///
+/// Example:
+/// \snippet test/Example.cxx [Get subtree]
+///
+/// \param node Base node to get subtree from
+/// \param path Path from the base node to the subtree
+/// \return Subtree
 auto getSubtree(const Tree::Node& node, const std::string& path) -> const Tree::Node&;
 
-/// Converts key-value pairs into a tree
-auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& kvs) -> Tree::Node;
+/// Converts key-value pairs into a tree.
+///
+/// Example:
+/// \snippet test/Example.cxx [Key-value pair conversion]
+///
+/// \param pairs Key value pairs to convert
+/// \return Converted tree
+auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& pairs) -> Tree::Node;
 
 } // namespace Tree
 } // namespace Configuration

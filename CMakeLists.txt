@@ -88,6 +88,7 @@ set(HEADERS # needed for the dictionary generation
         include/${MODULE_NAME}/ConfigurationFactory.h # Normal header
         include/${MODULE_NAME}/Tree.h # Normal header
         include/${MODULE_NAME}/Visitor.h # Normal header
+        include/${MODULE_NAME}/VisitorImplementation.h # Normal header
         )
 
 set(LIBRARY_NAME ${MODULE_NAME})
@@ -156,6 +157,7 @@ O2_GENERATE_EXECUTABLE(
 enable_testing()
 
 set(TEST_SRCS
+        test/Examples.cxx
         test/testConfiguration.cxx
         )
 

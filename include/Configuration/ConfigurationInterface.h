@@ -3,8 +3,8 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef INCLUDE_CONFIGURATION_CONFIGURATIONINTERFACE_H_
-#define INCLUDE_CONFIGURATION_CONFIGURATIONINTERFACE_H_
+#ifndef ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_
+#define ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_
 
 #include <string>
 #include <boost/optional.hpp>
@@ -104,10 +104,11 @@ class ConfigurationInterface
 
     /// Gets key-values recursively from the given path and converts them into a tree structure
     /// \param path The path of the values to get
+    /// \return A tree containing the values that were retrieved
     virtual Tree::Node getRecursive(const std::string& path) = 0;
 };
 
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif /* INCLUDE_CONFIGURATION_CONFIGURATIONINTERFACE_H_ */
+#endif /* ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_ */

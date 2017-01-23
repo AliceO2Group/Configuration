@@ -51,12 +51,12 @@ auto getSubtree(const Tree::Node& tree, const std::string& path) -> const Tree::
   return *node;
 }
 
-auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& kvs) -> Tree::Node
+auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& pairs) -> Tree::Node
 {
   Tree::Branch treeRoot;
 
-  for (auto& kv : kvs) {
-    auto pathSegments = splitPath(kv.first);
+  for (auto& pair : pairs) {
+    auto pathSegments = splitPath(pair.first);
 
     if (pathSegments.empty()) {
       continue;
@@ -75,7 +75,7 @@ auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& kvs)
     }
 
     // Finally, we add the value
-    node->insert(std::make_pair(keyName, kv.second));
+    node->insert(std::make_pair(keyName, pair.second));
   }
 
   return treeRoot;
