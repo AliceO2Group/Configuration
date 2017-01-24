@@ -10,7 +10,8 @@ The getRecursive() function returns a tree-like data structure, which models the
 
 
 ## Examples
-There are usage examples in the files src/EtcdExample.cxx and test/Examples.cxx
+There are usage examples in the file test/Examples.cxx. 
+The unit tests may also be useful as examples.
 
 
 ## Dependencies
