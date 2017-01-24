@@ -138,14 +138,6 @@ O2_GENERATE_LIBRARY()
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
-# Example program
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME EtcdExample
-        SOURCES src/EtcdExample.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
-
 # Script
 O2_GENERATE_EXECUTABLE(
         EXE_NAME DatasetGenerator
