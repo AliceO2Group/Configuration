@@ -7,6 +7,7 @@
 #define INCLUDE_CONFIGURATION_VISITOR_H_
 
 #include "VisitorImplementation.h"
+#include <boost/variant/apply_visitor.hpp>
 
 namespace AliceO2 {
 namespace Configuration {

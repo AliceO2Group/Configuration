@@ -6,6 +6,8 @@
 #ifndef ALICEO2_CONFIGURATION_INCLUDE_VISITOR_IMPLEMENTATION_H_
 #define ALICEO2_CONFIGURATION_INCLUDE_VISITOR_IMPLEMENTATION_H_
 
+#include <boost/variant/static_visitor.hpp>
+
 namespace AliceO2 {
 namespace Configuration {
 namespace Visitor {

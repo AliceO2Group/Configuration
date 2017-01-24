@@ -158,7 +158,8 @@ enable_testing()
 
 set(TEST_SRCS
         test/Examples.cxx
-        test/testConfiguration.cxx
+        test/TestConfiguration.cxx
+        test/TestTree.cxx
         )
 
 O2_GENERATE_TESTS(
