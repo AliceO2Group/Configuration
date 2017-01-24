@@ -9,11 +9,15 @@
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
-#include "ConfigurationBase.h"
+#include "../../ConfigurationBase.h"
 
 namespace AliceO2
 {
 namespace Configuration
+{
+namespace Backends
+{
+namespace File
 {
 
 class FileConfiguration final : public ConfigurationBase
@@ -30,6 +34,8 @@ class FileConfiguration final : public ConfigurationBase
     boost::property_tree::ptree mPropertyTree;
 };
 
+} // namespace File
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
 

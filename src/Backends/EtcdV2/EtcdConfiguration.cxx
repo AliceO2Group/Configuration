@@ -12,6 +12,10 @@ namespace AliceO2
 {
 namespace Configuration
 {
+namespace Backends
+{
+namespace EtcdV2
+{
 namespace
 {
 /// The request key is prefixed to the response keys, this strips that from it.
@@ -123,6 +127,8 @@ auto EtcdConfiguration::replaceSeparator(const std::string& path) -> std::string
 }
 
 
+} // namespace EtcdV2
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
 

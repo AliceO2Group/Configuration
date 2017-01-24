@@ -13,6 +13,10 @@ namespace AliceO2
 {
 namespace Configuration
 {
+namespace Backends
+{
+namespace File
+{
 
 FileConfiguration::~FileConfiguration()
 {
@@ -87,5 +91,7 @@ void FileConfiguration::setPrefix(const std::string& path)
   loadConfigFile(mFilePath, mPropertyTree);
 }
 
+} // namespace File
 } // namespace Configuration
+} // namespace Backends
 } // namespace AliceO2

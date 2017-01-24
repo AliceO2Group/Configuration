@@ -6,12 +6,17 @@
 #ifndef SRC_ETCDCONFIGURATION_H_
 #define SRC_ETCDCONFIGURATION_H_
 
-#include "ConfigurationBase.h"
+#include "../../ConfigurationBase.h"
+#include <string>
 #include <boost/scoped_ptr.hpp>
 
 namespace AliceO2
 {
 namespace Configuration
+{
+namespace Backends
+{
+namespace EtcdV2
 {
 
 struct EtcdState;
@@ -38,6 +43,8 @@ class EtcdConfiguration final : public ConfigurationBase
     std::string mPrefix;
 };
 
+} // namespace EtcdV2
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
 

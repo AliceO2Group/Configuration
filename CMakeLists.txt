@@ -67,7 +67,7 @@ set(SRCS
         src/Configuration.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
-        src/FileConfiguration.cxx
+        src/Backends/File/FileConfiguration.cxx
         src/Tree.cxx
         )
 
@@ -98,32 +98,32 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
     include_directories(src/EtcdV3/proto/googleapis)
     list(APPEND SRCS
-            src/EtcdV3/EtcdV3Configuration.cxx
-            src/EtcdV3/proto/auth.grpc.pb.cc
-            src/EtcdV3/proto/auth.pb.cc
-            src/EtcdV3/proto/kv.grpc.pb.cc
-            src/EtcdV3/proto/kv.pb.cc
-            src/EtcdV3/proto/rpc.grpc.pb.cc
-            src/EtcdV3/proto/rpc.pb.cc
+            src/Backends/EtcdV3/EtcdV3Configuration.cxx
+            src/Backends/EtcdV3/proto/auth.grpc.pb.cc
+            src/Backends/EtcdV3/proto/auth.pb.cc
+            src/Backends/EtcdV3/proto/kv.grpc.pb.cc
+            src/Backends/EtcdV3/proto/kv.pb.cc
+            src/Backends/EtcdV3/proto/rpc.grpc.pb.cc
+            src/Backends/EtcdV3/proto/rpc.pb.cc
             )
     # Note: these should probably be replaced by a google api lib installed in the system.
     list(APPEND SRCS
-            src/EtcdV3/proto/googleapis/google/api/annotations.grpc.pb.cc
-            src/EtcdV3/proto/googleapis/google/api/annotations.pb.cc
-            src/EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
-            src/EtcdV3/proto/googleapis/google/api/http.pb.cc
+            src/Backends/EtcdV3/proto/googleapis/google/api/annotations.grpc.pb.cc
+            src/Backends/EtcdV3/proto/googleapis/google/api/annotations.pb.cc
+            src/Backends/EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
+            src/Backends/EtcdV3/proto/googleapis/google/api/http.pb.cc
             )
     message(STATUS "etcd-v3 backend enabled")
 
     # Add ETCD backend if the RapidJSON dependency was found
     list(APPEND SRCS
-            src/EtcdConfiguration.cxx
+            src/Backends/EtcdV2/EtcdConfiguration.cxx
             )
     message(STATUS "etcd-v2 backend enabled")
     
     # Add JSON file backend if the RapidJSON dependency was found
     list(APPEND SRCS
-            src/JsonConfiguration.cxx
+            src/Backends/Json/JsonConfiguration.cxx
             )
     message(STATUS "json file backend enabled")
 else ()

@@ -14,10 +14,16 @@
 
 using namespace std::string_literals;
 
-namespace AliceO2 {
-namespace Configuration {
-namespace EtcdV3 {
-namespace {
+namespace AliceO2
+{
+namespace Configuration
+{
+namespace Backends
+{
+namespace EtcdV3
+{
+namespace
+{
 void setRangeRequestGetRecursive(std::string key, etcdserverpb::RangeRequest& request)
 {
   request.set_key(key);
@@ -139,5 +145,6 @@ auto EtcdV3Configuration::makeChannelString(const std::string& host, int port) -
 }
 
 } // namespace EtcdV3
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

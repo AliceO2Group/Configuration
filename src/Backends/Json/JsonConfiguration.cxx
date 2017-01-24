@@ -16,6 +16,10 @@ namespace AliceO2
 {
 namespace Configuration
 {
+namespace Backends
+{
+namespace Json
+{
 namespace
 {
 
@@ -185,5 +189,7 @@ void JsonConfiguration::setPrefix(const std::string& path)
   mCurrentNode = node;
 }
 
+} // namespace Json
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

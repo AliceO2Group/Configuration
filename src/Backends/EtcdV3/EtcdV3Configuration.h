@@ -6,7 +6,7 @@
 #ifndef ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
 #define ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
 
-#include "../ConfigurationBase.h"
+#include "../../ConfigurationBase.h"
 #include <iostream>
 #include <memory>
 #include <grpc/grpc.h>
@@ -17,6 +17,8 @@
 namespace AliceO2
 {
 namespace Configuration
+{
+namespace Backends
 {
 namespace EtcdV3
 {
@@ -43,6 +45,7 @@ class EtcdV3Configuration final : public ConfigurationBase
 };
 
 } // namespace EtcdV3
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
 

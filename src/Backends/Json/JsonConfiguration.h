@@ -8,12 +8,15 @@
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
-#include "Configuration/ConfigurationInterface.h"
-#include "ConfigurationBase.h"
+#include "../../ConfigurationBase.h"
 
 namespace AliceO2
 {
 namespace Configuration
+{
+namespace Backends
+{
+namespace Json
 {
 
 class JsonConfiguration final : public ConfigurationBase
@@ -32,6 +35,8 @@ class JsonConfiguration final : public ConfigurationBase
     Tree::Node mCurrentNode;
 };
 
+} // namespace Json
+} // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
 
