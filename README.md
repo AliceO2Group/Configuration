@@ -1,14 +1,20 @@
 # Configuration module
 
 
+## Introduction
+The Configuration module provides a way to access Configuration data from various backends in a uniform way. 
+Users get an interface to backends by providing a URI to the ConfigurationFactory class, which returns an implementation 
+of ConfigurationInterface.
+Values can be retrieved from the interface one-by-one using simple getters, or multiple at a time using getRecursive().
+The getRecursive() function returns a tree-like data structure, which models the hierarchy of directories or paths.
+
+
+## Examples
+There are usage examples in the files src/EtcdExample.cxx and test/Examples.cxx
+
+
 ## Dependencies
 The configuration module has some external dependencies, this section provides instructions for installing them.
-
-### etcd
-Follow instructions on: https://github.com/coreos/etcd/releases/
-Or use Docker: 
-docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
-
 
 ### Protocol Buffer & gRPC
 Needed for etcd-v3 back-end.
@@ -29,7 +35,6 @@ git submodule update --init
 make -j
 make install
 ~~~
-
 
 ### RapidJSON
 
@@ -57,25 +62,12 @@ No need to anything currently, it is included in the project.
 ### libcurl
 Should be available in your OS's package manager, or else: https://curl.haxx.se/download.html
 
+### etcd
+Note: this is not a compile-time dependency, just an optional runtime-dependency
+Follow instructions on: https://github.com/coreos/etcd/releases/
+Or use Docker: 
+docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
 
-## How to get and use the etcd Configuration back-end
-A stand-alone installation procedure, for simple prototyping usage:
-
-~~~
-wget https://github.com/coreos/etcd/releases/download/v2.2.5/etcd-v2.2.5-linux-amd64.tar.gz
-tar xzvf etcd-v2.2.5-linux-amd64.tar.gz
-cd etcd-v2.2.5-linux-amd64
-./etcd
-~~~
-(For more information: https://github.com/coreos/etcd/releases/tag/v2.2.5)
-
-This starts an etcd instance with default parameters. It will store its database in the current directory. To use it, pass the URI "etcd://127.0.0.1:4001" to the Configuration API. For example:
-
-~~~
-auto conf = ConfigurationFactory::getConfiguration("etcd://127.0.0.1:4001");
-conf->put<int>("/my_directory/my_value", 123);
-int x = conf->get<int>("/my_directory/my_value");
-~~~
 
 ## GUI for etcd
 There is a simple Node.js-based GUI available. You may find it useful for simple editing and visualisation of the data.
