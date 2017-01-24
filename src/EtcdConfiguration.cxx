@@ -12,7 +12,15 @@ namespace AliceO2
 {
 namespace Configuration
 {
-
+namespace
+{
+/// The request key is prefixed to the response keys, this strips that from it.
+auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
+{
+  assert(response.find(requestKey) == 0);
+  return response.substr(requestKey.length());
+}
+} // Anonymous namespace
 
 using Reply = example::RapidReply;
 using Client = etcd::Client<Reply>;
@@ -55,13 +63,13 @@ auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::stri
 {
   try {
     auto reply = mEtcdState->client.Get(addPrefix(replaceSeparator(path)));
-    auto pairs = getReplyPairs(reply);
+    auto replyPairs = getReplyPairs(reply);
 
-    if (pairs.size() == 0) {
+    if (replyPairs.size() == 0) {
       return boost::none;
     }
-    else if (pairs.size() == 1) {
-      return pairs.begin()->second;
+    else if (replyPairs.size() == 1) {
+      return replyPairs.begin()->second;
     }
     throw std::runtime_error("ETCD reply invalid");
   }
@@ -69,6 +77,31 @@ auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::stri
     if (e.error_code == 100) { // Key not found error code
       // If the key was not found, we return an empty optional.
       return boost::none;
+    }
+    // Otherwise, we rethrow (there might be a connection issue, etc.)
+    throw;
+  }
+}
+
+auto EtcdConfiguration::getRecursive(const std::string& path) -> Tree::Node
+{
+  try {
+    auto requestKey(addPrefix(replaceSeparator(path)));
+    auto reply = mEtcdState->client.GetAll(addPrefix(replaceSeparator(path)));
+    auto replyPairs = getReplyPairs(reply);
+
+    std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs;
+
+    for (const auto& pair : replyPairs) {
+      keyValuePairs.emplace_back(stripRequestKey(requestKey, pair.first), pair.second);
+    }
+
+    return Tree::keyValuesToTree(keyValuePairs);
+  }
+  catch (const etcd::ReplyException& e) {
+    if (e.error_code == 100) { // Key not found error code
+      // If the key was not found, we return an empty tree.
+      return Tree::Node();
     }
     // Otherwise, we rethrow (there might be a connection issue, etc.)
     throw;

@@ -2,6 +2,10 @@
 /// \brief example usage of the C++ interface to retrieve configuration parameters from a local file.
 ///
 /// \author Sylvain Chapeland, CERN
+/// \author Pascal Boeschoten, CERN
+///
+/// \todo Clean up
+/// \todo Test all backends in uniform way
 
 #include <iostream>
 #include <fstream>
@@ -308,7 +312,7 @@ BOOST_AUTO_TEST_CASE(TreeTest)
   BOOST_CHECK(getRequired<int>(getSubtree(tree, "equipment_1/stuff/abc")) == 123);
 }
 
-BOOST_AUTO_TEST_CASE(EtcdV3Test)
+BOOST_AUTO_TEST_CASE(EtcdTest)
 {
   // Get file configuration interface from factory
   auto conf = ConfigurationFactory::getConfiguration("etcd-v3://localhost:2379");

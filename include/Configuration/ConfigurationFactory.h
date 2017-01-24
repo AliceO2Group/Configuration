@@ -22,7 +22,7 @@ class ConfigurationFactory
     /// The URI specifies the type of the backend, its location or directory, and possibly port.
     /// Valid backends:
     ///   * "file"     file-based backend
-    ///   * "json"     JSON file backend with preliminary support for getRecursive()
+    ///   * "json"     JSON file backend
     ///   * "etcd"     etcd default backend (currently V3)
     ///   * "etcd-v2"  etcd V2 API backend
     ///   * "etcd-v3"  etcd V3 API backend

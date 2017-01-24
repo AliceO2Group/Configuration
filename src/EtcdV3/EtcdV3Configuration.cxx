@@ -30,6 +30,13 @@ void setRangeRequestGetRecursive(std::string key, etcdserverpb::RangeRequest& re
   }
   request.set_range_end(key);
 }
+
+/// The request key is prefixed to the response keys, this strips that from it.
+auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
+{
+  assert(response.find(requestKey) == 0);
+  return response.substr(requestKey.length());
+}
 } // Anonymous namespace
 
 EtcdV3Configuration::EtcdV3Configuration(const std::string& host, int port)
@@ -115,13 +122,6 @@ void EtcdV3Configuration::setPrefix(const std::string& path)
 auto EtcdV3Configuration::addPrefix(const std::string& path) -> std::string
 {
   return mPrefix + path;
-}
-
-/// The request key is prefixed to the response keys, this strips that from it.
-auto EtcdV3Configuration::stripRequestKey(const std::string& key, const std::string& response) -> std::string
-{
-  assert(response.find(key) == 0);
-  return response.substr(key.length());
 }
 
 /// Replace separators in the path

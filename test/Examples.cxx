@@ -1,12 +1,13 @@
-/// \file testConfiguration.cxx
-/// \brief example usage of the C++ interface to retrieve configuration parameters from a local file.
+/// \file Examples.cxx
+/// \brief Contains examples of the Configuration API. They are referenced from other parts of the documentation.
 ///
-/// \author Sylvain Chapeland, CERN
+/// Keeping these examples as a unit tests means the user has some assurance they are actually working.
+/// Additionally: unlike examples in comments, these will start complaining if we don't maintain them.
+///
+/// \author Pascal Boeschoten, CERN
 
 #include <iostream>
-#include <fstream>
 #include "Configuration/ConfigurationFactory.h"
-#include "Configuration/ConfigurationInterface.h"
 #include "Configuration/Visitor.h"
 #include "Configuration/Tree.h"
 
@@ -101,9 +102,10 @@ BOOST_AUTO_TEST_CASE(ConversionExample)
   //! [Key-value pair conversion]
 }
 
-BOOST_AUTO_TEST_CASE(CajsdakjsdExample)
+BOOST_AUTO_TEST_CASE(SubtreeExample)
 {
   using namespace Tree;
+
   //! [Get subtree]
   auto tree = Branch {
       {"dir", Branch {
@@ -111,6 +113,29 @@ BOOST_AUTO_TEST_CASE(CajsdakjsdExample)
           {"value", 123}}}}}};
   getRequired<int>(getSubtree(tree, "/dir/subdir/value"));
   //! [Get subtree]
+}
+
+BOOST_AUTO_TEST_CASE(VisitorExample)
+{
+  //! [Visitor]
+  auto variant = boost::variant<int, std::string>(42);
+  auto visitor = Visitor::make<std::string>(
+      [](int i)        { return "It's an int!"; },
+      [](std::string s){ return "It's a string!"; });
+  auto whatIsIt = boost::apply_visitor(visitor, variant);
+  assert(whatIsIt == "It's an int!");
+  //! [Visitor]
+}
+
+BOOST_AUTO_TEST_CASE(ApplyVisitorExample)
+{
+  //! [Apply visitor]
+  auto variant = boost::variant<int, std::string>(42);
+  auto whatIsIt = Visitor::apply<std::string>(variant,
+      [](int i)        { return "It's an int!"; },
+      [](std::string s){ return "It's a string!"; });
+  assert(whatIsIt == "It's an int!");
+  //! [Apply visitor]
 }
 
 } // Anonymous namespace

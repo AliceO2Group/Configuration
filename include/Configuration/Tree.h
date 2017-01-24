@@ -27,7 +27,7 @@ namespace Configuration
 ///   \snippet test/Examples.cxx [Tree declaration]
 /// Examples of how to access that tree:
 ///   \snippet test/Examples.cxx [Tree getters]
-/// Example of traversing a tree
+/// Example of traversing a tree:
 ///   \snippet test/Examples.cxx [Tree traversal]
 /// Also see the printTree() function how to traverse the tree using a visitor
 namespace Tree

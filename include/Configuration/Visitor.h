@@ -15,12 +15,7 @@ namespace Visitor {
 /// Creates a boost::variant visitor with functions.
 ///
 /// Example:
-///   auto variant = boost::variant<int, std::string>(42);
-///   auto visitor = Visitor::make<std::string>(
-///       [](int i)        { return "It's an int!"; },
-///       [](std::string s){ return "It's a string!"; });
-///   auto whatIsIt = boost::apply_visitor(visitor, variant);
-///   assert(whatIsIt == "It's an int!");
+/// \snippet test/Examples.cxx [Visitor]
 ///
 /// \tparam ReturnType Return type of the visitor.
 /// \tparam Types of the lambda functions.
@@ -34,11 +29,7 @@ Implementation::Visitor<ReturnType, Functions...> make(Functions ... functions)
 /// Convenience function to create a boost::variant visitor with functions and immediately apply it.
 ///
 /// Example:
-///   auto variant = boost::variant<int, std::string>(42);
-///   auto whatIsIt = Visitor::apply<std::string>(variant,
-///       [](int i)        { return "It's an int!"; },
-///       [](std::string s){ return "It's a string!"; });
-///   assert(whatIsIt == "It's an int!");
+/// \snippet test/Examples.cxx [Apply visitor]
 ///
 /// \tparam ReturnType Return type of the visitor.
 /// \tparam Variant Type of the variant.
