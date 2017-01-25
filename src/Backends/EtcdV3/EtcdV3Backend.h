@@ -23,7 +23,7 @@ namespace Backends
 namespace EtcdV3
 {
 
-/// Configuration backend using the etcd v3 API
+/// Backend for etcd with the v3 API.
 class EtcdV3Backend final : public BackendBase
 {
   public:

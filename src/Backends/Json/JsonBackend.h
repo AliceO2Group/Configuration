@@ -19,6 +19,7 @@ namespace Backends
 namespace Json
 {
 
+/// Backend for .json files
 class JsonBackend final : public BackendBase
 {
   public:

@@ -21,7 +21,8 @@ namespace EtcdV2
 
 struct EtcdState;
 
-/// Note: since we've moved to the etcd v3 API, this class is now legacy code
+/// Backend for etcd with the v2 API.
+/// Note: since we've moved to the v3 API, this class is now "legacy".
 class EtcdBackend final : public BackendBase
 {
   public:

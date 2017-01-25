@@ -16,6 +16,7 @@ ConfigurationInterface::~ConfigurationInterface()
 {
 }
 
+/// Converts a boost::optional of one type to another by using boost::lexical_cast.
 template <typename Out, typename OptionalIn>
 boost::optional<Out> convertOptional(const OptionalIn& in)
 {

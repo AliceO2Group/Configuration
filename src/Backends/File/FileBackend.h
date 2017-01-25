@@ -20,6 +20,7 @@ namespace Backends
 namespace File
 {
 
+/// Backend for .ini files
 class FileBackend final : public BackendBase
 {
   public:

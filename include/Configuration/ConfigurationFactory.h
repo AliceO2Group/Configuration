@@ -20,9 +20,10 @@ class ConfigurationFactory
   public:
     /// Get a ConfigurationInterface suitable for the given URI
     /// The URI specifies the type of the backend, its location or directory, and possibly port.
+    ///
     /// Valid backends:
-    ///   * "file"     file-based backend
-    ///   * "json"     JSON file backend
+    ///   * "file"     file-based backend (note: does not support getRecursive())
+    ///   * "json"     JSON file backend (note: does not support arrays)
     ///   * "etcd"     etcd default backend (currently V3)
     ///   * "etcd-v2"  etcd V2 API backend
     ///   * "etcd-v3"  etcd V3 API backend
@@ -32,8 +33,11 @@ class ConfigurationFactory
     ///   * "file://home/me/some/local/file.ini"
     ///   * "etcd://myetcdserver:4001/some/prefix/to/my/values"
     ///
+    /// Usage example:
+    ///   \snippet test/Examples.cxx [Example]
+    ///
     /// \param uri The URI
-    /// \retrun A unique_ptr containing a pointer to an interface to the requested back-end
+    /// \return A unique_ptr containing a pointer to an interface to the requested back-end
     static std::unique_ptr<ConfigurationInterface> getConfiguration(const std::string& uri);
 };
 

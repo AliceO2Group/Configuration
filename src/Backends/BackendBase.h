@@ -11,6 +11,7 @@
 namespace AliceO2 {
 namespace Configuration {
 
+/// Base class for backend implementations
 class BackendBase: public ConfigurationInterface
 {
   public:
