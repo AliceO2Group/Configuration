@@ -32,6 +32,7 @@ namespace Configuration
 /// Also see the printTree() function how to traverse the tree using a visitor
 namespace Tree
 {
+template <typename T> using Optional = boost::optional<T>; // Hopefully, we can move to std::optional someday.
 
 /// Node is a recursive boost::variant. This allows us to model the hierarchy of directories and files, as well as
 /// key-value hierarchies.
@@ -118,7 +119,7 @@ T getRequired(const Node& node, const std::string& key)
 
 /// Helper function to extract and convert a Leaf type from the Node variant
 template <class T>
-boost::optional<T> get(const Node& node)
+Optional<T> get(const Node& node)
 {
   return Visitor::apply<boost::optional<T>>(node,
       [](const Branch&) {return boost::none;},
@@ -127,7 +128,7 @@ boost::optional<T> get(const Node& node)
 
 /// Helper function to extract and convert a Leaf type from a Branch
 template <class T>
-boost::optional<T> get(const Branch& node, const std::string& key)
+Optional<T> get(const Branch& node, const std::string& key)
 {
   auto iter = node.find(key);
   if (iter != node.end()) {
@@ -139,7 +140,7 @@ boost::optional<T> get(const Branch& node, const std::string& key)
 
 /// Helper function to extract and convert a Leaf type from a Branch
 template <class T>
-boost::optional<T> get(const Node& node, const std::string& key)
+Optional<T> get(const Node& node, const std::string& key)
 {
   return get<T>(getBranch(node), key);
 }
@@ -191,7 +192,7 @@ auto splitPath(const std::string& path) -> std::vector<std::string>;
 /// \param node Base node to get subtree from
 /// \param path Path from the base node to the subtree
 /// \return Subtree
-auto getSubtree(const Tree::Node& node, const std::string& path) -> const Tree::Node&;
+auto getSubtree(const Node& node, const std::string& path) -> const Node&;
 
 /// Converts key-value pairs into a tree.
 ///
@@ -200,7 +201,7 @@ auto getSubtree(const Tree::Node& node, const std::string& path) -> const Tree::
 ///
 /// \param pairs Key value pairs to convert
 /// \return Converted tree
-auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& pairs) -> Tree::Node;
+auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> Node;
 
 } // namespace Tree
 } // namespace Configuration

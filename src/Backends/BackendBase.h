@@ -1,17 +1,17 @@
-/// \file ConfigurationBase.h
+/// \file BackendBase.h
 /// \brief Base class for ConfigurationInterface implementations
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef ALICEO2_CONFIGURATION_SRC_CONFIGURATIONBASE_H_
-#define ALICEO2_CONFIGURATION_SRC_CONFIGURATIONBASE_H_
+#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
+#define ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
 
 #include "Configuration/ConfigurationInterface.h"
 
 namespace AliceO2 {
 namespace Configuration {
 
-class ConfigurationBase: public ConfigurationInterface
+class BackendBase: public ConfigurationInterface
 {
   public:
     virtual void setPathSeparator(char separator) override
@@ -42,4 +42,4 @@ class ConfigurationBase: public ConfigurationInterface
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif // ALICEO2_CONFIGURATION_SRC_CONFIGURATIONBASE_H_
+#endif // ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_

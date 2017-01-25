@@ -1,14 +1,14 @@
-/// \file JsonConfiguration.cxx
+/// \file JsonBackend.cxx
 /// \brief Definition of configuration interface for JSON files
 ///
 /// \author Pascal Boeschoten, CERN
 
-#ifndef ALICEO2_CONFIGURATION_SRC_JSONCONFIGURATION_H_
-#define ALICEO2_CONFIGURATION_SRC_JSONCONFIGURATION_H_
+#ifndef ALICEO2_CONFIGURATION_SRC_JSONBACKEND_H_
+#define ALICEO2_CONFIGURATION_SRC_JSONBACKENDH_
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
-#include "../../ConfigurationBase.h"
+#include "../BackendBase.h"
 
 namespace AliceO2
 {
@@ -19,11 +19,11 @@ namespace Backends
 namespace Json
 {
 
-class JsonConfiguration final : public ConfigurationBase
+class JsonBackend final : public BackendBase
 {
   public:
-    JsonConfiguration(const std::string& filePath);
-    virtual ~JsonConfiguration();
+    JsonBackend(const std::string& filePath);
+    virtual ~JsonBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
@@ -40,4 +40,4 @@ class JsonConfiguration final : public ConfigurationBase
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif /* ALICEO2_CONFIGURATION_SRC_JSONCONFIGURATION_H_ */
+#endif /* ALICEO2_CONFIGURATION_SRC_JSONBACKEND_H_ */

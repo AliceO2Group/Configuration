@@ -1,9 +1,9 @@
-/// \file EtcdConfiguration.cxx
+/// \file EtcdBackend.cxx
 /// \brief Implementation of configuration interface to the ETCD distributed key-value store using the v3 API
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#include "EtcdV3Configuration.h"
+#include "EtcdV3Backend.h"
 #include <boost/algorithm/string.hpp>
 #include <grpc/grpc.h>
 #include <grpc++/channel.h>
@@ -45,13 +45,13 @@ auto stripRequestKey(const std::string& requestKey, const std::string& response)
 }
 } // Anonymous namespace
 
-EtcdV3Configuration::EtcdV3Configuration(const std::string& host, int port)
+EtcdV3Backend::EtcdV3Backend(const std::string& host, int port)
     : mChannel(grpc::CreateChannel(makeChannelString(host, port), grpc::InsecureChannelCredentials())), mStub(
         etcdserverpb::KV::NewStub(mChannel))
 {
 }
 
-void EtcdV3Configuration::putString(const std::string& path, const std::string& value)
+void EtcdV3Backend::putString(const std::string& path, const std::string& value)
 {
   grpc::ClientContext context;
   etcdserverpb::PutRequest request;
@@ -68,7 +68,7 @@ void EtcdV3Configuration::putString(const std::string& path, const std::string& 
   }
 }
 
-auto EtcdV3Configuration::getString(const std::string& path) -> Optional<std::string>
+auto EtcdV3Backend::getString(const std::string& path) -> Optional<std::string>
 {
   grpc::ClientContext context;
   etcdserverpb::RangeRequest request;
@@ -93,7 +93,7 @@ auto EtcdV3Configuration::getString(const std::string& path) -> Optional<std::st
   }
 }
 
-auto EtcdV3Configuration::getRecursive(const std::string& path) -> Tree::Node
+auto EtcdV3Backend::getRecursive(const std::string& path) -> Tree::Node
 {
   grpc::ClientContext context;
   etcdserverpb::RangeRequest request;
@@ -119,19 +119,19 @@ auto EtcdV3Configuration::getRecursive(const std::string& path) -> Tree::Node
   return Tree::keyValuesToTree(keyValuePairs);
 }
 
-void EtcdV3Configuration::setPrefix(const std::string& path)
+void EtcdV3Backend::setPrefix(const std::string& path)
 {
   mPrefix = path;
 }
 
 /// Prefix the prefix to the path
-auto EtcdV3Configuration::addPrefix(const std::string& path) -> std::string
+auto EtcdV3Backend::addPrefix(const std::string& path) -> std::string
 {
   return mPrefix + path;
 }
 
 /// Replace separators in the path
-auto EtcdV3Configuration::replaceSeparator(const std::string& path) -> std::string
+auto EtcdV3Backend::replaceSeparator(const std::string& path) -> std::string
 {
   auto p = path;
   std::replace(p.begin(), p.end(), '/', getSeparator());
@@ -139,7 +139,7 @@ auto EtcdV3Configuration::replaceSeparator(const std::string& path) -> std::stri
 }
 
 /// Make the URI string for the channel
-auto EtcdV3Configuration::makeChannelString(const std::string& host, int port) -> std::string
+auto EtcdV3Backend::makeChannelString(const std::string& host, int port) -> std::string
 {
   return host + ':' + std::to_string(port);
 }

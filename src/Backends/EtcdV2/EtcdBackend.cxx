@@ -1,9 +1,9 @@
-/// \file EtcdConfiguration.h
+/// \file EtcdBackend.h
 /// \brief Configuration interface to the ETCD distributed key-value store
 ///
 /// \author Pascal Boeschoten, CERN
 
-#include "EtcdConfiguration.h"
+#include "EtcdBackend.h"
 #include <stdexcept>
 #include "etcdcpp/etcd.hpp"
 #include "etcdcpp/rapid_reply.hpp"
@@ -44,26 +44,26 @@ Reply::KvPairs getReplyPairs(Reply& reply)
   return keyValuePairs;
 }
 
-EtcdConfiguration::EtcdConfiguration(const std::string& host, int port)
+EtcdBackend::EtcdBackend(const std::string& host, int port)
     : mHost(host), mPort(port), mEtcdState(new EtcdState(host, port))
 {
 }
 
-EtcdConfiguration::~EtcdConfiguration()
+EtcdBackend::~EtcdBackend()
 {
 }
 
-void EtcdConfiguration::setPrefix(const std::string& path)
+void EtcdBackend::setPrefix(const std::string& path)
 {
   mPrefix = path;
 }
 
-void EtcdConfiguration::putString(const std::string& path, const std::string& value)
+void EtcdBackend::putString(const std::string& path, const std::string& value)
 {
   mEtcdState->client.Set(addPrefix(replaceSeparator(path)), value);
 }
 
-auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::string>
+auto EtcdBackend::getString(const std::string& path) -> Optional<std::string>
 {
   try {
     auto reply = mEtcdState->client.Get(addPrefix(replaceSeparator(path)));
@@ -87,7 +87,7 @@ auto EtcdConfiguration::getString(const std::string& path) -> Optional<std::stri
   }
 }
 
-auto EtcdConfiguration::getRecursive(const std::string& path) -> Tree::Node
+auto EtcdBackend::getRecursive(const std::string& path) -> Tree::Node
 {
   try {
     auto requestKey(addPrefix(replaceSeparator(path)));
@@ -113,13 +113,13 @@ auto EtcdConfiguration::getRecursive(const std::string& path) -> Tree::Node
 }
 
 /// Prefix the prefix to the path
-auto EtcdConfiguration::addPrefix(const std::string& path) -> std::string
+auto EtcdBackend::addPrefix(const std::string& path) -> std::string
 {
   return mPrefix + path;
 }
 
 /// Replace separators in the path
-auto EtcdConfiguration::replaceSeparator(const std::string& path) -> std::string
+auto EtcdBackend::replaceSeparator(const std::string& path) -> std::string
 {
   auto p = path;
   std::replace(p.begin(), p.end(), '/', getSeparator());

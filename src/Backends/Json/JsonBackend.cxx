@@ -1,9 +1,9 @@
-/// \file JsonConfiguration.cxx
+/// \file JsonBackend.cxx
 /// \brief Implementation of configuration interface for JSON files
 ///
 /// \author Pascal Boeschoten, CERN
 
-#include "JsonConfiguration.h"
+#include "JsonBackend.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -153,11 +153,11 @@ auto jsonToTree(const std::string& json) -> Tree::Node
 }
 } // Anonymous namespace
 
-JsonConfiguration::~JsonConfiguration()
+JsonBackend::~JsonBackend()
 {
 }
 
-JsonConfiguration::JsonConfiguration(const std::string& filePath)
+JsonBackend::JsonBackend(const std::string& filePath)
     : mFilePath(filePath)
 {
   std::ifstream stream(filePath);
@@ -166,24 +166,24 @@ JsonConfiguration::JsonConfiguration(const std::string& filePath)
   mCurrentNode = mRootNode;
 }
 
-void JsonConfiguration::putString(const std::string&, const std::string&)
+void JsonBackend::putString(const std::string&, const std::string&)
 {
-  throw std::runtime_error("JsonConfiguration does not support putting values");
+  throw std::runtime_error("JsonBackend does not support putting values");
 }
 
-auto JsonConfiguration::getString(const std::string& path) -> Optional<std::string>
+auto JsonBackend::getString(const std::string& path) -> Optional<std::string>
 {
   const Tree::Node& node = Tree::getSubtree(mRootNode, path);
   return Tree::get<std::string>(node);
 }
 
-auto JsonConfiguration::getRecursive(const std::string& path) -> Tree::Node
+auto JsonBackend::getRecursive(const std::string& path) -> Tree::Node
 {
   const Tree::Node& node = Tree::getSubtree(mCurrentNode, path);
   return node;
 }
 
-void JsonConfiguration::setPrefix(const std::string& path)
+void JsonBackend::setPrefix(const std::string& path)
 {
   const Tree::Node& node = Tree::getSubtree(mRootNode, path);
   mCurrentNode = node;

@@ -1,4 +1,4 @@
-/// \file EtcdConfiguration.h
+/// \file EtcdBackend.h
 /// \brief Configuration interface to the ETCD distributed key-value store
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
@@ -6,9 +6,9 @@
 #ifndef SRC_ETCDCONFIGURATION_H_
 #define SRC_ETCDCONFIGURATION_H_
 
-#include "../../ConfigurationBase.h"
 #include <string>
 #include <boost/scoped_ptr.hpp>
+#include "../BackendBase.h"
 
 namespace AliceO2
 {
@@ -22,11 +22,11 @@ namespace EtcdV2
 struct EtcdState;
 
 /// Note: since we've moved to the etcd v3 API, this class is now legacy code
-class EtcdConfiguration final : public ConfigurationBase
+class EtcdBackend final : public BackendBase
 {
   public:
-    EtcdConfiguration(const std::string& host, int port);
-    virtual ~EtcdConfiguration();
+    EtcdBackend(const std::string& host, int port);
+    virtual ~EtcdBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;

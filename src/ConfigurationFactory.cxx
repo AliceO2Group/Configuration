@@ -3,17 +3,17 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
+#include <src/Backends/File/FileBackend.h>
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
-#include "Backends/File/FileConfiguration.h"
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
-# include "Backends/Json/JsonConfiguration.h"
+# include "Backends/Json/JsonBackend.h"
 #endif
 #ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
-# include "Backends/EtcdV2/EtcdConfiguration.h"
+# include "Backends/EtcdV2/EtcdBackend.h"
 #endif
 #ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
-# include "Backends/EtcdV3/EtcdV3Configuration.h"
+# include "Backends/EtcdV3/EtcdV3Backend.h"
 #endif
 #include "UriParser/UriParser.hpp"
 
@@ -31,7 +31,7 @@ auto getFile(const http::url& uri) -> UniqueConfiguration
   // will consider the thing before the first delimiter ('/') of the path as authority,
   // so we have to include that in the path we use.
   auto path = "/" + uri.host + uri.path;
-  return UniqueConfiguration(new Backends::File::FileConfiguration(path));
+  return UniqueConfiguration(new Backends::File::FileBackend(path));
 }
 
 auto getJson(const http::url& uri) -> UniqueConfiguration
@@ -41,7 +41,7 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
   // so we have to include that in the path we use.
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
   auto path = "/" + uri.host + uri.path;
-  return UniqueConfiguration(new Backends::Json::JsonConfiguration(path));
+  return UniqueConfiguration(new Backends::Json::JsonBackend(path));
 #else
   throw std::runtime_error("Back-end 'json' not enabled");
 #endif
@@ -60,7 +60,7 @@ auto getEtcd(const http::url& uri) -> UniqueConfiguration
 auto getEtcdV2(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
-  return getEtcd<Backends::EtcdV2::EtcdConfiguration>(uri);
+  return getEtcd<Backends::EtcdV2::EtcdBackend>(uri);
 #else
   throw std::runtime_error("Back-end 'etcd-v2' not enabled");
 #endif
@@ -69,7 +69,7 @@ auto getEtcdV2(const http::url& uri) -> UniqueConfiguration
 auto getEtcdV3(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
-  return getEtcd<Backends::EtcdV3::EtcdV3Configuration>(uri);
+  return getEtcd<Backends::EtcdV3::EtcdV3Backend>(uri);
 #else
   throw std::runtime_error("Back-end 'etcd-v3' not enabled");
 #endif

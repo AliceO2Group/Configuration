@@ -64,10 +64,10 @@ set(MODULE_NAME "Configuration")
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
+        src/Backends/File/FileBackend.cxx
         src/Configuration.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
-        src/Backends/File/FileConfiguration.cxx
         src/Tree.cxx
         )
 
@@ -98,7 +98,7 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
     include_directories(src/EtcdV3/proto/googleapis)
     list(APPEND SRCS
-            src/Backends/EtcdV3/EtcdV3Configuration.cxx
+            src/Backends/EtcdV3/EtcdV3Backend.cxx
             src/Backends/EtcdV3/proto/auth.grpc.pb.cc
             src/Backends/EtcdV3/proto/auth.pb.cc
             src/Backends/EtcdV3/proto/kv.grpc.pb.cc
@@ -117,13 +117,13 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
 
     # Add ETCD backend if the RapidJSON dependency was found
     list(APPEND SRCS
-            src/Backends/EtcdV2/EtcdConfiguration.cxx
+            src/Backends/EtcdV2/EtcdBackend.cxx
             )
     message(STATUS "etcd-v2 backend enabled")
     
     # Add JSON file backend if the RapidJSON dependency was found
     list(APPEND SRCS
-            src/Backends/Json/JsonConfiguration.cxx
+            src/Backends/Json/JsonBackend.cxx
             )
     message(STATUS "json file backend enabled")
 else ()

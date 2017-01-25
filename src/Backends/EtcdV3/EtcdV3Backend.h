@@ -1,16 +1,16 @@
-/// \file EtcdConfiguration.h
+/// \file EtcdBackend.h
 /// \brief Definition of configuration interface to the ETCD distributed key-value store using the v3 API
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
-#define ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
+#ifndef ALICEO2_CONFIGURATION_ETCDV3BACKEND_H_
+#define ALICEO2_CONFIGURATION_ETCDV3BACKEND_H_
 
-#include "../../ConfigurationBase.h"
 #include <iostream>
 #include <memory>
 #include <grpc/grpc.h>
 #include <grpc++/channel.h>
+#include "../BackendBase.h"
 #include "proto/rpc.grpc.pb.h"
 //#include "InfoLogger/InfoLogger.hxx"
 
@@ -24,10 +24,10 @@ namespace EtcdV3
 {
 
 /// Configuration backend using the etcd v3 API
-class EtcdV3Configuration final : public ConfigurationBase
+class EtcdV3Backend final : public BackendBase
 {
   public:
-    EtcdV3Configuration(const std::string& host, int port);
+    EtcdV3Backend(const std::string& host, int port);
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual Optional<std::string> getString(const std::string& path) override;
     virtual void setPrefix(const std::string& path) override;
@@ -49,4 +49,4 @@ class EtcdV3Configuration final : public ConfigurationBase
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif // ALICEO2_CONFIGURATION_ETCDV3CONFIGURATION_H_
+#endif // ALICEO2_CONFIGURATION_ETCDV3BACKEND_H_

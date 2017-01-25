@@ -33,15 +33,15 @@ auto splitPath(const std::string& path) -> std::vector<std::string>
   return split;
 }
 
-auto getSubtree(const Tree::Node& tree, const std::string& path) -> const Tree::Node&
+auto getSubtree(const Node& tree, const std::string& path) -> const Node&
 {
   auto pathSegments = splitPath(path);
 
   // Traverse branches
-  const Tree::Node* node = &tree;
+  const Node* node = &tree;
   for (int i = 0; i < pathSegments.size(); ++i) {
     try {
-      node = &(boost::get<const Tree::Branch&>(node)->at(pathSegments[i]));
+      node = &(boost::get<const Branch&>(node)->at(pathSegments[i]));
     }
     catch (const std::out_of_range& e) {
       BOOST_THROW_EXCEPTION(e);
@@ -51,9 +51,9 @@ auto getSubtree(const Tree::Node& tree, const std::string& path) -> const Tree::
   return *node;
 }
 
-auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& pairs) -> Tree::Node
+auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> Node
 {
-  Tree::Branch treeRoot;
+  Branch treeRoot;
 
   for (auto& pair : pairs) {
     auto pathSegments = splitPath(pair.first);
@@ -67,11 +67,11 @@ auto keyValuesToTree(const std::vector<std::pair<std::string, Tree::Leaf>>& pair
     pathSegments.pop_back();
 
     // Traverses or creates directories
-    Tree::Branch* node = &treeRoot; // Current node
+    Branch* node = &treeRoot; // Current node
     for (int i = 0; i < pathSegments.size(); ++i) {
       const auto& directory = pathSegments[i]; // The "directory" to add or get
-      auto iter = node->emplace(directory, Tree::Branch()).first; // Inserts or gets a TreeMap and gets an iterator to it
-      node = &(boost::get<Tree::Branch>(iter->second)); // Move the node to the new TreeMap
+      auto iter = node->emplace(directory, Branch()).first; // Inserts or gets a TreeMap and gets an iterator to it
+      node = &(boost::get<Branch>(iter->second)); // Move the node to the new TreeMap
     }
 
     // Finally, we add the value
