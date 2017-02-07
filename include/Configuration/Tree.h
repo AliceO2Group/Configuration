@@ -8,6 +8,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <boost/optional.hpp>
 #include <boost/variant/get.hpp>
 #include <boost/variant/variant.hpp>
