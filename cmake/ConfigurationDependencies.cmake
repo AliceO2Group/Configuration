@@ -1,12 +1,17 @@
 
 ########## DEPENDENCIES lookup ############
 
-find_package(Boost 1.42.0 COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.
 find_package(RapidJSON)
 find_package(CURL REQUIRED)
 find_package(Protobuf 3.0.0)
 find_package(GRPC)
+
+# Message as RapidJSON is silent when it's not found
+if(NOT PROTOBUF_FOUND)
+    message(STATUS "RapidJSON not found")
+endif()
 
 # Message as Protobuf is silent
 if(PROTOBUF_FOUND)
@@ -17,12 +22,9 @@ endif()
 
 ########## General definitions and flags ##########
 
-if (RAPIDJSON_FOUND)
+if (RAPIDJSON_FOUND AND PROTOBUF_FOUND AND GRPC_FOUND)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCD_ENABLED)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED)
-endif()
-
-if(PROTOBUF_FOUND AND GRPC_FOUND)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED)	  
 endif()
 
