@@ -29,7 +29,7 @@ struct JsonHandler {
       std::ostringstream stream;
       for (int i = 0; i < pathStack.size(); ++i) {
         stream << pathStack[i];
-        if (i + i < pathStack.size()) {
+        if (i + 1 < pathStack.size()) {
           stream << '/';
         }
       }

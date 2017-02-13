@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(KeyValuePairConversionTest)
 {
   using namespace Tree;
 
-  std::vector<std::pair<std::string, Leaf>> pairs {
+  std::vector<std::pair<std::string, Leaf>> referencePairs {
       {"/dir/bool", false},
       {"/dir/double", 45.6},
       {"/dir/subdir/int", 123},
@@ -82,9 +82,10 @@ BOOST_AUTO_TEST_CASE(KeyValuePairConversionTest)
           {"subsubdir", Branch {
             {"string", "string"s}}}}}}}};
 
-  Node convertedTree = keyValuesToTree(pairs);
-
+  Node convertedTree = keyValuesToTree(referencePairs);
   BOOST_CHECK(referenceTree == convertedTree);
+  auto convertedPairs = treeToKeyValues(convertedTree);
+  BOOST_CHECK(referencePairs == convertedPairs);
 }
 
 } // Anonymous namespace

@@ -204,6 +204,13 @@ auto getSubtree(const Node& node, const std::string& path) -> const Node&;
 /// \return Converted tree
 auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> Node;
 
+/// Converts a tree into key-value pairs.
+///
+/// \param node Tree to convert
+/// \return Converted key-value pairs
+auto treeToKeyValues(const Node& node) -> const std::vector<std::pair<std::string, Leaf>>;
+
+
 } // namespace Tree
 } // namespace Configuration
 } // namespace AliceO2

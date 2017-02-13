@@ -146,6 +146,13 @@ O2_GENERATE_EXECUTABLE(
         BUCKET_NAME ${BUCKET_NAME}
 )
 
+O2_GENERATE_EXECUTABLE(
+        EXE_NAME ConfigurationBenchmark
+        SOURCES src/Benchmark/Benchmark.cxx
+        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
+)
+
 enable_testing()
 
 set(TEST_SRCS

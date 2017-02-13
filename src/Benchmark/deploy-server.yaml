@@ -1,0 +1,27 @@
+---
+- name: "Set up servers"
+  hosts: servers
+  remote_user: root
+  tasks:
+
+  - name: "Install latest version of dependencies"
+    yum: pkg={{item}} state="latest"
+    with_items:
+    - "docker"
+    - "python-pip"
+    
+  - name: "Install latest version of docker-py"
+    pip: name="docker-py"
+      
+  - name: "Start Docker service"
+    service:
+      name: "docker"
+      state: "started"
+      enabled: "yes"
+   
+  - name: "Docker container for etcd" 
+    docker_container:
+      name: "conf-bench-etcd"
+      image: "quay.io/coreos/etcd:v3.0.14"
+      state: "started"
+      restart_policy: "always"

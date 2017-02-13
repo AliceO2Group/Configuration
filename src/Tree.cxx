@@ -81,6 +81,44 @@ auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> 
   return treeRoot;
 }
 
+void treeToKeyValuesHelper(const Node& node, std::vector<std::pair<std::string, Leaf>>& pairs,
+    std::vector<std::string>& pathStack)
+{
+  auto makeKey = [&pathStack]{
+      std::ostringstream stream;
+      stream << '/'; // Add leading slash
+      for (int i = 0; i < pathStack.size(); ++i) {
+        stream << pathStack[i];
+        if (i + 1 < pathStack.size()) {
+          // Add slash between paths only if we're not at the end
+          stream << '/';
+        }
+      }
+      return stream.str();
+  };
+
+  Visitor::apply(node,
+      [&](const Branch& branch) {
+        for (const auto& keyValuePair : branch) {
+          pathStack.push_back(keyValuePair.first);
+          treeToKeyValuesHelper(keyValuePair.second, pairs, pathStack);
+          pathStack.pop_back();
+        }
+      },
+      [&](const Leaf& leaf) {
+        pairs.emplace_back(makeKey(), leaf);
+      }
+  );
+}
+
+auto treeToKeyValues(const Node& node) -> const std::vector<std::pair<std::string, Leaf>>
+{
+  std::vector<std::pair<std::string, Leaf>> pairs;
+  std::vector<std::string> pathStack;
+  treeToKeyValuesHelper(node, pairs, pathStack);
+  return pairs;
+}
+
 
 } // namespace Tree
 } // namespace Configuration
