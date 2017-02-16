@@ -68,7 +68,7 @@ make install
 git clone https://github.com/miloyip/rapidjson.git
 cd rapidjson; mkdir build; cd build
 cmake ..
-make
+make -j
 sudo make install
 ~~~
 
