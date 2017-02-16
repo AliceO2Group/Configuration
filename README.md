@@ -9,6 +9,31 @@ Values can be retrieved from the interface one-by-one using simple getters, or m
 The getRecursive() function returns a tree-like data structure, which models the hierarchy of directories or paths.
 
 
+## Backends
+This section provides some basic information on the available backends and their dependencies  
+
+### File
+* Reads .ini style files
+* No dependencies
+
+### JSON
+* Reads .json files
+* Requires RapidJSON
+
+### etcd v2
+* Interface to etcd v2 API
+* Requires RapidJSON
+
+### etcd v3
+* Interface to etcd v3 API
+* Requires Protobuf and gRPC 
+
+### Consul
+* Interface to Consul API
+* Requires ppconsul
+* Work in progress
+
+
 ## Examples
 There are usage examples in the file test/Examples.cxx. 
 The unit tests may also be useful as examples.
@@ -48,7 +73,6 @@ sudo make install
 ~~~
 
 ### etcdcpp
-NOTE: There are two ETCD C++ interface libraries listed on the ETCD github (https://github.com/coreos/etcd/blob/master/Documentation/libraries-and-tools.md)
 
 ~~~
 git clone https://github.com/suryanathan/etcdcpp
