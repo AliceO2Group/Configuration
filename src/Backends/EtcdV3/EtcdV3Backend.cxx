@@ -20,8 +20,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace EtcdV3
-{
 namespace
 {
 void setRangeRequestGetRecursive(std::string key, etcdserverpb::RangeRequest& request)
@@ -144,7 +142,6 @@ auto EtcdV3Backend::makeChannelString(const std::string& host, int port) -> std:
   return host + ':' + std::to_string(port);
 }
 
-} // namespace EtcdV3
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

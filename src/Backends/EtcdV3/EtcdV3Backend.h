@@ -20,8 +20,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace EtcdV3
-{
 
 /// Backend for etcd with the v3 API.
 class EtcdV3Backend final : public BackendBase
@@ -44,7 +42,6 @@ class EtcdV3Backend final : public BackendBase
     //InfoLogger::InfoLogger mLogger;
 };
 
-} // namespace EtcdV3
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

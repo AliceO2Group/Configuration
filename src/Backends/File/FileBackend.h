@@ -17,8 +17,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace File
-{
 
 /// Backend for .ini files
 class FileBackend final : public BackendBase
@@ -35,7 +33,6 @@ class FileBackend final : public BackendBase
     boost::property_tree::ptree mPropertyTree;
 };
 
-} // namespace File
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

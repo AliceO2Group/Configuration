@@ -16,8 +16,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace EtcdV2
-{
 
 struct EtcdState;
 
@@ -44,7 +42,6 @@ class EtcdBackend final : public BackendBase
     std::string mPrefix;
 };
 
-} // namespace EtcdV2
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

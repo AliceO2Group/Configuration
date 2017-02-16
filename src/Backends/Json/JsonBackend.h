@@ -16,8 +16,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace Json
-{
 
 /// Backend for .json files
 class JsonBackend final : public BackendBase
@@ -36,7 +34,6 @@ class JsonBackend final : public BackendBase
     Tree::Node mCurrentNode;
 };
 
-} // namespace Json
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
