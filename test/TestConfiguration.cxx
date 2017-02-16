@@ -219,7 +219,16 @@ void writeReferenceFile()
 BOOST_AUTO_TEST_CASE(RecursiveTest)
 {
   writeReferenceFile();
-  auto conf = ConfigurationFactory::getConfiguration(sConfigurationUri);
+
+  std::unique_ptr<ConfigurationInterface> conf;
+  try {
+    conf = ConfigurationFactory::getConfiguration(sConfigurationUri);
+  }
+  catch (const std::exception& e) {
+    BOOST_WARN_MESSAGE(false,
+        std::string("Exception thrown, you may be missing the required infrastructure: ") + e.what());
+    return;
+  }
 
   Tree::Node tree = conf->getRecursive("/");
   BOOST_CHECK(tree == sReferenceTree);
@@ -229,7 +238,16 @@ BOOST_AUTO_TEST_CASE(RecursiveTest)
 BOOST_AUTO_TEST_CASE(RecursiveTest2)
 {
   writeReferenceFile();
-  auto conf = ConfigurationFactory::getConfiguration(sConfigurationUri);
+
+  std::unique_ptr<ConfigurationInterface> conf;
+  try {
+    conf = ConfigurationFactory::getConfiguration(sConfigurationUri);
+  }
+  catch (const std::exception& e) {
+    BOOST_WARN_MESSAGE(false,
+        std::string("Exception thrown, you may be missing the required infrastructure: ") + e.what());
+    return;
+  }
 
   BOOST_CHECK(sReferenceTree == conf->getRecursive("/"));
   BOOST_CHECK(sEquipment1 == conf->getRecursive("/equipment_1"));
@@ -250,7 +268,17 @@ BOOST_AUTO_TEST_CASE(RecursiveTest2)
 BOOST_AUTO_TEST_CASE(RecursiveTest3)
 {
   writeReferenceFile();
-  auto conf = ConfigurationFactory::getConfiguration(sConfigurationUri);
+
+  std::unique_ptr<ConfigurationInterface> conf;
+  try {
+    conf = ConfigurationFactory::getConfiguration(sConfigurationUri);
+  }
+  catch (const std::exception& e) {
+    BOOST_WARN_MESSAGE(false,
+        std::string("Exception thrown, you may be missing the required infrastructure: ") + e.what());
+    return;
+  }
+
   Tree::Node tree = conf->getRecursive("/");
   std::ofstream stream;
 
@@ -269,7 +297,16 @@ BOOST_AUTO_TEST_CASE(RecursiveTest3)
 BOOST_AUTO_TEST_CASE(EtcdTest)
 {
   // Get file configuration interface from factory
-  auto conf = ConfigurationFactory::getConfiguration("etcd-v3://localhost:2379");
+  std::unique_ptr<ConfigurationInterface> conf;
+  try {
+    conf = ConfigurationFactory::getConfiguration("etcd-v3://localhost:2379");
+  }
+  catch (const std::exception& e) {
+    BOOST_WARN_MESSAGE(false,
+        std::string("Exception thrown, you may be missing the required infrastructure: ") + e.what());
+    return;
+  }
+
 
   std::string key {"/test/key"};
   std::string value {"test_value"};
