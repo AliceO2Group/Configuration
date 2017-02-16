@@ -35,7 +35,7 @@ This section provides some basic information on the available backends and their
 
 
 ## Examples
-There are usage examples in the file test/Examples.cxx. 
+There are usage examples in the file test/TestExamples.cxx. 
 The unit tests may also be useful as examples.
 
 

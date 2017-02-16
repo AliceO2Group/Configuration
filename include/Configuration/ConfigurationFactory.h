@@ -34,7 +34,7 @@ class ConfigurationFactory
     ///   * "etcd://myetcdserver:4001/some/prefix/to/my/values"
     ///
     /// Usage example:
-    ///   \snippet test/Examples.cxx [Example]
+    ///   \snippet test/TestExamples.cxx [Example]
     ///
     /// \param uri The URI
     /// \return A unique_ptr containing a pointer to an interface to the requested back-end

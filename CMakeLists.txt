@@ -96,7 +96,7 @@ set(LIBRARY_NAME ${MODULE_NAME})
 if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
-    include_directories(src/EtcdV3/proto/googleapis)
+    include_directories(src/Backends/EtcdV3/proto/googleapis)
     list(APPEND SRCS
             src/Backends/EtcdV3/EtcdV3Backend.cxx
             src/Backends/EtcdV3/proto/auth.grpc.pb.cc
@@ -156,7 +156,7 @@ O2_GENERATE_EXECUTABLE(
 enable_testing()
 
 set(TEST_SRCS
-        test/Examples.cxx
+        test/TestExamples.cxx
         test/TestConfiguration.cxx
         test/TestTree.cxx
         )

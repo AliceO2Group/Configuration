@@ -1,4 +1,4 @@
-/// \file Examples.cxx
+/// \file TestExamples.cxx
 /// \brief Contains examples of the Configuration API. They are referenced from other parts of the documentation.
 ///
 /// Keeping these examples as a unit tests means the user has some assurance they are actually working.

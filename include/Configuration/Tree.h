@@ -25,11 +25,11 @@ namespace Configuration
 /// with it.
 ///
 /// Example of creating a tree manually:
-///   \snippet test/Examples.cxx [Tree declaration]
+///   \snippet test/TestExamples.cxx [Tree declaration]
 /// Examples of how to access that tree:
-///   \snippet test/Examples.cxx [Tree getters]
+///   \snippet test/TestExamples.cxx [Tree getters]
 /// Example of traversing a tree:
-///   \snippet test/Examples.cxx [Tree traversal]
+///   \snippet test/TestExamples.cxx [Tree traversal]
 /// Also see the printTree() function how to traverse the tree using a visitor
 namespace Tree
 {
