@@ -80,7 +80,7 @@ void FileBackend::putString(const std::string&, const std::string&)
 auto FileBackend::getString(const std::string& path) -> Optional<std::string>
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
-  return mPropertyTree.get<std::string>(decltype(mPropertyTree)::path_type(path, getSeparator()));
+  return mPropertyTree.get_optional<std::string>(decltype(mPropertyTree)::path_type(path, getSeparator()));
 }
 
 void FileBackend::setPrefix(const std::string& path)

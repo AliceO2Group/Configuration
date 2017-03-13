@@ -142,6 +142,9 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   std::string key {"/test/key"};
   std::string value {"test_value"};
 
+  // Check with nonexistant keys
+  BOOST_CHECK_NO_THROW(conf->get<int>("this_is/a_bad/key").get_value_or(-1) == -1);
+
   // File backend does not support putting values
   BOOST_CHECK_THROW(conf->put(key, value), std::runtime_error);
 
