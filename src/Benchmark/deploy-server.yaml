@@ -2,8 +2,27 @@
 - name: "Set up servers"
   hosts: servers
   remote_user: root
-  tasks:
+  vars:
+    etcd_name: "etcd-node"
+    etcd_public_ip: "0.0.0.0"
 
+    # If anyone knows how to do this elegantly, tell me...    
+    ports_peer:
+      - 8001
+      - 8002
+      - 8003
+    ports_client:
+      - 5001
+      - 5002
+      - 5003
+    etcd_peer_addrs:
+      - "127.0.0.1:8001"
+      - "127.0.0.1:8002"
+      - "127.0.0.1:8003"
+    etcd_peers: "{{ range(0, server_n) | map('extract', etcd_peer_addrs) | join(',')}}"
+    
+  tasks:
+  
   - name: "Install latest version of dependencies"
     yum: pkg={{item}} state="latest"
     with_items:
@@ -19,9 +38,23 @@
       state: "started"
       enabled: "yes"
    
+  # TODO etcd cluster, see: https://coreos.com/blog/running-etcd-in-containers.html
   - name: "Docker container for etcd" 
     docker_container:
-      name: "conf-bench-etcd"
+      name: "{{ etcd_name }}-{{ item|int + 1}}"
       image: "quay.io/coreos/etcd:v3.0.14"
       state: "started"
       restart_policy: "always"
+      network_mode: "host"
+      published_ports:
+        - "0.0.0.0:{{ ports_peer[item|int] }}:{{ ports_peer[item|int] }}"
+        - "0.0.0.0:{{ ports_client[item|int] }}:{{ ports_client[item|int] }}"
+        - "0.0.0.0:2379:2379"
+      command: > 
+        /usr/local/bin/etcd 
+        -peer-addr 0.0.0.0:{{ ports_peer[item|int] }}
+        -addr 0.0.0.0:{{ ports_client[item|int] }} 
+        -name {{ etcd_name }}-{{ item|int + 1}} 
+        -peers {{ etcd_peers }}
+    with_sequence: start=0 end={{ server_n - 1 }} stride=1
+

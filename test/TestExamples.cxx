@@ -146,7 +146,47 @@ BOOST_AUTO_TEST_CASE(Example)
 
   try {
     {
-      throw std::runtime_error("afkjsdfkljasdf");
+      // URI for connecting to local etcd server
+      auto uri = "etcd-v3://localhost:2379";
+
+      // Get a Configuration interface to etcd
+      std::unique_ptr<ConfigurationInterface> conf = ConfigurationFactory::getConfiguration(uri);
+      auto myKey = "/test_dir/test_key";
+      int myValue = 111;
+
+      // Putting & getting
+      conf->put<int>(myKey, myValue);
+      // Getters return a boost::optional that will be empty if the value is not present
+      int getValue = conf->get<int>(myKey).value();
+      int getValueWithDefault = conf->get<int>("/this/key/does/not/exist").value_or(-1);
+
+
+      // Assuming our backend has these key-value pairs:
+      conf->put<int>("/dir/myBool", 0);
+      conf->put<int>("/dir/subdir/myInt", 123);
+      conf->put<std::string>("/dir/subdir/subsubdir/myString", "abc");
+
+      // We can do a recursive get, which gives us a tree data structure
+      // A Node can be either:
+      //   * a Branch, which represents a directory or path segment. It's implemented as a map, where the key is
+      //     the path segment and the value is a Node
+      //   * a Leaf, which represents a value. It's a boost::variant that can contain a string, int, double or bool
+      Tree::Node tree = conf->getRecursive("/");
+
+      // Then we can get a Branch and some values from it
+      Tree::Node dir = Tree::getBranch(tree, "dir");
+      assert(Tree::getRequired<bool>(dir, "myBool") == false);
+
+      // We can also traverse multiple steps
+      Tree::Node subdir = Tree::getSubtree(tree, "/dir/subdir");
+      assert(Tree::getRequired<int>(subdir, "myInt") == 123);
+
+      // Traversal works down to leaf nodes
+      Tree::Node myString = Tree::getSubtree(tree, "/dir/subdir/subsubdir/myString");
+      assert(Tree::getRequired<std::string>(myString) == "abc");
+    }
+
+    {
       auto conf = ConfigurationFactory::getConfiguration(uri);
       auto myPath = myDir + myKey;
 
@@ -154,7 +194,7 @@ BOOST_AUTO_TEST_CASE(Example)
       conf->put<int>(myPath, 111);
 
       int getValue = conf->get<int>(myPath).value();
-      cout << "Got key '" << myPath<< "' with value '" << getValue << "'" << endl;
+      cout << "Got key '" << myPath << "' with value '" << getValue << "'" << endl;
 
       int getValueWithDefault = conf->get<int>("/this/key/does/not/exist").value_or(-1);
       cout << "Got key '" << myPath << "' with value '" << getValueWithDefault << "'" << endl;

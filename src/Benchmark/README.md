@@ -12,6 +12,9 @@ Put binaries and dependency libs into directory 'deploy-client-dir'
 ./ansible-playbook -i example-inventory.cfg deploy-server.yaml --extra-vars @example-vars.json
 ./ansible-playbook -i example-inventory.cfg deploy-client.yaml --extra-vars @example-vars.json
 
+## Put parameters in server
+./ansible-playbook -i example-inventory.cfg put-parameters.yaml --extra-vars @example-vars.json
+
 ## Run a benchmark 
 ./ansible-playbook -i example-inventory.cfg run-benchmark.yaml --extra-vars @example-vars.json
 

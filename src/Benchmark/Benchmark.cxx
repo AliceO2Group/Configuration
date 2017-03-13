@@ -48,7 +48,7 @@ struct Options
     bool verbose;
 };
 
-bool sVerbose = false;
+bool sVerbose = true;
 
 auto log() -> std::ostream&
 {
@@ -510,70 +510,70 @@ void logStats(std::string directory, std::string id, std::chrono::high_resolutio
 
 int main(int argc, char** argv)
 {
-  const Options options = getOptions(argc, argv);
-  sVerbose = options.verbose;
+  try {
+    const Options options = getOptions(argc, argv);
+    sVerbose = options.verbose;
 
-  if (options.help) {
-    return 0;
-  }
-
-  auto parameterHandler = getParameterHandler(options);
-
-  if (options.printParams) {
-    // Print data set and exit
-    log() << "Printing parameters\n";
-    printMapCsv(parameterHandler->createParameterMap(options.parameterNumber));
-  }
-  else if (options.put) {
-    // Put mode
-    log() << "Putting '" << options.parameterNumber << "' parameters to servers ";
-    for (const auto& uri : options.serverUris) {
-      log() << "'" << uri << "' ";
-    }
-    log() << '\n';
-
-    for (const auto& uri : options.serverUris) {
-      auto configuration = ConfigurationFactory::getConfiguration(uri);
-      parameterHandler->put(configuration.get(), options.parameterNumber);
-    }
-  }
-  else {
-    if (options.logDirectory.empty()) {
-      throw std::runtime_error("Must specify log directory with '--log-dir' option");
+    if (options.help) {
+      return 0;
     }
 
-    // Wait for next minute if required
-    if (!options.skipWait) {
-      log() << "Waiting until next interval\n";
-      waitUntilNextInterval();
-    }
+    auto parameterHandler = getParameterHandler(options);
 
-    // Get parameters from server
-    try {
+    if (options.printParams) {
+      // Print data set and exit
+      log() << "Printing parameters\n";
+      printMapCsv(parameterHandler->createParameterMap(options.parameterNumber));
+    }
+    else if (options.put) {
+      // Put mode
+      log() << "Putting '" << options.parameterNumber << "' parameters to servers ";
+      for (const auto& uri : options.serverUris) {
+        log() << "'" << uri << "' ";
+      }
+      log() << '\n';
+
+      for (const auto& uri : options.serverUris) {
+        auto configuration = ConfigurationFactory::getConfiguration(uri);
+        parameterHandler->put(configuration.get(), options.parameterNumber);
+      }
+    }
+    else {
+      if (options.logDirectory.empty()) {
+        throw std::runtime_error("Must specify log directory with '--log-dir' option");
+      }
+
+      // Wait for next minute if required
+      if (!options.skipWait) {
+        log() << "Waiting until next interval\n";
+        waitUntilNextInterval();
+      }
+
+      // Get parameters from server
       log() << "Getting from server\n";
       auto configuration = getConfiguration(options);
       auto startTime = std::chrono::high_resolution_clock::now();
       parameterHandler->get(configuration.get(), options.parameterNumber);
       auto endTime = std::chrono::high_resolution_clock::now();
       logStats(options.logDirectory, options.logId, startTime, endTime);
-    } catch (std::exception& e) {
-      log() << "FATAL: " << e.what() << '\n';
-      return 1;
-    }
 
-    if (!options.skipCheckValues) {
-      // Verify returned values
-      log() << "Checking parameters\n";
-      int mismatches = parameterHandler->check();
-      if (mismatches > 0) {
-        std::cout << "Mismatches found: " << mismatches << '\n';
+      if (!options.skipCheckValues) {
+        // Verify returned values
+        log() << "Checking parameters\n";
+        int mismatches = parameterHandler->check();
+        if (mismatches > 0) {
+          std::cout << "Mismatches found: " << mismatches << '\n';
+        }
+
+        log() << "# Generated\n";
+        printMapCsv(parameterHandler->generatedMap);
+        log() << "# Returned\n";
+        printMapCsv(parameterHandler->returnedMap);
       }
-
-      log() << "# Generated\n";
-      printMapCsv(parameterHandler->generatedMap);
-      log() << "# Returned\n";
-      printMapCsv(parameterHandler->returnedMap);
     }
+  } catch (const std::exception& e) {
+    log() << "FATAL: " << e.what() << '\n';
+    return 1;
   }
 }
 
