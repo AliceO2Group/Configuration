@@ -1,5 +1,5 @@
 /// \file BackendBase.h
-/// \brief Base class for ConfigurationInterface implementations
+/// \brief Base class for ConfigurationInterface backend implementations
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
@@ -12,7 +12,7 @@
 namespace AliceO2 {
 namespace Configuration {
 
-/// Base class for backend implementations
+/// Base class for backend implementations. Not it is non-copyable by inheriting form boost::noncopyable
 class BackendBase: public ConfigurationInterface, public boost::noncopyable
 {
   public:
@@ -26,18 +26,22 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
       mSeparator = DEFAULT_SEPARATOR;
     }
 
+    /// Get the separator used for keys/paths
     char getSeparator()
     {
       return mSeparator;
     }
 
-    virtual Tree::Node getRecursive(const std::string& path)
+    virtual Tree::Node getRecursive(const std::string&)
     {
       throw std::runtime_error("getRecursive() unsupported by backend");
     }
 
   private:
+    /// Default separator for keys/paths
     static constexpr char DEFAULT_SEPARATOR = '/';
+
+    /// Currently used separator for keys/paths
     char mSeparator = DEFAULT_SEPARATOR;
 };
 
