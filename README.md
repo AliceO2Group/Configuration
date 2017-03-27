@@ -72,18 +72,6 @@ make -j
 sudo make install
 ~~~
 
-### etcdcpp
-
-~~~
-git clone https://github.com/suryanathan/etcdcpp
-cd etcdcpp
-sudo mkdir /usr/local/include/etcdcpp
-sudo cp etcd.hpp rapid_reply.hpp /usr/local/include/etcdcpp
-~~~
-
-### UriParser
-No need to anything currently, it is included in the project.
-
 ### libcurl
 Should be available in your OS's package manager, or else: https://curl.haxx.se/download.html
 
