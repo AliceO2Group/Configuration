@@ -1,5 +1,5 @@
 /// \file NdbBackend.h
-/// \brief Configuration interface to the ETCD distributed key-value store
+/// \brief Configuration interface to the NDB distributed key-value store
 ///
 /// \author Pascal Boeschoten, CERN
 

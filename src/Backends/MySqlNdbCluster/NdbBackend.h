@@ -1,5 +1,5 @@
 /// \file NdbBackend.h
-/// \brief Configuration interface to the Ndb key-value store
+/// \brief Configuration interface to the NDB key-value store
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 

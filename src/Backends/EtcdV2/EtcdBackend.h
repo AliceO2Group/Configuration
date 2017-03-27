@@ -1,5 +1,5 @@
 /// \file EtcdBackend.h
-/// \brief Configuration interface to the ETCD distributed key-value store
+/// \brief Configuration interface to the etcd distributed key-value store
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 

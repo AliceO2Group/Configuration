@@ -1,5 +1,5 @@
 /// \file EtcdBackend.cxx
-/// \brief Implementation of configuration interface to the ETCD distributed key-value store using the v3 API
+/// \brief Implementation of configuration interface to the etcd distributed key-value store using the v3 API
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 

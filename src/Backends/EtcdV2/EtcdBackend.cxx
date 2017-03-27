@@ -1,5 +1,5 @@
 /// \file EtcdBackend.h
-/// \brief Configuration interface to the ETCD distributed key-value store
+/// \brief Configuration interface to the etcd distributed key-value store
 ///
 /// \author Pascal Boeschoten, CERN
 
@@ -73,7 +73,7 @@ auto EtcdBackend::getString(const std::string& path) -> Optional<std::string>
     else if (replyPairs.size() == 1) {
       return replyPairs.begin()->second;
     }
-    throw std::runtime_error("ETCD reply invalid");
+    throw std::runtime_error("etcd reply invalid");
   }
   catch (const etcd::ReplyException& e) {
     if (e.error_code == 100) { // Key not found error code
