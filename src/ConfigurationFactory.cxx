@@ -1,4 +1,4 @@
-/// \file ConfigurationFactory.h
+/// \file ConfigurationFactory.cxx
 /// \brief Factory for instantiating specialized configuration interfaces
 ///
 /// \author Pascal Boeschoten, CERN
