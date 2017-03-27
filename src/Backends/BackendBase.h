@@ -6,13 +6,14 @@
 #ifndef ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
 #define ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
 
+#include <boost/core/noncopyable.hpp>
 #include "Configuration/ConfigurationInterface.h"
 
 namespace AliceO2 {
 namespace Configuration {
 
 /// Base class for backend implementations
-class BackendBase: public ConfigurationInterface
+class BackendBase: public ConfigurationInterface, public boost::noncopyable
 {
   public:
     virtual void setPathSeparator(char separator) override
