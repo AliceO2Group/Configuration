@@ -20,8 +20,6 @@ FileBackend::~FileBackend()
 {
 }
 
-#define SUFFIX_FILE_INI {".ini", ".cfg"}
-
 /// Load the configuration from given path
 /// \param path  Path to configuration data.
 ///              Example: file:/configDir/example.cfg
@@ -34,19 +32,8 @@ void loadConfigFile(const std::string& filePath, boost::property_tree::ptree& pt
 {
   if (filePath.length() == 0) { throw std::runtime_error("Invalid argument"); }
 
-  //
-  // open location according to prefix
-  //
-
-  // TODO: filter out comments in file with boost filtering_stream
-
-  //
-  // parse file according to suffix
-  //
-
   // INI file
-  std::vector<const char*> suffix_ini SUFFIX_FILE_INI;
-  for (auto suffix : suffix_ini) {
+  for (auto suffix : {".ini", ".cfg"}) {
     if (boost::algorithm::ends_with(filePath, suffix)) {
       try {
         boost::property_tree::ini_parser::read_ini(filePath, pt);
