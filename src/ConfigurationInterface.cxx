@@ -56,7 +56,7 @@ bool ConfigurationInterface::exists(const std::string& path)
   return getString(path).is_initialized();
 }
 
-// Template convenience interface methods
+// Template specializations of the convenience interface methods put/get
 
 template<> void ConfigurationInterface::put(const std::string& path, const std::string& value)
 {
