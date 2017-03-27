@@ -4,6 +4,7 @@
 /// \author Pascal Boeschoten, CERN
 
 #include <src/Backends/File/FileBackend.h>
+#include <functional>
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
@@ -31,7 +32,7 @@ auto getFile(const http::url& uri) -> UniqueConfiguration
   // will consider the thing before the first delimiter ('/') of the path as authority,
   // so we have to include that in the path we use.
   auto path = "/" + uri.host + uri.path;
-  return UniqueConfiguration(new Backends::FileBackend(path));
+  return std::make_unique<Backends::FileBackend>(path);
 }
 
 auto getJson(const http::url& uri) -> UniqueConfiguration
@@ -41,7 +42,7 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
   // so we have to include that in the path we use.
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
   auto path = "/" + uri.host + uri.path;
-  return UniqueConfiguration(new Backends::JsonBackend(path));
+  return std::make_unique<Backends::JsonBackend>(path);
 #else
   throw std::runtime_error("Back-end 'json' not enabled");
 #endif
@@ -50,7 +51,7 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
 template <typename Backend>
 auto getEtcd(const http::url& uri) -> UniqueConfiguration
 {
-  auto etcd = UniqueConfiguration(new Backend(uri.host, uri.port));
+  auto etcd = std::make_unique<Backend>(uri.host, uri.port);
   if (!uri.path.empty()) {
     etcd->setPrefix(uri.path);
   }
@@ -81,7 +82,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   auto string = uri; // The http library needs a non-const string for some reason
   http::url parsedUrl = http::ParseHttpUrl(string);
 
-  const std::map<std::string, UniqueConfiguration(*)(const http::url&)> map = {
+  const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
       {"file",    getFile},
       {"json",    getJson},
       {"etcd",    getEtcdV3},  // Default etcd is now V3
