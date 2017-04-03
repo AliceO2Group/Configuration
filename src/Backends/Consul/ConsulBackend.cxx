@@ -11,23 +11,12 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace Consul
-{
 namespace
 {
 std::string trimLeadingSlash(const std::string& s)
 {
   if ((s.size() >= 1) && (s[0] == '/')) {
     return s.substr(1, s.size() - 1);
-  } else {
-    return s;
-  }
-}
-
-std::string addLeadingSlash(const std::string& s)
-{
-  if (s.size() >= 1) {
-    return "/" + s;
   } else {
     return s;
   }
@@ -76,7 +65,7 @@ void ConsulBackend::putString(const std::string& path, const std::string& value)
 
 auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
 {
-  auto item = mStorage.item(addPrefix(replaceSeparator(path)),
+  auto item = mStorage.item(addPrefix(replaceSeparator(trimLeadingSlash(path))),
       ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
   if (item.valid()) {
     return std::move(item.value);
@@ -87,7 +76,7 @@ auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
 
 auto ConsulBackend::getRecursive(const std::string& path) -> Tree::Node
 {
-  auto requestKey(addPrefix(replaceSeparator(path)));
+  auto requestKey(addPrefix(replaceSeparator(trimLeadingSlash(path))));
   auto items = mStorage.items(requestKey, ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
   std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs;
 
@@ -98,7 +87,6 @@ auto ConsulBackend::getRecursive(const std::string& path) -> Tree::Node
   return Tree::keyValuesToTree(keyValuePairs);
 }
 
-} // namespace Consul
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

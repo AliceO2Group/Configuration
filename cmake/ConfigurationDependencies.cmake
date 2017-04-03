@@ -7,10 +7,20 @@ find_package(RapidJSON)
 find_package(CURL REQUIRED)
 find_package(Protobuf 3.0.0)
 find_package(GRPC)
+find_package(PpConsul)
 
 # Message as RapidJSON is silent when it's not found
-if(NOT PROTOBUF_FOUND)
+if(RAPIDJSON_FOUND)
+    message(STATUS "RapidJSON found")
+else()
     message(STATUS "RapidJSON not found")
+endif()
+
+# Message as PpConsul is silent
+if(PPCONSUL_FOUND)
+    message(STATUS "PpConsul found : ${PPCONSUL_LIBRARIES}; include ${PPCONSUL_INCLUDE_DIR}")
+else()
+    message(STATUS "PpConsul not found")
 endif()
 
 # Message as Protobuf is silent
@@ -22,10 +32,11 @@ endif()
 
 ########## General definitions and flags ##########
 
-if (RAPIDJSON_FOUND AND PROTOBUF_FOUND AND GRPC_FOUND)
+if (RAPIDJSON_FOUND AND PROTOBUF_FOUND AND GRPC_FOUND AND PPCONSUL_FOUND)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCD_ENABLED)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED)
-    add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED)	  
+    add_definitions(-DFLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED)
+    add_definitions(-DFLP_CONFIGURATION_BACKEND_CONSUL_ENABLED)	  	  
 endif()
 
 ########## Bucket definitions ############
@@ -53,6 +64,7 @@ o2_define_bucket(
     ${GRPC_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${CURL_LIBRARIES}
+    ${PPCONSUL_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${PROTOBUF_INCLUDE_DIRS}

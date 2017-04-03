@@ -16,6 +16,9 @@
 #ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
 # include "Backends/EtcdV3/EtcdV3Backend.h"
 #endif
+#ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
+# include "Backends/Consul/ConsulBackend.h"
+#endif
 #include "UriParser/UriParser.hpp"
 
 namespace AliceO2
@@ -75,6 +78,16 @@ auto getEtcdV3(const http::url& uri) -> UniqueConfiguration
   throw std::runtime_error("Back-end 'etcd-v3' not enabled");
 #endif
 }
+
+
+auto getConsul(const http::url& uri) -> UniqueConfiguration
+{
+#ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
+  return std::make_unique<Backends::ConsulBackend>(uri.host, uri.port);
+#else
+  throw std::runtime_error("Back-end 'consul' not enabled");
+#endif
+}
 } // Anonymous namespace
 
 auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueConfiguration
@@ -87,7 +100,9 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
       {"json",    getJson},
       {"etcd",    getEtcdV3},  // Default etcd is now V3
       {"etcd-v2", getEtcdV2},  // Legacy etcd option still available
-      {"etcd-v3", getEtcdV3}};
+      {"etcd-v3", getEtcdV3},
+      {"consul", getConsul},
+  };
 
   auto iterator = map.find(parsedUrl.protocol);
   if (iterator != map.end()) {

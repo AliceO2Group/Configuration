@@ -4,7 +4,7 @@
 /// \author Sylvain Chapeland, CERN
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef SRC_FILECONFIGURATION_H_
+#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_
 #define SRC_FILECONFIGURATION_H_
 
 #include <string>

@@ -16,8 +16,8 @@
 #include <memory>
 #include <string>
 #include <thread>
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 #include <vector>
 #include "Configuration/ConfigurationFactory.h"
 
@@ -30,8 +30,8 @@ namespace {
 
 using namespace AliceO2::Configuration;
 namespace po = boost::program_options;
-using ParameterMap = std::unordered_map<std::string, std::string>;
-using KeySet = std::unordered_set<std::string>;
+using ParameterMap = std::map<std::string, std::string>;
+using KeySet = std::set<std::string>;
 
 struct Options
 {
@@ -82,7 +82,8 @@ auto getOptions(int argc, char** argv) -> Options
           "put mode will put to all servers")
       ("log-dir",
           po::value<std::string>(&options.logDirectory),
-          "Output directory for result logs. Log format: log ID, PID, start time, end time, delta time")
+          "Output directory for result logs. Log format: log ID, PID, parameter structure, parameter number, "
+          "start time, end time, delta time")
       ("log-id",
           po::value<std::string>(&options.logId),
           "Output ID for result logs. If not specified, the hostname will be used")
@@ -111,6 +112,10 @@ auto getOptions(int argc, char** argv) -> Options
     char hostname[HOST_NAME_MAX];
     gethostname(hostname, HOST_NAME_MAX);
     options.logId = hostname;
+  }
+
+  if (serverUris.empty()) {
+    throw std::runtime_error("Must specify server URI with '--uri' option");
   }
 
   boost::split(options.serverUris, serverUris, boost::is_any_of(","), boost::token_compress_on);
@@ -256,8 +261,6 @@ void _createParameterMapTreeRecursive(
     return;
   }
 
-  //cout << currentDirKey << " depth=" << currentDepth << endl;
-
   int addedParameters = 0;
   while (currentParameters < nParameters && addedParameters < 5) {
     parameterMap.emplace(currentDirKey + "/key" + boost::lexical_cast<std::string>(currentParameters),
@@ -265,9 +268,6 @@ void _createParameterMapTreeRecursive(
 
     currentParameters++;
     addedParameters++;
-
-    //for (int i = 0; i < (currentDepth + 1); i++) { cout << "-"; }
-    //cout << p.key << " -> " << p.expectedValue << endl;
   }
 
   _createParameterMapTreeRecursive(nParameters, currentParameters, neededDepth, currentDepth + 1,
@@ -302,8 +302,6 @@ ParameterMap createParameterMapTree(int nParameters)
   int neededDepth = findDepth(nParameters, maxParametersPerDirectory);
   int currentDepth = 0;
 
-  //cout << "Creating tree, neededDepth=" << neededDepth << endl;
-
   _createParameterMapTreeRecursive(nParameters, currentParameters, neededDepth, currentDepth, currentDirKey,
       maxParametersPerDirectory, parameterMap);
 
@@ -317,7 +315,6 @@ void putParametersToServer(ConfigurationInterface* configuration, const Paramete
     log() << " - " << kv.first << " -> " << kv.second << '\n';
     configuration->putString(kv.first, kv.second);
   }
-//  globalRetries += backend->totalRetries;
 }
 
 ParameterMap getParametersFromServer(ConfigurationInterface* configuration, const ParameterMap& keys)
@@ -326,9 +323,12 @@ ParameterMap getParametersFromServer(ConfigurationInterface* configuration, cons
   log() << "Getting keys: \n";
   for (const auto& kv : keys) {
     log() << " - " << kv.first << '\n';
-    map.emplace(kv.first, configuration->getString(kv.first).value());
+    if (auto value = configuration->getString(kv.first)) {
+      map.emplace(kv.first, *value);
+    } else {
+      throw std::runtime_error("Failed to get key '" + kv.first + "'");
+    }
   }
-//  globalRetries += backend->totalRetries;
   return map;
 }
 
@@ -341,7 +341,6 @@ ParameterMap getParametersFromServerRecursive(ConfigurationInterface* configurat
   for (const auto& kv : keyValues) {
     map.emplace(key + kv.first, Tree::convert<std::string>(kv.second));
   }
-//  globalRetries += backend->totalRetries;
   return map;
 }
 
@@ -482,8 +481,8 @@ void printMapCsv(const ParameterMap& map)
   }
 }
 
-void logStats(std::string directory, std::string id, std::chrono::high_resolution_clock::time_point startTime,
-    std::chrono::high_resolution_clock::time_point endTime)
+void logStats(std::string directory, std::string id, std::string parameterStructure, int parameterNumber, std::chrono::steady_clock::time_point startTime,
+    std::chrono::steady_clock::time_point endTime)
 {
   int pid = ::getpid();
   auto toMillis = [](auto t){ return std::chrono::duration_cast<std::chrono::milliseconds>(t).count(); };
@@ -491,6 +490,8 @@ void logStats(std::string directory, std::string id, std::chrono::high_resolutio
   std::stringstream ss;
   ss << id << ','
       << pid << ','
+      << parameterStructure << ','
+      << parameterNumber << ','
       << toMillis(startTime.time_since_epoch()) << ','
       << toMillis(endTime.time_since_epoch()) << ','
       << toMillis(endTime - startTime) << '\n';
@@ -552,10 +553,11 @@ int main(int argc, char** argv)
       // Get parameters from server
       log() << "Getting from server\n";
       auto configuration = getConfiguration(options);
-      auto startTime = std::chrono::high_resolution_clock::now();
+      auto startTime = std::chrono::steady_clock::now();
       parameterHandler->get(configuration.get(), options.parameterNumber);
-      auto endTime = std::chrono::high_resolution_clock::now();
-      logStats(options.logDirectory, options.logId, startTime, endTime);
+      auto endTime = std::chrono::steady_clock::now();
+      logStats(options.logDirectory, options.logId, options.parameterStructure, options.parameterNumber, startTime,
+          endTime);
 
       if (!options.skipCheckValues) {
         // Verify returned values

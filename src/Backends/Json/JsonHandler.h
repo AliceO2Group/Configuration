@@ -3,6 +3,9 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
+#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_JSON_JSONHANDLER_H_
+#define ALICEO2_CONFIGURATION_SRC_BACKENDS_JSON_JSONHANDLER_H_
+
 #include <exception>
 #include <sstream>
 #include <string>
@@ -140,3 +143,5 @@ struct JsonHandler {
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
+
+#endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_JSON_JSONHANDLER_H_

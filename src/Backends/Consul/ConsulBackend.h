@@ -7,16 +7,14 @@
 #define SRC_BACKENDS_CONSUL_CONSULBACKEND_H_
 
 #include "../BackendBase.h"
+#include <ppconsul/kv.h>
 #include <string>
-#include "ppconsul/kv.h"
 
 namespace AliceO2
 {
 namespace Configuration
 {
 namespace Backends
-{
-namespace Consul
 {
 
 /// Backend for Consul
@@ -42,7 +40,6 @@ class ConsulBackend final : public BackendBase
     ppconsul::kv::Storage mStorage;
 };
 
-} // namespace Consul
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

@@ -81,6 +81,12 @@ Follow instructions on: https://github.com/coreos/etcd/releases/
 Or use Docker: 
 docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
 
+### ppconsul
+git clone https://github.com/oliora/ppconsul.git
+mkdir build
+cd build
+cmake -DBUILD_SHARED_LIBS=ON .
+cp output/*.so /usr/local/lib/
 
 ## GUI for etcd
 There is a simple Node.js-based GUI available. You may find it useful for simple editing and visualisation of the data.

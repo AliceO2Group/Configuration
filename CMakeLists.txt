@@ -93,7 +93,7 @@ set(HEADERS # needed for the dictionary generation
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
-if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
+if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
     include_directories(src/Backends/EtcdV3/proto/googleapis)
@@ -121,6 +121,12 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
             )
     message(STATUS "etcd-v2 backend enabled")
     
+    # Add Consul backend if the PpConsul dependency was found
+    list(APPEND SRCS 
+            src/Backends/Consul/ConsulBackend.cxx
+            )
+    message(STATUS "Consul backend enabled")
+    
     # Add JSON file backend if the RapidJSON dependency was found
     list(APPEND SRCS
             src/Backends/Json/JsonBackend.cxx
@@ -128,7 +134,7 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND)
     message(STATUS "json file backend enabled")
 else ()
     set(BUCKET_NAME_CONFIG configuration_bucket)
-    message(STATUS "json file, etcd v2, etcd v3 dependencies missing, compilation skipped for corresponding classes")
+    message(STATUS "json file, etcd v2, etcd v3, consul dependencies missing, compilation skipped for corresponding classes")
 endif ()
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 

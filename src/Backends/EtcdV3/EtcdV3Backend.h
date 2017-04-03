@@ -3,8 +3,8 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef ALICEO2_CONFIGURATION_ETCDV3BACKEND_H_
-#define ALICEO2_CONFIGURATION_ETCDV3BACKEND_H_
+#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_ETCDV3_ETCDV3BACKEND_H_
+#define ALICEO2_CONFIGURATION_SRC_BACKENDS_ETCDV3_ETCDV3BACKEND_H_
 
 #include <iostream>
 #include <memory>
@@ -46,4 +46,4 @@ class EtcdV3Backend final : public BackendBase
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif // ALICEO2_CONFIGURATION_ETCDV3BACKEND_H_
+#endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_ETCDV3_ETCDV3BACKEND_H_
