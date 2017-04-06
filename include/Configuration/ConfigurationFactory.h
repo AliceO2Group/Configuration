@@ -27,6 +27,7 @@ class ConfigurationFactory
     ///   * "etcd"     etcd default backend (currently V3)
     ///   * "etcd-v2"  etcd V2 API backend
     ///   * "etcd-v3"  etcd V3 API backend
+    ///   * "consul"   Consul backend
     ///
     /// Examples of URIs:
     ///   * "etcd://myetcdserver:4001"
