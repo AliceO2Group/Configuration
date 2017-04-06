@@ -144,14 +144,6 @@ O2_GENERATE_LIBRARY()
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
-# Script
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME DatasetGenerator
-        SOURCES scripts/DatasetGenerator.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
-
 O2_GENERATE_EXECUTABLE(
         EXE_NAME ConfigurationBenchmark
         SOURCES src/Benchmark/Benchmark.cxx
