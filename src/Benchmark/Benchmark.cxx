@@ -38,8 +38,10 @@ struct Options
     std::vector<std::string> serverUris;
     std::string logDirectory;
     std::string logId;
+    std::string runId;
     std::string parameterStructure;
     int parameterNumber;
+    int processNumber;
     bool skipWait;
     bool skipCheckValues;
     bool put;
@@ -69,17 +71,20 @@ auto getOptions(int argc, char** argv) -> Options
       ("verbose",
           po::bool_switch(&options.verbose)->default_value(false),
           "Verbose output")
-      ("param-structure",
-          po::value<std::string>(&options.parameterStructure)->default_value(PARAM_MODE_SEPARATE),
-          "Parameter structure ['" PARAM_MODE_SEPARATE "', '" PARAM_MODE_COMBINED "', '" PARAM_MODE_FLAT "', '"
-          PARAM_MODE_TREE "']")
-      ("param-n",
-          po::value<int>(&options.parameterNumber)->default_value(1),
-          "Number of parameters")
       ("uri",
           po::value<std::string>(&serverUris),
           "Server URI. Can give multiple separated by comma. Get mode will 'randomly' pick server based on PID, "
           "put mode will put to all servers")
+      ("procs",
+          po::value<int>(&options.processNumber)->default_value(1),
+          "Number of processes")
+      ("params",
+          po::value<int>(&options.parameterNumber)->default_value(1),
+          "Number of parameters per process")
+      ("structure",
+          po::value<std::string>(&options.parameterStructure)->default_value(PARAM_MODE_SEPARATE),
+          "Parameter structure ['" PARAM_MODE_SEPARATE "', '" PARAM_MODE_COMBINED "', '" PARAM_MODE_FLAT "', '"
+          PARAM_MODE_TREE "']")
       ("log-dir",
           po::value<std::string>(&options.logDirectory),
           "Output directory for result logs. Log format: log ID, PID, parameter structure, parameter number, "
@@ -87,6 +92,9 @@ auto getOptions(int argc, char** argv) -> Options
       ("log-id",
           po::value<std::string>(&options.logId),
           "Output ID for result logs. If not specified, the hostname will be used")
+      ("run-id",
+          po::value<std::string>(&options.runId)->default_value("run"),
+          "Optional extra ID for result logs, e.g. for identifying a run")
       ("skip-wait",
           po::bool_switch(&options.skipWait),
           "Skip wait until simulated start")
@@ -446,19 +454,6 @@ auto getConfiguration(const Options& options) -> std::unique_ptr<ConfigurationIn
   return ConfigurationFactory::getConfiguration(selectUri());
 }
 
-struct ParameterSpecification
-{
-    struct SingleGet
-    {
-        std::string key;
-        std::string value;
-    };
-
-    std::vector<SingleGet> singleGets;
-    std::vector<std::string> separatePaths;
-    std::vector<std::string> recursivePaths;
-};
-
 auto getParameterHandler(const Options& options) -> std::unique_ptr<ParameterHandler>
 {
   if (options.parameterStructure == PARAM_MODE_SEPARATE) {
@@ -481,32 +476,106 @@ void printMapCsv(const ParameterMap& map)
   }
 }
 
-void logStats(std::string directory, std::string id, std::string parameterStructure, int parameterNumber, std::chrono::steady_clock::time_point startTime,
-    std::chrono::steady_clock::time_point endTime)
+std::string getStatsPath(const Options& options)
 {
-  int pid = ::getpid();
-  auto toMillis = [](auto t){ return std::chrono::duration_cast<std::chrono::milliseconds>(t).count(); };
-
-  std::stringstream ss;
-  ss << id << ','
-      << pid << ','
-      << parameterStructure << ','
-      << parameterNumber << ','
-      << toMillis(startTime.time_since_epoch()) << ','
-      << toMillis(endTime.time_since_epoch()) << ','
-      << toMillis(endTime - startTime) << '\n';
-
-  FILE* file;
-  std::string path = directory + "/result_" + id + ".csv";
-  log() << "Logging to " << path << '\n';
-  // Open in append mode
-  file = fopen (path.c_str(), "a");
-  // Disable buffering to prevent concurrency issues
-  setvbuf(stdout, NULL, _IONBF, 0);
-  fputs(ss.str().c_str(), file);
-  fclose(file);
+  std::stringstream pathStream;
+  pathStream << options.logDirectory << "/result_" << options.logId << '_' << options.runId << ".csv";
+  return pathStream.str();
 }
 
+void logStats(const Options& options, std::ofstream& statsStream,  std::chrono::steady_clock::time_point startTime,
+    std::chrono::steady_clock::time_point endTime, std::string status)
+{
+  auto toMillis = [](auto t){ return std::chrono::duration_cast<std::chrono::milliseconds>(t).count(); };
+
+  std::stringstream statsRowStream;
+  statsRowStream << options.logId << ','
+      << ::getpid() << ','
+      << options.parameterStructure << ','
+      << options.parameterNumber << ','
+      << toMillis(startTime.time_since_epoch()) << ','
+      << toMillis(endTime.time_since_epoch()) << ','
+      << toMillis(endTime - startTime) << ','
+      << status << '\n';
+  auto statsRow = statsRowStream.str();
+  statsStream << statsRow;
+}
+
+void doPut(const Options& options, ParameterHandler& parameterHandler)
+{
+  log() << "Putting '" << options.parameterNumber << "' parameters to servers ";
+  for (const auto& uri : options.serverUris) {
+    log() << "'" << uri << "' ";
+  }
+  log() << '\n';
+
+  for (const auto& uri : options.serverUris) {
+    auto configuration = ConfigurationFactory::getConfiguration(uri);
+    parameterHandler.put(configuration.get(), options.parameterNumber);
+  }
+}
+
+void doGet(const Options& options, ParameterHandler& parameterHandler)
+{
+  if (options.logDirectory.empty()) {
+    throw std::runtime_error("Must specify log directory with '--log-dir' option");
+  }
+
+  auto path = getStatsPath(options);
+  log() << "Logging stats to " << path << '\n';
+  std::ofstream statsFileStream;
+  statsFileStream.rdbuf()->pubsetbuf(0, 0); // Disable buffering to prevent concurrency issues
+  statsFileStream.open(path.c_str(), std::ios_base::app); // Open in append mode
+
+  if (options.processNumber > 1) {
+    log() << "Forking to get " << options.processNumber << " processes\n";
+  }
+
+  for (int i = 1; i < options.processNumber; ++i) {
+    pid_t pid = fork();
+    if (pid < 0) {
+      throw std::runtime_error("Fork error");
+    } else if (pid == 0) {
+      sVerbose = false; // Children should be silent
+      break; // Children exit loop
+    }
+    // Parent continues
+  }
+
+  // Wait for next minute if required
+  if (!options.skipWait) {
+    log() << "Waiting until next interval\n";
+    waitUntilNextInterval();
+  }
+
+  // Get parameters from server
+  log() << "Getting from server\n";
+  try {
+    auto configuration = getConfiguration(options);
+    auto startTime = std::chrono::steady_clock::now();
+    parameterHandler.get(configuration.get(), options.parameterNumber);
+    auto endTime = std::chrono::steady_clock::now();
+    logStats(options, statsFileStream, startTime, endTime, "OK");
+  }
+  catch (const std::exception& e) {
+    logStats(options, statsFileStream, {}, {}, e.what());
+  }
+
+  if (!options.skipCheckValues) {
+    // Verify returned values
+    log() << "Checking parameters\n";
+    int mismatches = parameterHandler.check();
+    if (mismatches > 0) {
+      std::cout << "Mismatches found: " << mismatches << '\n';
+      logStats(options, statsFileStream, {}, {}, "mismatches");
+    }
+
+    log() << "# Generated\n";
+    printMapCsv(parameterHandler.generatedMap);
+    log() << "# Returned\n";
+    printMapCsv(parameterHandler.returnedMap);
+  }
+}
 } // Anonymous namespace
 
 int main(int argc, char** argv)
@@ -522,56 +591,14 @@ int main(int argc, char** argv)
     auto parameterHandler = getParameterHandler(options);
 
     if (options.printParams) {
-      // Print data set and exit
       log() << "Printing parameters\n";
       printMapCsv(parameterHandler->createParameterMap(options.parameterNumber));
     }
     else if (options.put) {
-      // Put mode
-      log() << "Putting '" << options.parameterNumber << "' parameters to servers ";
-      for (const auto& uri : options.serverUris) {
-        log() << "'" << uri << "' ";
-      }
-      log() << '\n';
-
-      for (const auto& uri : options.serverUris) {
-        auto configuration = ConfigurationFactory::getConfiguration(uri);
-        parameterHandler->put(configuration.get(), options.parameterNumber);
-      }
+      doPut(options, *parameterHandler.get());
     }
     else {
-      if (options.logDirectory.empty()) {
-        throw std::runtime_error("Must specify log directory with '--log-dir' option");
-      }
-
-      // Wait for next minute if required
-      if (!options.skipWait) {
-        log() << "Waiting until next interval\n";
-        waitUntilNextInterval();
-      }
-
-      // Get parameters from server
-      log() << "Getting from server\n";
-      auto configuration = getConfiguration(options);
-      auto startTime = std::chrono::steady_clock::now();
-      parameterHandler->get(configuration.get(), options.parameterNumber);
-      auto endTime = std::chrono::steady_clock::now();
-      logStats(options.logDirectory, options.logId, options.parameterStructure, options.parameterNumber, startTime,
-          endTime);
-
-      if (!options.skipCheckValues) {
-        // Verify returned values
-        log() << "Checking parameters\n";
-        int mismatches = parameterHandler->check();
-        if (mismatches > 0) {
-          std::cout << "Mismatches found: " << mismatches << '\n';
-        }
-
-        log() << "# Generated\n";
-        printMapCsv(parameterHandler->generatedMap);
-        log() << "# Returned\n";
-        printMapCsv(parameterHandler->returnedMap);
-      }
+      doGet(options, *parameterHandler.get());
     }
   } catch (const std::exception& e) {
     log() << "FATAL: " << e.what() << '\n';
