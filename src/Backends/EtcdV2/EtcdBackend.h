@@ -3,8 +3,8 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef SRC_ETCDCONFIGURATION_H_
-#define SRC_ETCDCONFIGURATION_H_
+#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_ETCD_ETCDBACKEND_H_
+#define ALICEO2_CONFIGURATION_SRC_BACKENDS_ETCD_ETCDBACKEND_H_
 
 #include <string>
 #include <boost/scoped_ptr.hpp>
@@ -46,4 +46,4 @@ class EtcdBackend final : public BackendBase
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif /* SRC_ETCDCONFIGURATION_H_ */
+#endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_ETCD_ETCDBACKEND_H_

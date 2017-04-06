@@ -5,7 +5,7 @@
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
 #ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_
-#define SRC_FILECONFIGURATION_H_
+#define ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -37,4 +37,4 @@ class FileBackend final : public BackendBase
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif /* SRC_FILECONFIGURATION_H_ */
+#endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_

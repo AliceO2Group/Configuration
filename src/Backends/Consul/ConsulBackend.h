@@ -3,8 +3,8 @@
 ///
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef SRC_BACKENDS_CONSUL_CONSULBACKEND_H_
-#define SRC_BACKENDS_CONSUL_CONSULBACKEND_H_
+#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_CONSUL_CONSULBACKEND_H_
+#define ALICEO2_CONFIGURATION_SRC_BACKENDS_CONSUL_CONSULBACKEND_H_
 
 #include "../BackendBase.h"
 #include <ppconsul/kv.h>
@@ -44,4 +44,4 @@ class ConsulBackend final : public BackendBase
 } // namespace Configuration
 } // namespace AliceO2
 
-#endif /* SRC_BACKENDS_CONSUL_CONSULBACKEND_H_ */
+#endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_CONSUL_CONSULBACKEND_H_
