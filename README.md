@@ -1,7 +1,4 @@
 # Configuration module
-
-
-## Introduction
 The Configuration module provides a way to access Configuration data from various backends in a uniform way. 
 Users get an interface to backends by providing a URI to the ConfigurationFactory class, which returns an implementation 
 of ConfigurationInterface.
@@ -9,38 +6,60 @@ Values can be retrieved from the interface one-by-one using simple getters, or m
 The getRecursive() function returns a tree-like data structure, which models the hierarchy of directories or paths.
 
 
-## Backends
+# Backends
 This section provides some basic information on the available backends and their dependencies  
 
-### File
+## File
 * Reads .ini style files
 * No dependencies
 
-### JSON
+## JSON
 * Reads .json files
 * Requires RapidJSON
 
-### etcd v2
+## etcd v2
 * Interface to etcd v2 API
 * Requires RapidJSON
 
-### etcd v3
+## etcd v3
 * Interface to etcd v3 API
 * Requires Protobuf and gRPC 
 
-### Consul
+## Consul
 * Interface to Consul API
 * Requires ppconsul
 * Work in progress
 
 
-## Examples
+# Examples
 There are usage examples in the file test/TestExamples.cxx. 
 The unit tests may also be useful as examples.
 
 
-## Dependencies
-The configuration module has some external dependencies, this section provides instructions for installing them.
+# Installation
+
+## aliBuild
+~~~
+cd $HOME/alice 
+aliBuild init Configuration@master # checkout the code of 
+                                   # Configuration, branch master
+aliDoctor Configuration            # To make sure that we are good.
+aliBuild --defaults o2 build Configuration 
+alienv load Configuration/latest
+
+# At this stage, modify the project.
+ 
+# Re-build by doing either
+aliBuild --defaults o2 build Configuration
+# or (faster compilation)
+cd sw/BUILD/Configuration-latest/Configuration
+make -j install
+~~~
+For more information: https://alisw.github.io/alibuild/o2-tutorial.html
+
+## Manual 
+
+This section provides instructions for manually installing the Configuration module and its dependencies
 
 ### Protocol Buffer & gRPC
 Needed for etcd-v3 back-end.
@@ -63,7 +82,6 @@ make install
 ~~~
 
 ### RapidJSON
-
 ~~~
 git clone https://github.com/miloyip/rapidjson.git
 cd rapidjson; mkdir build; cd build
@@ -75,29 +93,26 @@ sudo make install
 ### libcurl
 Should be available in your OS's package manager, or else: https://curl.haxx.se/download.html
 
-### etcd
-Note: this is not a compile-time dependency, just an optional runtime-dependency
-Follow instructions on: https://github.com/coreos/etcd/releases/
-Or use Docker: 
-docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
-
 ### ppconsul
+~~~
 git clone https://github.com/oliora/ppconsul.git
-mkdir build
-cd build
+cd ppconsul; mkdir build; cd build
 cmake -DBUILD_SHARED_LIBS=ON .
 cp output/*.so /usr/local/lib/
-
-## GUI for etcd
-There is a simple Node.js-based GUI available. You may find it useful for simple editing and visualisation of the data.
-
 ~~~
-yum install nodejs libuv
-wget https://github.com/henszey/etcd-browser/archive/master.zip
-unzip master.zip
-cd etcd-browser-master
-ETCD_HOST=127.0.0.1 node server.js
+
+### etcd
+Note: this is not a compile-time dependency, just an optional runtime-dependency
+Follow instructions on: `https://github.com/coreos/etcd/releases/`
+Or use Docker: 
 ~~~
-(For more information: https://github.com/henszey/etcd-browser)
+docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
+~~~
 
-
+### Configuration
+~~~
+git clone https://github.com/AliceO2Group/Configuration.git
+cd Configuration; mkdir build; cd build
+cmake ..
+make -j
+~~~
