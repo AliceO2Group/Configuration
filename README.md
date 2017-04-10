@@ -2,8 +2,8 @@
 The Configuration module provides a way to access Configuration data from various backends in a uniform way. 
 Users get an interface to backends by providing a URI to the ConfigurationFactory class, which returns an implementation 
 of ConfigurationInterface.
-Values can be retrieved from the interface one-by-one using simple getters, or multiple at a time using getRecursive().
-The getRecursive() function returns a tree-like data structure, which models the hierarchy of directories or paths.
+Values can be retrieved from the interface one-by-one using simple getters, or multiple at a time using `getRecursive()`.
+The `getRecursive()` function returns a tree-like data structure, which models the hierarchy of directories or paths.
 
 
 # Backends
@@ -32,13 +32,31 @@ This section provides some basic information on the available backends and their
 
 
 # Examples
-There are usage examples in the file test/TestExamples.cxx. 
+Basic usage:
+
+~~~
+std::string uri = "etcd://localhost:2379"; 
+std::unique_ptr<ConfigurationInterface> conf = ConfigurationFactory::getConfiguration(uri);
+conf->put<int>("/my_dir/my_key", 123);
+int value = conf->get<int>("/my_dir/my_key");
+~~~
+
+There are more usage examples in the file `test/TestExamples.cxx`. 
 The unit tests may also be useful as examples.
+
+
+# Command line utilities
+The library includes some simple command line utilities that can be used to interact with backends.
+* `configuration-put` for putting values
+* `configuration-get` for getting values
+* `configuration-copy` for copying values
+
+For usage, refer to their respective `--help` options.
 
 
 # Installation
 
-## aliBuild
+## aliBuild installation
 ~~~
 cd $HOME/alice 
 aliBuild init Configuration@master # checkout the code of 
@@ -57,7 +75,7 @@ make -j install
 ~~~
 For more information: https://alisw.github.io/alibuild/o2-tutorial.html
 
-## Manual 
+## Manual installation
 
 This section provides instructions for manually installing the Configuration module and its dependencies
 
