@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   std::string value {"test_value"};
 
   // Check with nonexistant keys
-  BOOST_CHECK_NO_THROW(conf->get<int>("this_is/a_bad/key").get_value_or(-1) == -1);
+  BOOST_CHECK_NO_THROW(BOOST_CHECK(conf->get<int>("this_is/a_bad/key").get_value_or(-1) == -1));
 
   // File backend does not support putting values
   BOOST_CHECK_THROW(conf->put(key, value), std::runtime_error);
@@ -310,7 +310,6 @@ BOOST_AUTO_TEST_CASE(EtcdTest)
     return;
   }
 
-
   std::string key {"/test/key"};
   std::string value {"test_value"};
 
@@ -338,4 +337,18 @@ BOOST_AUTO_TEST_CASE(EtcdTest)
   }
 }
 
+BOOST_AUTO_TEST_CASE(TreeConversionTest)
+{
+  using namespace Tree;
+
+  //! [Key-value pair conversion]
+  std::vector<std::pair<std::string, Leaf>> pairs {
+      {"/dir/bool", false},
+         {"/dir/double", 45.6},
+         {"/dir/subdir/int", 123},
+         {"/dir/subdir/subsubdir/string", "string"s}};
+
+  Node convertedTree = keyValuesToTree(pairs);
+  treeToKeyValues(convertedTree) == pairs;
+}
 } // Anonymous namespace

@@ -157,7 +157,9 @@ inline void printTree(const Node& node, std::ostream& stream, int level = 0)
   // The appropriate lambda is called depending on what type is contained in the node variant
   Visitor::apply(node,
       [&](const Branch& branch) {
-        stream << '\n';
+        if (level != 0) {
+          stream << '\n';
+        }
         for (const auto& keyValuePair : branch) {
           stream << std::string(level*2, ' '); // Indentation
           stream << keyValuePair.first << " -> "; // Print name of the branch

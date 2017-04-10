@@ -47,6 +47,8 @@ EtcdV3Backend::EtcdV3Backend(const std::string& host, int port)
     : mChannel(grpc::CreateChannel(makeChannelString(host, port), grpc::InsecureChannelCredentials())), mStub(
         etcdserverpb::KV::NewStub(mChannel))
 {
+  // Test connection (it throws if the connection is bad)
+  getString("/");
 }
 
 void EtcdV3Backend::putString(const std::string& path, const std::string& value)
