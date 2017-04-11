@@ -126,11 +126,11 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     message(STATUS "etcd-v2 backend enabled")
     
     # Add Consul backend if the PpConsul dependency was found
-    list(APPEND SRCS 
+    list(APPEND SRCS
             src/Backends/Consul/ConsulBackend.cxx
             )
     message(STATUS "Consul backend enabled")
-    
+
     # Add JSON file backend if the RapidJSON dependency was found
     list(APPEND SRCS
             src/Backends/Json/JsonBackend.cxx
@@ -191,3 +191,5 @@ O2_GENERATE_TESTS(
         BUCKET_NAME ${BUCKET_NAME}
         TEST_SRCS ${TEST_SRCS}
 )
+
+add_subdirectory(doc)

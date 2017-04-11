@@ -1,5 +1,5 @@
 # Configuration module
-The Configuration module provides a way to access Configuration data from various backends in a uniform way. 
+The Configuration module provides a way to access Configuration data from various backends in a uniform way.
 Users get an interface to backends by providing a URI to the ConfigurationFactory class, which returns an implementation 
 of ConfigurationInterface.
 Values can be retrieved from the interface one-by-one using simple getters, or multiple at a time using getRecursive().
@@ -40,15 +40,15 @@ The unit tests may also be useful as examples.
 
 ## aliBuild
 ~~~
-cd $HOME/alice 
-aliBuild init Configuration@master # checkout the code of 
+cd $HOME/alice
+aliBuild init Configuration@master # checkout the code of
                                    # Configuration, branch master
 aliDoctor Configuration            # To make sure that we are good.
-aliBuild --defaults o2 build Configuration 
+aliBuild --defaults o2 build Configuration
 alienv load Configuration/latest
 
 # At this stage, modify the project.
- 
+
 # Re-build by doing either
 aliBuild --defaults o2 build Configuration
 # or (faster compilation)
@@ -57,7 +57,7 @@ make -j install
 ~~~
 For more information: https://alisw.github.io/alibuild/o2-tutorial.html
 
-## Manual 
+## Manual
 
 This section provides instructions for manually installing the Configuration module and its dependencies
 
@@ -116,3 +116,11 @@ cd Configuration; mkdir build; cd build
 cmake ..
 make -j
 ~~~
+(For more information: https://github.com/henszey/etcd-browser)
+
+## Doxygen
+
+`make doc` will generate the doxygen documentation.
+To access the resulting documentation, open doc/html/index.html in your
+build directory. To install the documentation when calling `make install`
+turn on the variable `DOC_INSTALL`.
