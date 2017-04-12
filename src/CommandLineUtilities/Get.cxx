@@ -23,24 +23,24 @@ class Get : public AliceO2::Common::Program
     virtual void addOptions(boost::program_options::options_description& optionsDescription) override
     {
       optionsDescription.add_options()
-          ("uri", po::value<std::string>(&serverUri)->required(), "Server URI")
-          ("key,k", po::value<std::string>(&key)->required(), "Key to get value with")
-          ("recursive,r", po::bool_switch(&recursive), "Recursive get");
+          ("uri", po::value<std::string>(&mServerUri)->required(), "Server URI")
+          ("key,k", po::value<std::string>(&mKey)->required(), "Key to get value with")
+          ("recursive,r", po::bool_switch(&mRecursive), "Recursive get");
     }
 
     virtual void run(const boost::program_options::variables_map& variablesMap) override
     {
-      auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(serverUri);
-      if (recursive) {
-        AliceO2::Configuration::Tree::printTree(configuration->getRecursive(key), std::cout);
+      auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(mServerUri);
+      if (mRecursive) {
+        AliceO2::Configuration::Tree::printTree(configuration->getRecursive(mKey), std::cout);
       } else {
-        std::cout << configuration->getString(key).value_or("Key did not exist") << '\n';
+        std::cout << configuration->getString(mKey).value_or("Key did not exist") << '\n';
       }
     }
 
-    std::string serverUri;
-    std::string key;
-    bool recursive;
+    std::string mServerUri;
+    std::string mKey;
+    bool mRecursive;
 };
 } // Anonymous namespace
 

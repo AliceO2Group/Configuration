@@ -23,23 +23,21 @@ class Put : public AliceO2::Common::Program
     virtual void addOptions(boost::program_options::options_description& optionsDescription) override
     {
       optionsDescription.add_options()
-          ("uri", po::value<std::string>(&serverUri)->required(), "Server URI")
-          ("key,k", po::value<std::string>(&key)->required(), "Key to put to")
-          ("value,v", po::value<std::string>(&value)->required(), "Value to put");
+          ("uri", po::value<std::string>(&mServerUri)->required(), "Server URI")
+          ("key,k", po::value<std::string>(&mKey)->required(), "Key to put to")
+          ("value,v", po::value<std::string>(&mValue)->required(), "Value to put");
     }
 
     virtual void run(const boost::program_options::variables_map& variablesMap) override
     {
-      auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(serverUri);
-      configuration->putString(key, value);
+      auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(mServerUri);
+      configuration->putString(mKey, mValue);
     }
 
-    bool help;
-    std::string serverUri;
-    std::string key;
-    std::string value;
+    std::string mServerUri;
+    std::string mKey;
+    std::string mValue;
 };
-
 } // Anonymous namespace
 
 int main(int argc, char** argv)
