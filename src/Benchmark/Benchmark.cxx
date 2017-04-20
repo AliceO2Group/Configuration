@@ -117,8 +117,9 @@ auto getOptions(int argc, char** argv) -> Options
   }
 
   if (options.logId.empty()) {
-    char hostname[HOST_NAME_MAX];
-    gethostname(hostname, HOST_NAME_MAX);
+    constexpr size_t size = 255;
+    char hostname[size];
+    gethostname(hostname, size);
     options.logId = hostname;
   }
 
