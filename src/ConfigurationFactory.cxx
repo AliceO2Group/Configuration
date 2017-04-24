@@ -95,7 +95,11 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   auto string = uri; // The http library needs a non-const string for some reason
   http::url parsedUrl = http::ParseHttpUrl(string);
 
-  const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
+  if (parsedUrl.protocol.empty()) {
+    throw std::runtime_error("Ill-formed URI");
+  }
+
+  static const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
       {"file",    getFile},
       {"json",    getJson},
       {"etcd",    getEtcdV3},  // Default etcd is now V3
