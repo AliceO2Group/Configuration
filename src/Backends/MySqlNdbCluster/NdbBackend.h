@@ -8,6 +8,7 @@
 
 #include "../BackendBase.h"
 #include <string>
+#include <memory>
 
 namespace AliceO2
 {
@@ -17,6 +18,8 @@ namespace Backends
 {
 namespace Ndb
 {
+
+struct NdbPimpl;
 
 /// Backend for Ndb
 class NdbBackend final : public BackendBase
@@ -30,9 +33,10 @@ class NdbBackend final : public BackendBase
     virtual auto getRecursive(const std::string& path) -> Tree::Node override;
 
   private:
-    std::string mHost;
-    int mPort;
-    std::string mPrefix;
+//    std::string mHost;
+//    int mPort;
+//    std::string mPrefix;
+    std::unique_ptr<NdbPimpl> ndbPimpl;
 };
 
 } // namespace Ndb
