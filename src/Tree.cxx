@@ -70,8 +70,20 @@ auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> 
     Branch* node = &treeRoot; // Current node
     for (int i = 0; i < pathSegments.size(); ++i) {
       const auto& directory = pathSegments[i]; // The "directory" to add or get
-      auto iter = node->emplace(directory, Branch()).first; // Inserts or gets a TreeMap and gets an iterator to it
-      node = &(boost::get<Branch>(iter->second)); // Move the node to the new TreeMap
+      if (node->count(directory)) {
+        // Key was already present
+        if (auto* branch = boost::get<Branch>(&node->at(directory))) {
+          // Key was branch, leave alone
+        } else {
+          // Key was leaf, replace with branch
+          (*node)[directory] = Branch();
+        }
+        node = &(boost::get<Branch>(node->at(directory))); // Set current node to the new Branch
+      } else {
+        // Key was not yet present
+        auto iter = node->emplace(directory, Branch()).first; // Insert Branch and get an iterator to it
+        node = &(boost::get<Branch>(iter->second)); // Set current node to the new Branch
+      }
     }
 
     // Finally, we add the value
