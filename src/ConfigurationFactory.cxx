@@ -83,7 +83,11 @@ auto getEtcdV3(const http::url& uri) -> UniqueConfiguration
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
-  return std::make_unique<Backends::ConsulBackend>(uri.host, uri.port);
+  auto consul = std::make_unique<Backends::ConsulBackend>(uri.host, uri.port);
+  if (!uri.path.empty()) {
+    consul->setPrefix(uri.path);
+  }
+  return consul;
 #else
   throw std::runtime_error("Back-end 'consul' not enabled");
 #endif

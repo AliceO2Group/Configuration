@@ -41,7 +41,7 @@ ConsulBackend::~ConsulBackend()
 
 void ConsulBackend::setPrefix(const std::string& path)
 {
-  mPrefix = path;
+  mPrefix = trimLeadingSlash(path);
 }
 
 /// Prefix the prefix to the path
@@ -76,7 +76,7 @@ auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
 
 auto ConsulBackend::getRecursive(const std::string& path) -> Tree::Node
 {
-  auto requestKey(addPrefix(replaceSeparator(trimLeadingSlash(path))));
+  auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
   auto items = mStorage.items(requestKey, ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
   std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs;
 
