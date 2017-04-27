@@ -1,7 +1,0 @@
-{
-	"host_dir_lib": "deploy-client-dir/",
-	"host_dir_results": "/tmp/conf-bench-results/",
-	"bench_executable": "ConfigurationBenchmark",
-	"client_dir_lib": "/tmp/conf-bench/lib",
-	"client_dir_log": "/tmp/conf-bench/log",
-}

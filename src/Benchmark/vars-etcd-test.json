@@ -1,9 +1,0 @@
-{
-	"process_n": 100,
-    "param_n": 100,
-    "param_structure": "separate",
-    "uri": "etcd://pcaldref23:2379",
-    "at_minutes": 1,
-    "extra_opts": "--skip-wait",
-    "server_n": 3
-}

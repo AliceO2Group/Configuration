@@ -148,13 +148,6 @@ O2_GENERATE_LIBRARY()
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME ConfigurationBenchmark
-        SOURCES src/Benchmark/Benchmark.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
-
 # Since these executables depend on Common, we disable them until Common is extracted and working with alibuild
 #O2_GENERATE_EXECUTABLE(
 #        EXE_NAME configuration-put
