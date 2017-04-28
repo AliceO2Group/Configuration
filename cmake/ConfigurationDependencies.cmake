@@ -41,6 +41,10 @@ endif()
 
 ########## Bucket definitions ############
 
+if(BUILD_UTILITIES)
+    set(COMMON_DEP Common)
+endif()
+
 o2_define_bucket(
     NAME
     configuration_bucket
@@ -48,6 +52,7 @@ o2_define_bucket(
     DEPENDENCIES
     ${CURL_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${COMMON_DEP}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIR}
@@ -65,6 +70,7 @@ o2_define_bucket(
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${CURL_LIBRARIES}
     ${PPCONSUL_LIBRARIES}
+    ${COMMON_DEP}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${PROTOBUF_INCLUDE_DIRS}

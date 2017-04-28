@@ -50,8 +50,10 @@ The library includes some simple command line utilities that can be used to inte
 * `configuration-put` for putting values
 * `configuration-get` for getting values
 * `configuration-copy` for copying values
-
 For usage, refer to their respective `--help` options.
+
+Because they depend on Common, and Common is not yet in alibuild, the compilation of these utilities is disabled by
+default. To enable them, add `-DBUILD_UTILITIES=TRUE` to the cmake parameters.
 
 
 # Installation
