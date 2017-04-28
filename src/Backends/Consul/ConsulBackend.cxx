@@ -60,7 +60,7 @@ auto ConsulBackend::replaceSeparator(const std::string& path) -> std::string
 
 void ConsulBackend::putString(const std::string& path, const std::string& value)
 {
-  mStorage.put(trimLeadingSlash(path), value);
+  mStorage.put(addPrefix(replaceSeparator(trimLeadingSlash(path))), value);
 }
 
 auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
