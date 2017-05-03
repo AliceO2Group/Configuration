@@ -116,9 +116,13 @@ Should be available in your OS's package manager, or else: https://curl.haxx.se/
 ### ppconsul
 ~~~
 git clone https://github.com/oliora/ppconsul.git
-cd ppconsul; mkdir build; cd build
-cmake -DBUILD_SHARED_LIBS=ON .
+cd ppconsul 
+git checkout 8ade80d0528b563d4b58bc4f09815fc1e3d5be19
+mkdir build; cd build
+cmake -DBUILD_SHARED_LIBS=ON ..
+make -j
 cp output/*.so /usr/local/lib/
+cp ../include/* /usr/local/include/
 ~~~
 
 ### etcd
