@@ -28,8 +28,7 @@ class ConfigFilePrivate
 
 };
 
-// [[deprecated("Use file back-end instantiated through ConfigurationFactory instead")]]
-class ConfigFile
+class [[deprecated("Use file back-end instantiated through ConfigurationFactory instead")]] ConfigFile
 {
   public:
     ConfigFile();
