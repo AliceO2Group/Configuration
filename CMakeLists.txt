@@ -8,6 +8,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0 FATAL_ERROR)
 
+break compilation for a test
+one more error
+
 ### CMP0025   Compiler id for Apple Clang is now AppleClang.
 ### CMP0042   MACOSX_RPATH is enabled by default.
 
