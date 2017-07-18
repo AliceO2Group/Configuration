@@ -125,14 +125,6 @@ cp output/*.so /usr/local/lib/
 cp ../include/* /usr/local/include/
 ~~~
 
-### etcd
-Note: this is not a compile-time dependency, just an optional runtime-dependency
-Follow instructions on: `https://github.com/coreos/etcd/releases/`
-Or use Docker: 
-~~~
-docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
-~~~
-
 ### Configuration
 ~~~
 git clone https://github.com/AliceO2Group/Configuration.git
@@ -141,6 +133,64 @@ cmake ..
 make -j
 ~~~
 (For more information: https://github.com/henszey/etcd-browser)
+
+
+## Backend server setup
+
+### etcd
+Local-only development setup
+~~~
+docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
+~~~
+
+Externally visible
+~~~
+docker run -d --name=etcd --net=host quay.io/coreos/etcd:v3.0.14 \
+  /usr/local/bin/etcd --name my-etcd-1 --data-dir /etcd --listen-client-urls http://0.0.0.0:2379 \
+  --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 \
+  --initial-advertise-peer-urls http://0.0.0.0:2380
+~~~
+
+For more information:
+https://github.com/coreos/etcd/releases/
+
+
+### Consul
+Local-only development setup
+~~~
+docker run -d --name=dev-consul --net=host consul:0.7.5 \
+  consul agent -dev -ui
+~~~
+
+Externally visible
+~~~
+docker run -d --name=consul --net=host consul:0.7.5 \
+  consul agent -ui -server -bind=<external ip> -client=<external ip> -bootstrap-expect=1
+~~~
+
+For more information: 
+https://hub.docker.com/_/consul/
+
+
+## GUI
+There is currently no generalized Configuration GUI, although this feature is planned.
+For now, we recommend using backend-specific GUIs.
+ 
+Consul has a built-in web UI, so we recommend using that if a GUI is needed.
+It can be accessed using the `/ui` URL path, for example `http://myconsulserver:8500/ui`
+For more information: 
+https://www.consul.io/intro/getting-started/ui.html
+
+If you use etcd, there are some unofficial options available, such as:
+* etcd-viewer 
+  * https://github.com/nikfoundas/etcd-viewer
+  * Note it only supports the v2 interface, which is in a different namespace than the v3 interface.
+
+* e3w
+  * https://github.com/soyking/e3w
+  * Supports v3 interface
+
+
 
 ## Doxygen
 
