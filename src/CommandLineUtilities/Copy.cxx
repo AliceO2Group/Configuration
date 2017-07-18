@@ -35,7 +35,15 @@ class Copy : public AliceO2::Common::Program
       auto destination = ConfigurationFactory::getConfiguration(mDestinationUri);
       auto keyValues = Tree::treeToKeyValues(source->getRecursive("/"));
 
+      if (isVerbose()) {
+        std::cout << "Got " << keyValues.size() << " key-value pairs\n";
+      }
+
       for (const auto& kv : keyValues) {
+        if (isVerbose()) {
+          std::cout << kv.first << " -> " << kv.second << '\n';
+        }
+
         Visitor::apply(kv.second,
             [&](const std::string& value) { destination->put<std::string>(kv.first, value); },
             [&](int value) { destination->put<int>(kv.first, value); },
