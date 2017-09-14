@@ -58,12 +58,28 @@ default. To enable them, add `-DBUILD_UTILITIES=TRUE` to the cmake parameters.
 
 # Installation
 
-## aliBuild installation
+First make sure you have the devtoolset-6 GCC
 ~~~
+sudo yum -y install centos-release-scl
+sudo yum-config-manager --enable rhel-server-rhscl-7-rpms
+sudo yum -y install devtoolset-6
+source /opt/rh/devtoolset-6/enable  # Do this every session, or add to your ~/.bashrc 
+~~~
+
+## aliBuild installation
+
+~~~
+# Install alibuild
+sudo yum -y install python2-pip ncurses-devel bzip2-devel libX11-devel libXpm-devel libXext-devel \
+    libXft-devel mesa-libGLU-devel perl-ExtUtils-Embed perl-Thread-Queue openssl-devel libxml2-devel libcurl-devel git \
+    bison flex
+sudo pip install alibuild==1.4.0
+mkdir -p $HOME/alice
 cd $HOME/alice
-aliBuild init Configuration@master # checkout the code of
-                                   # Configuration, branch master
-aliDoctor Configuration            # To make sure that we are good.
+
+# Build
+aliBuild init Configuration@master
+aliDoctor Configuration
 aliBuild --defaults o2 build Configuration
 alienv load Configuration/latest
 
@@ -81,30 +97,43 @@ For more information: https://alisw.github.io/alibuild/o2-tutorial.html
 
 This section provides instructions for manually installing the Configuration module and its dependencies
 
+First get some additional prerequisite packages:
+~~~
+sudo yum -y install wget git cmake cmake3 autoconf automake
+~~~
+
 ### Protocol Buffer & gRPC
 Needed for etcd-v3 back-end.
 
+Install protobuf 3.0.0
 ~~~
+cd /tmp
 wget https://github.com/google/protobuf/releases/download/v3.0.0/protobuf-cpp-3.0.0.tar.gz
 tar zxf protobuf-cpp-3.0.0.tar.gz
 cd protobuf-3.0.0
 ./configure
 make -j
-make install
+sudo make install
 ~~~
 
+Install grpc
 ~~~
-git clone https://github.com/grpc/grpc
+cd /tmp
+git clone -b v1.2.5 https://github.com/grpc/grpc
 cd grpc
 git submodule update --init
 make -j
-make install
+sudo make install
 ~~~
 
 ### RapidJSON
+Needed for etcd-v2 back-end.
 ~~~
+cd /tmp
 git clone https://github.com/miloyip/rapidjson.git
-cd rapidjson; mkdir build; cd build
+cd rapidjson
+git checkout v1.1.0
+mkdir build; cd build
 cmake ..
 make -j
 sudo make install
@@ -112,35 +141,69 @@ sudo make install
 
 ### libcurl
 Should be available in your OS's package manager, or else: https://curl.haxx.se/download.html
+For CC7:
+~~~
+sudo yum -y install curl-devel
+~~~
+
+### Boost
+Note: ppconsul requires 1.55 or newer
+~~~
+cd /tmp
+wget http://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.gz
+tar zxf boost_1_65_0.tar.gz
+cd boost_1_65_0
+./bootstrap.sh
+./b2 \
+  --without-container       \
+  --without-context         \
+  --without-coroutine       \
+  --without-graph           \
+  --without-graph_parallel  \
+  --without-locale          \
+  --without-math            \
+  --without-mpi             \
+  --without-python          \
+  --without-wave            
+# This is a good time to fetch a beverage
+sudo ./b2 install
+~~~ 
 
 ### ppconsul
 ~~~
+cd /tmp
 git clone https://github.com/oliora/ppconsul.git
 cd ppconsul 
 git checkout 8ade80d0528b563d4b58bc4f09815fc1e3d5be19
 mkdir build; cd build
 cmake -DBUILD_SHARED_LIBS=ON ..
 make -j
-cp output/*.so /usr/local/lib/
-cp ../include/* /usr/local/include/
+sudo cp output/*.so /usr/local/lib/
+sudo cp -r ../include/* /usr/local/include/
 ~~~
 
 ### Configuration
 ~~~
+cd /tmp
 git clone https://github.com/AliceO2Group/Configuration.git
 cd Configuration; mkdir build; cd build
-cmake ..
+cmake3 ..
 make -j
+sudo make install
 ~~~
-(For more information: https://github.com/henszey/etcd-browser)
-
 
 ## Backend server setup
+First install Docker
+~~~
+sudo yum -y install docker
+~~~
 
 ### etcd
 Local-only development setup
 ~~~
-docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
+sudo docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
+sudo systemctl enable docker # Optional, if you want the Docker daemon starting on boot
+sudo systemctl start docker
 ~~~
 
 Externally visible
@@ -158,13 +221,13 @@ https://github.com/coreos/etcd/releases/
 ### Consul
 Local-only development setup
 ~~~
-docker run -d --name=dev-consul --net=host consul:0.7.5 \
+sudo docker run -d --name=dev-consul --net=host consul:0.7.5 \
   consul agent -dev -ui
 ~~~
 
 Externally visible
 ~~~
-docker run -d --name=consul --net=host consul:0.7.5 \
+sudo docker run -d --name=consul --net=host consul:0.7.5 \
   consul agent -ui -server -bind=<external ip> -client=<external ip> -bootstrap-expect=1
 ~~~
 
