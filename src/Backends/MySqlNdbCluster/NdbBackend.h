@@ -8,6 +8,7 @@
 
 #include "../BackendBase.h"
 #include <string>
+#include <boost/scoped_ptr.hpp>
 
 namespace AliceO2
 {
@@ -17,6 +18,8 @@ namespace Backends
 {
 namespace Ndb
 {
+
+struct NdbBackendPimpl;
 
 /// Backend for Ndb
 class NdbBackend final : public BackendBase
@@ -30,9 +33,10 @@ class NdbBackend final : public BackendBase
     virtual auto getRecursive(const std::string& path) -> Tree::Node override;
 
   private:
-    std::string mHost;
-    int mPort;
-    std::string mPrefix;
+    boost::scoped_ptr<NdbBackendPimpl> mPimpl;
+//    std::string mHost;
+//    int mPort;
+//    std::string mPrefix;
 };
 
 } // namespace Ndb
