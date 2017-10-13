@@ -97,6 +97,11 @@ set(HEADERS # needed for the dictionary generation
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
+# MySQL NCB Cluster
+list(APPEND SRCS
+  src/Backends/MySqlNdbCluster/NdbBackend.cxx)
+include_directories(/usr/include/mysql/storage/ndb/)
+
 if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
@@ -148,27 +153,26 @@ O2_GENERATE_LIBRARY()
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
-if(BUILD_UTILITIES)
-	# Since these executables depend on Common, we disable them until Common is extracted and working with alibuild
-	O2_GENERATE_EXECUTABLE(
-	        EXE_NAME configuration-put
-	        SOURCES src/CommandLineUtilities/Put.cxx
-	        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-	        BUCKET_NAME ${BUCKET_NAME}
-	)
-	O2_GENERATE_EXECUTABLE(
-	        EXE_NAME configuration-get
-	        SOURCES src/CommandLineUtilities/Get.cxx
-	        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-	        BUCKET_NAME ${BUCKET_NAME}
-	)
-	O2_GENERATE_EXECUTABLE(
-	        EXE_NAME configuration-copy
-	        SOURCES src/CommandLineUtilities/Copy.cxx
-	        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-	        BUCKET_NAME ${BUCKET_NAME}
-	)
-endif()
+
+# Since these executables depend on Common, we disable them until Common is extracted and working with alibuild
+O2_GENERATE_EXECUTABLE(
+        EXE_NAME configuration-put
+        SOURCES src/CommandLineUtilities/Put.cxx
+        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
+)
+O2_GENERATE_EXECUTABLE(
+        EXE_NAME configuration-get
+        SOURCES src/CommandLineUtilities/Get.cxx
+        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
+)
+O2_GENERATE_EXECUTABLE(
+        EXE_NAME configuration-copy
+        SOURCES src/CommandLineUtilities/Copy.cxx
+        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
+)
 
 enable_testing()
 

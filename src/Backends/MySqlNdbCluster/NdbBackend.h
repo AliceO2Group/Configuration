@@ -25,7 +25,7 @@ struct NdbBackendPimpl;
 class NdbBackend final : public BackendBase
 {
   public:
-    NdbBackend(const std::string& host, int port);
+    NdbBackend(const std::string& mySqlSocket, const std::string& clusterConnectString);
     virtual ~NdbBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
@@ -34,9 +34,7 @@ class NdbBackend final : public BackendBase
 
   private:
     boost::scoped_ptr<NdbBackendPimpl> mPimpl;
-//    std::string mHost;
-//    int mPort;
-//    std::string mPrefix;
+    std::string mPrefix;
 };
 
 } // namespace Ndb

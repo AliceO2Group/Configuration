@@ -8,6 +8,7 @@ find_package(CURL REQUIRED)
 find_package(Protobuf 3.0.0)
 find_package(GRPC)
 find_package(PpConsul)
+find_package(Common REQUIRED)
 
 # Message as RapidJSON is silent when it's not found
 if(RAPIDJSON_FOUND)
@@ -53,6 +54,8 @@ o2_define_bucket(
     ${CURL_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${COMMON_DEP}
+    /usr/lib64/mysql/libmysqlclient.so.20.3.6
+    /usr/lib64/mysql/libndbclient.so.6.1.0
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIR}
@@ -70,13 +73,14 @@ o2_define_bucket(
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${CURL_LIBRARIES}
     ${PPCONSUL_LIBRARIES}
-    ${COMMON_DEP}
-
+    ${Common_LIBRARIES}
+  
     SYSTEMINCLUDE_DIRECTORIES
     ${PROTOBUF_INCLUDE_DIRS}
     ${GRPC_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
     ${RAPIDJSON_INCLUDE_DIRS}
+    ${Common_INCLUDE_DIRS}
 )
 

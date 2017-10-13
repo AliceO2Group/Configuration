@@ -182,6 +182,18 @@ sudo cp output/*.so /usr/local/lib/
 sudo cp -r ../include/* /usr/local/include/
 ~~~
 
+### MySQL NDB Cluster
+Needed for MySQL NDB Cluster backend
+~~~
+wget https://dev.mysql.com/get/Downloads/MySQL-Cluster-7.5/mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
+tar xvf mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
+yum install ./mysql-cluster-community-devel-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-libs-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-common-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-libs-compat-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-ndbclient-7.5.7-1.el7.x86_64.rpm
+~~~
+
 ### Configuration
 ~~~
 cd /tmp
@@ -233,6 +245,20 @@ sudo docker run -d --name=consul --net=host consul:0.7.5 \
 
 For more information: 
 https://hub.docker.com/_/consul/
+
+### MySQL NDB Cluster
+~~~
+docker network create cluster --subnet=192.168.0.0/16
+docker run -d --net=cluster --name=management1 --ip=192.168.0.2 mysql/mysql-cluster ndb_mgmd
+docker run -d --net=cluster --name=ndb1 --ip=192.168.0.3 mysql/mysql-cluster ndbd
+docker run -d --net=cluster --name=ndb2 --ip=192.168.0.4 mysql/mysql-cluster ndbd
+docker run -d --net=cluster -p3306:3306 --name=mysql1 --ip=192.168.0.10 \
+    -e MYSQL_ROOT_PASSWORD=mypasswd mysql/mysql-cluster mysqld
+~~~
+
+For more information:
+https://hub.docker.com/r/mysql/mysql-cluster/
+https://github.com/mysql/mysql-docker/tree/mysql-cluster
 
 
 ## GUI
