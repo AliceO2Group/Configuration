@@ -42,10 +42,6 @@ endif()
 
 ########## Bucket definitions ############
 
-if(BUILD_UTILITIES)
-    set(COMMON_DEP Common)
-endif()
-
 o2_define_bucket(
     NAME
     configuration_bucket
@@ -53,13 +49,14 @@ o2_define_bucket(
     DEPENDENCIES
     ${CURL_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    ${COMMON_DEP}
+    ${Common_LIBRARIES}
     /usr/lib64/mysql/libmysqlclient.so.20.3.6
     /usr/lib64/mysql/libndbclient.so.6.1.0
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    ${Common_INCLUDE_DIRS}
 )
 
 # This bucket does not inherit from configuration_bucket because we want to enforce a certain order of includes.

@@ -30,7 +30,8 @@ find_package_handle_standard_args(Common  "Common could not be found. Install pa
                                   COMMON_LIBRARY COMMON_INCLUDE_DIR)
 
 if(${COMMON_FOUND})
-    message(STATUS "Common found : ${Common_LIBRARIES}")
+    message(STATUS "Common found : libraries ${Common_LIBRARIES} ")
+    message(STATUS "Common found : includes ${Common_INCLUDE_DIRS}")
 endif()
 
 mark_as_advanced(COMMON_INCLUDE_DIR COMMON_LIBRARY)

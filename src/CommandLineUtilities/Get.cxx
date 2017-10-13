@@ -6,7 +6,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
-#include "Common/Program.h"
+#include <Common/Program.h>
 #include "Configuration/ConfigurationFactory.h"
 
 namespace po = boost::program_options;
