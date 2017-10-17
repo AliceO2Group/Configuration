@@ -235,6 +235,38 @@ For more information:
 https://hub.docker.com/_/consul/
 
 
+### MariaDB Galera Cluster
+~~~
+cat > /etc/yum.repos.d/MariaDB.repo << EOL
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.1/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+EOL
+
+yum -y install MariaDB-server MariaDB-client
+
+# Note: you may need to open ports ???4567, 3306??? in your firewall
+
+GALERA_NODES='gcomm://my-node-1,gcomm://my-node-2,gcomm://my-node-3'
+GALERA_OPTS='--wsrep-provider=/usr/lib64/galera/libgalera_smm.so --binlog-format=ROW --default-storage-engine=InnoDB --innodb-autoinc-lock-mode=2 --innodb-doublewrite=1 --query-cache-size=0 --wsrep-on=1'
+
+
+# First node starts the cluster
+mysqld --user=mysql --wsrep-new-cluster --wsrep-cluster-address="gcomm://" $GALERA_OPTS &
+
+# Rest of nodes
+mysqld --user=mysql --wsrep_cluster_address=$GALERA_NODES $GALERA_OPTS &
+
+# Check status with
+mysql --user=mysql -e "SHOW STATUS LIKE 'wsrep_%';"
+~~~
+
+For more information:
+https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/
+
+
 ## GUI
 There is currently no generalized Configuration GUI, although this feature is planned.
 For now, we recommend using backend-specific GUIs.
