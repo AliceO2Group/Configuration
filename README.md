@@ -247,18 +247,70 @@ For more information:
 https://hub.docker.com/_/consul/
 
 ### MySQL NDB Cluster
+Docker:
 ~~~
 docker network create cluster --subnet=192.168.0.0/16
-docker run -d --net=cluster --name=management1 --ip=192.168.0.2 mysql/mysql-cluster ndb_mgmd
+docker run -d --net=cluster --name=management1 --ip=192.168.0.2 \
+    -p1186:1186 \
+    mysql/mysql-cluster ndb_mgmd
 docker run -d --net=cluster --name=ndb1 --ip=192.168.0.3 mysql/mysql-cluster ndbd
 docker run -d --net=cluster --name=ndb2 --ip=192.168.0.4 mysql/mysql-cluster ndbd
-docker run -d --net=cluster -p3306:3306 --name=mysql1 --ip=192.168.0.10 \
+docker run -d --net=cluster --name=mysql1 --ip=192.168.0.10 \
+    -p2202:2202 -p3306:3306 -p33060:33060 \
     -e MYSQL_ROOT_PASSWORD=mypasswd mysql/mysql-cluster mysqld
+~~~
+
+Native:
+~~~
+wget https://dev.mysql.com/get/Downloads/MySQL-Cluster-7.5/mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
+tar xvf mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
+yum install ./mysql-cluster-community-devel-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-libs-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-common-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-libs-compat-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-ndbclient-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-server-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-client-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-data-node-7.5.7-1.el7.x86_64.rpm \
+  ./mysql-cluster-community-management-server-7.5.7-1.el7.x86_64.rpm
 ~~~
 
 For more information:
 https://hub.docker.com/r/mysql/mysql-cluster/
 https://github.com/mysql/mysql-docker/tree/mysql-cluster
+
+### MariaDB Galera Cluster
+~~~
+#!/bin/bash
+
+cat > /etc/yum.repos.d/MariaDB.repo << EOL
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.1/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+EOL
+
+yum -y install MariaDB-server MariaDB-client
+
+# Note: you may need to open ports ???4567, 3306??? in your firewall
+
+GALERA_NODES='gcomm://my-node-1,gcomm://my-node-2,gcomm://my-node-3'
+GALERA_OPTS='--wsrep-provider=/usr/lib64/galera/libgalera_smm.so --binlog-format=ROW --default-storage-engine=InnoDB --innodb-autoinc-lock-mode=2 --innodb-doublewrite=1 --query-cache-size=0 --wsrep-on=1'
+
+
+# First node starts the cluster
+mysqld --user=mysql --wsrep-new-cluster --wsrep-cluster-address="gcomm://" $GALERA_OPTS &
+
+# Rest of nodes
+mysqld --user=mysql --wsrep_cluster_address=$GALERA_NODES $GALERA_OPTS &
+
+# Check status with
+mysql --user=mysql -e "SHOW STATUS LIKE 'wsrep_%';"
+~~~
+
+For more information:
+https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/
 
 
 ## GUI

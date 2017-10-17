@@ -16,8 +16,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace Ndb
-{
 
 struct NdbBackendPimpl;
 
@@ -37,7 +35,6 @@ class NdbBackend final : public BackendBase
     std::string mPrefix;
 };
 
-} // namespace Ndb
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2

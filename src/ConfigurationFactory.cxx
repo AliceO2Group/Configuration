@@ -19,6 +19,9 @@
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
 #endif
+#ifdef FLP_CONFIGURATION_BACKEND_NDB_ENABLED
+# include "Backends/MySqlNdbCluster/NdbBackend.h"
+#endif
 #include "UriParser/UriParser.hpp"
 
 namespace AliceO2
@@ -92,6 +95,19 @@ auto getConsul(const http::url& uri) -> UniqueConfiguration
   throw std::runtime_error("Back-end 'consul' not enabled");
 #endif
 }
+
+auto getNdb(const http::url& uri) -> UniqueConfiguration
+{
+#ifdef FLP_CONFIGURATION_BACKEND_NDB_ENABLED
+  auto backend = std::make_unique<Backends::NdbBackend>("", "");
+  if (!uri.path.empty()) {
+    backend->setPrefix(uri.path);
+  }
+  return backend;
+#else
+  throw std::runtime_error("Back-end 'ndb' not enabled");
+#endif
+}
 } // Anonymous namespace
 
 auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueConfiguration
@@ -109,7 +125,8 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
       {"etcd",    getEtcdV3},  // Default etcd is now V3
       {"etcd-v2", getEtcdV2},  // Legacy etcd option still available
       {"etcd-v3", getEtcdV3},
-      {"consul", getConsul},
+      {"consul",  getConsul},
+      {"ndb",     getNdb},
   };
 
   auto iterator = map.find(parsedUrl.protocol);

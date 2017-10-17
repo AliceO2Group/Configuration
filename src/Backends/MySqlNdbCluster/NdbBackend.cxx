@@ -25,8 +25,6 @@ namespace Configuration
 {
 namespace Backends
 {
-namespace Ndb
-{
 namespace
 {
 int tableKeyLength()
@@ -76,16 +74,24 @@ struct NdbBackendPimpl
       // Connect to mysql server and cluster
 //      std::cout << "mySqlSocket: " << mySqlSocket << std::endl;
 //      std::cout << "clsConnStr : " << clusterConnectString << std::endl;
-      clusterConnection.reset(new ::Ndb_cluster_connection(clusterConnectString.c_str()));
+      //clusterConnection.reset(new ::Ndb_cluster_connection(clusterConnectString.c_str()));
+//      clusterConnection.reset(new ::Ndb_cluster_connection("localhost:1186"));
+      clusterConnection.reset(new ::Ndb_cluster_connection());
 
       // Connect to cluster management server (ndb_mgmd)
-      if (clusterConnection->connect(4, 5, 1)) {
-        throw std::runtime_error("Cluster management server was not ready within 30 seconds");
+      const int retries = 3;
+      const int delay = 1;
+      {
+        const int err = clusterConnection->connect(retries, delay, 1);
+        printf("ERR = %d\n", err);
+        if (err) {
+          throw std::runtime_error("Failed to establish cluster management server connection");
+        }
       }
 
       // Optionally connect and wait for the storage nodes (ndbd's)
-      if (clusterConnection->wait_until_ready(30, 0) < 0) {
-        throw std::runtime_error("Cluster was not ready within 30 seconds");
+      if (clusterConnection->wait_until_ready(delay, 0) < 0) {
+        throw std::runtime_error("Cluster connection timed out");
       }
 
       // Connect to mysql server
@@ -116,7 +122,6 @@ struct NdbBackendPimpl
     }
 
     std::string mHost;
-    int mPort;
     std::string mPrefix;
     std::unique_ptr<::Ndb_cluster_connection> clusterConnection;
     std::unique_ptr<::MYSQL> mySql;
@@ -275,7 +280,6 @@ auto NdbBackend::getRecursive(const std::string& path) -> Tree::Node
   Tree::keyValuesToTree(keyValuePairs);
 }
 
-} // namespace Ndb
 } // namespace Backends
 } // namespace Configuration
 } // namespace AliceO2
