@@ -340,6 +340,13 @@ mysqld --user=mysql --wsrep_cluster_address=$GALERA_NODES $GALERA_OPTS &
 # Check status with
 mysql -e "show status like 'wsrep_cluster_size%';"
 
+# Create user
+mysql -e "CREATE USER 'conf'@'localhost' IDENTIFIED BY 'conf';"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'conf'@'localhost' WITH GRANT OPTION;"
+mysql -e "CREATE USER 'conf'@'%' IDENTIFIED BY 'conf';"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'conf'@'%' WITH GRANT OPTION;"
+mysql -e "FLUSH PRIVILEGES;"
+
 # Create table
 mysql -e "create database if not exists o2;"
 mysql -e "create table if not exists o2.configuration (kee VARCHAR(512) primary key, value TEXT);"
