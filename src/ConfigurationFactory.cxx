@@ -22,6 +22,9 @@
 #ifdef FLP_CONFIGURATION_BACKEND_MYSQL_ENABLED
 # include "Backends/MySql/MySqlBackend.h"
 #endif
+#ifdef FLP_CONFIGURATION_BACKEND_NDB_ENABLED
+# include "Backends/MySqlNdbCluster/NdbBackend.h"
+#endif
 #include "UriParser/UriParser.hpp"
 
 namespace AliceO2
@@ -107,6 +110,19 @@ auto getMySql(const http::url& uri) -> UniqueConfiguration
   throw std::runtime_error("Back-end 'mysql' not enabled");
 #endif
 }
+
+auto getNdb(const http::url& uri) -> UniqueConfiguration
+{
+#ifdef FLP_CONFIGURATION_BACKEND_NDB_ENABLED
+  auto backend = std::make_unique<Backends::NdbBackend>("", "");
+  if (!uri.path.empty()) {
+    backend->setPrefix(uri.path);
+  }
+  return backend;
+#else
+  throw std::runtime_error("Back-end 'ndb' not enabled");
+#endif
+}
 } // Anonymous namespace
 
 auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueConfiguration
@@ -126,6 +142,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
       {"etcd-v3", getEtcdV3},
       {"consul", getConsul},
       {"mysql", getMySql},
+      {"ndb",     getNdb},
   };
 
   auto iterator = map.find(parsedUrl.protocol);

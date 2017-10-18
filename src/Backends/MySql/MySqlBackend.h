@@ -31,6 +31,7 @@ class MySqlBackend final : public BackendBase
     virtual auto getRecursive(const std::string& path) -> Tree::Node override;
 
   private:
+    auto replaceSeparator(const std::string& path) -> std::string;
     auto addPrefix(const std::string& path) -> std::string;
     std::unique_ptr<MySqlBackendPimpl> mPimpl;
     std::string mPrefix;
