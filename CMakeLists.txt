@@ -97,6 +97,10 @@ set(HEADERS # needed for the dictionary generation
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
+#if(MYSQL_FOUND)
+  list(APPEND SRCS src/Backends/MySql/MySqlBackend.cxx)
+#endif()
+
 if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
     set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)

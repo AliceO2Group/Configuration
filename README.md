@@ -249,7 +249,7 @@ yum -y install MariaDB-server MariaDB-client
 
 # Note: you may need to open ports ???4567, 3306??? in your firewall
 
-GALERA_NODES='gcomm://my-node-1,gcomm://my-node-2,gcomm://my-node-3'
+GALERA_NODES='gcomm://pboescho-conf-cluster-1,gcomm://pboescho-conf-cluster-2,gcomm://pboescho-conf-cluster-3'
 GALERA_OPTS='--wsrep-provider=/usr/lib64/galera/libgalera_smm.so --binlog-format=ROW --default-storage-engine=InnoDB --innodb-autoinc-lock-mode=2 --innodb-doublewrite=1 --query-cache-size=0 --wsrep-on=1'
 
 
@@ -260,7 +260,11 @@ mysqld --user=mysql --wsrep-new-cluster --wsrep-cluster-address="gcomm://" $GALE
 mysqld --user=mysql --wsrep_cluster_address=$GALERA_NODES $GALERA_OPTS &
 
 # Check status with
-mysql --user=mysql -e "SHOW STATUS LIKE 'wsrep_%';"
+mysql -e "show status like 'wsrep_cluster_size%';"
+
+# Create table
+mysql -e "create database if not exists o2;"
+mysql -e "create table if not exists o2.configuration (kee VARCHAR(512) primary key, value TEXT);"
 ~~~
 
 For more information:

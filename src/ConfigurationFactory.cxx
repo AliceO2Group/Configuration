@@ -79,7 +79,6 @@ auto getEtcdV3(const http::url& uri) -> UniqueConfiguration
 #endif
 }
 
-
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
@@ -90,6 +89,19 @@ auto getConsul(const http::url& uri) -> UniqueConfiguration
   return consul;
 #else
   throw std::runtime_error("Back-end 'consul' not enabled");
+#endif
+}
+
+auto getMySql(const http::url& uri) -> UniqueConfiguration
+{
+#ifdef FLP_CONFIGURATION_BACKEND_MYSQL_ENABLED
+  auto backend = std::make_unique<Backends::MySqlBackend>(uri.host, uri.port);
+  if (!uri.path.empty()) {
+    backend->setPrefix(uri.path);
+  }
+  return backend;
+#else
+  throw std::runtime_error("Back-end 'mysql' not enabled");
 #endif
 }
 } // Anonymous namespace
@@ -110,6 +122,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
       {"etcd-v2", getEtcdV2},  // Legacy etcd option still available
       {"etcd-v3", getEtcdV3},
       {"consul", getConsul},
+      {"mysql", getMySql},
   };
 
   auto iterator = map.find(parsedUrl.protocol);
