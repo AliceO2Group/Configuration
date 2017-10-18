@@ -30,6 +30,15 @@ This section provides some basic information on the available backends and their
 * Requires ppconsul
 * Work in progress
 
+## MySQL
+* Interface to MySQL API
+* Requires MySQL/MariaDB library
+
+## MySQL NDB
+* Interface to MySQL Cluster NDB API
+* Work in progress (currently inactivated)
+
+
 
 # Examples
 Basic usage:
@@ -51,9 +60,6 @@ The library includes some simple command line utilities that can be used to inte
 * `configuration-get` for getting values
 * `configuration-copy` for copying values
 For usage, refer to their respective `--help` options.
-
-Because they depend on Common, and Common is not yet in alibuild, the compilation of these utilities is disabled by
-default. To enable them, add `-DBUILD_UTILITIES=TRUE` to the cmake parameters.
 
 
 # Installation
@@ -183,7 +189,7 @@ sudo cp -r ../include/* /usr/local/include/
 ~~~
 
 ### MySQL NDB Cluster
-Needed for MySQL NDB Cluster backend
+Needed for MySQL NDB Cluster backend (which is a work in progress)
 ~~~
 wget https://dev.mysql.com/get/Downloads/MySQL-Cluster-7.5/mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
 tar xvf mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
@@ -192,6 +198,11 @@ yum install ./mysql-cluster-community-devel-7.5.7-1.el7.x86_64.rpm \
   ./mysql-cluster-community-common-7.5.7-1.el7.x86_64.rpm \
   ./mysql-cluster-community-libs-compat-7.5.7-1.el7.x86_64.rpm \
   ./mysql-cluster-community-ndbclient-7.5.7-1.el7.x86_64.rpm
+~~~
+
+### MySQL
+~~~
+yum install mariadb-devel mariadb-libs
 ~~~
 
 ### Configuration
@@ -203,6 +214,7 @@ cmake3 ..
 make -j
 sudo make install
 ~~~
+
 
 ## Backend server setup
 First install Docker
