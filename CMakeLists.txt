@@ -98,9 +98,9 @@ set(HEADERS # needed for the dictionary generation
 set(LIBRARY_NAME ${MODULE_NAME})
 
 # MySQL
-#if(MYSQL_FOUND)
-  list(APPEND SRCS src/Backends/MySql/MySqlBackend.cxx)
-#endif()
+if(MYSQL_FOUND)
+    list(APPEND SRCS src/Backends/MySql/MySqlBackend.cxx)
+endif()
 
 # MySQL NCB Cluster
 #list(APPEND SRCS src/Backends/MySqlNdbCluster/NdbBackend.cxx)
