@@ -8,6 +8,7 @@ find_package(CURL REQUIRED)
 find_package(Protobuf 3.0.0)
 find_package(GRPC)
 find_package(PpConsul)
+find_package(MySQL)
 
 # Message as RapidJSON is silent when it's not found
 if(RAPIDJSON_FOUND)
@@ -39,6 +40,10 @@ if (RAPIDJSON_FOUND AND PROTOBUF_FOUND AND GRPC_FOUND AND PPCONSUL_FOUND)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_CONSUL_ENABLED)	  	  
 endif()
 
+#if (MYSQL_FOUND)
+    add_definitions(-DFLP_CONFIGURATION_BACKEND_MYSQL_ENABLED)
+#endif()
+
 ########## Bucket definitions ############
 
 if(BUILD_UTILITIES)
@@ -53,10 +58,12 @@ o2_define_bucket(
     ${CURL_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${COMMON_DEP}
+    /usr/lib64/mysql/libmysqlclient.so
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    /usr/include/mysql
 )
 
 # This bucket does not inherit from configuration_bucket because we want to enforce a certain order of includes.
@@ -71,6 +78,7 @@ o2_define_bucket(
     ${CURL_LIBRARIES}
     ${PPCONSUL_LIBRARIES}
     ${COMMON_DEP}
+    /usr/lib64/mysql/libmysqlclient.so
 
     SYSTEMINCLUDE_DIRECTORIES
     ${PROTOBUF_INCLUDE_DIRS}
@@ -78,5 +86,6 @@ o2_define_bucket(
     ${CURL_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
     ${RAPIDJSON_INCLUDE_DIRS}
+    /usr/include/mysql
 )
 

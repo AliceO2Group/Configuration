@@ -24,15 +24,14 @@ class MySqlBackend final : public BackendBase
 {
   public:
     MySqlBackend(const std::string& host, int port);
+    ~MySqlBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual Optional<std::string> getString(const std::string& path) override;
     virtual void setPrefix(const std::string& path) override;
     virtual auto getRecursive(const std::string& path) -> Tree::Node override;
 
   private:
-    auto replaceSeparator(const std::string& path) -> std::string;
     auto addPrefix(const std::string& path) -> std::string;
-    auto makeChannelString(const std::string& host, int port) -> std::string;
     std::unique_ptr<MySqlBackendPimpl> mPimpl;
     std::string mPrefix;
 };

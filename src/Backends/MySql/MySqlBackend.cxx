@@ -88,6 +88,10 @@ MySqlBackend::MySqlBackend(const std::string& host, int port)
 
 }
 
+MySqlBackend::~MySqlBackend()
+{
+}
+
 void MySqlBackend::putString(const std::string& path, const std::string& value)
 {
   auto query = (boost::format("INSERT INTO " MYSQL_DATABASE_TABLE " VALUES('%1%', '%2%')") % path % value).str();
@@ -156,20 +160,6 @@ void MySqlBackend::setPrefix(const std::string& path)
 auto MySqlBackend::addPrefix(const std::string& path) -> std::string
 {
   return mPrefix + path;
-}
-
-/// Replace separators in the path
-auto MySqlBackend::replaceSeparator(const std::string& path) -> std::string
-{
-  auto p = path;
-  std::replace(p.begin(), p.end(), '/', getSeparator());
-  return p;
-}
-
-/// Make the URI string for the channel
-auto MySqlBackend::makeChannelString(const std::string& host, int port) -> std::string
-{
-  return host + ':' + std::to_string(port);
 }
 
 } // namespace Backends

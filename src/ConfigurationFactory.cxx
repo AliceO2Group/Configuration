@@ -19,6 +19,9 @@
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
 #endif
+#ifdef FLP_CONFIGURATION_BACKEND_MYSQL_ENABLED
+# include "Backends/MySql/MySqlBackend.h"
+#endif
 #include "UriParser/UriParser.hpp"
 
 namespace AliceO2
