@@ -157,8 +157,9 @@ O2_GENERATE_LIBRARY()
 set(LIBRARY_NAME ${MODULE_NAME})
 set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
+message(STATUS LIBRARY_NAME: ${LIBRARY_NAME})
+message(STATUS BUCKET_NAME: ${BUCKET_NAME})
 
-# Since these executables depend on Common, we disable them until Common is extracted and working with alibuild
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-put
         SOURCES src/CommandLineUtilities/Put.cxx

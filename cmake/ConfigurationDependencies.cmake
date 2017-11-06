@@ -20,24 +20,32 @@ endif()
 
 # Message as RapidJSON is silent when it's not found
 if(RAPIDJSON_FOUND)
-    message(STATUS "RapidJSON found")
+    message(STATUS "RapidJSON found: include ${RAPIDJSON_INCLUDE_DIRS}")
 else()
     message(STATUS "RapidJSON not found")
 endif()
 
 # Message as PpConsul is silent
 if(PPCONSUL_FOUND)
-    message(STATUS "PpConsul found : ${PPCONSUL_LIBRARIES}; include ${PPCONSUL_INCLUDE_DIR}")
+    message(STATUS "PpConsul found : ${PPCONSUL_LIBRARIES}; include ${PPCONSUL_INCLUDE_DIRS}")
 else()
     message(STATUS "PpConsul not found")
 endif()
 
 # Message as Protobuf is silent
 if(PROTOBUF_FOUND)
-    message(STATUS "ProtoBuf found : ${PROTOBUF_LIBRARY}")
+    message(STATUS "ProtoBuf found : ${PROTOBUF_LIBRARIES}; include ${PROTOBUF_INCLUDE_DIRS}")
 else()
     message(STATUS "ProtoBuf not found")
 endif()
+
+# Message as GRPC is silent when it's not found
+if(GRPC_FOUND)
+    message(STATUS "gRPC found : ${GRPC_LIBRARIES}; include ${GRPC_INCLUDE_DIR}")
+else()
+    message(STATUS "gRPC not found")
+endif()
+
 
 ########## General definitions and flags ##########
 

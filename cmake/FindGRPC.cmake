@@ -4,13 +4,21 @@ set(GRPC_FOUND FALSE)
 
 find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin) # Get full path to plugin
 
-find_library(GRPC_LIBRARY NAMES grpc)
-find_library(GRPCPP_LIBRARY NAMES grpc++)
-find_library(GPR_LIBRARY NAMES gpr)
+find_library(GRPC_LIBRARY
+  NAMES grpc
+  HINTS ${GRPC_ROOT} ${GRPC_ROOT}/lib /usr/local/lib /opt/)
+find_library(GRPCPP_LIBRARY
+  NAMES grpc++
+  HINTS ${GRPC_ROOT} ${GRPC_ROOT}/lib /usr/local/lib /opt/)
+find_library(GPR_LIBRARY
+  NAMES gpr
+  HINTS ${GRPC_ROOT} ${GRPC_ROOT}/lib /usr/local/lib /opt/)
+
 set(GRPC_LIBRARIES ${GRPCPP_LIBRARY} ${GRPC_LIBRARY} ${GPR_LIBRARY})
+
 find_path(GRPC_INCLUDE_DIR 
   NAMES grpc/grpc.h grpc++/grpc++.h
-  PATHS /usr/local/include /opt/
+  HINTS ${GRPC_ROOT} ${GRPC_ROOT}/include /usr/local/include /opt/
   DOC "Path to gRPC include header files.")
 if(GRPC_LIBRARIES AND GRPC_INCLUDE_DIR)
   message(STATUS "Found GRPC: ${GRPC_LIBRARIES}; include - ${GRPC_INCLUDE_DIR}; plugin - ${GRPC_CPP_PLUGIN}")

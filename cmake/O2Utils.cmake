@@ -179,6 +179,7 @@ function(O2_TARGET_LINK_BUCKET)
   #  set(DEPENDENCIES ${bucket_map_libs_${PARSED_ARGS_BUCKET}})
   #  message(STATUS "   invoke target_link_libraries for target ${PARSED_ARGS_TARGET} : ${RESULT_libs} ${PARSED_ARGS_MODULE_LIBRARY_NAME}")
 
+  message(STATUS "LINK ${PARSED_ARGS_TARGET} - ${RESULT_libs} - ${PARSED_ARGS_MODULE_LIBRARY_NAME}")
   target_link_libraries(${PARSED_ARGS_TARGET} ${RESULT_libs} ${PARSED_ARGS_MODULE_LIBRARY_NAME})
 
   # Same thing for lib_dirs and inc_dirs
