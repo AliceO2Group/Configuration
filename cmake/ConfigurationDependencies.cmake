@@ -100,6 +100,7 @@ o2_define_bucket(
     ${CURL_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
     ${RAPIDJSON_INCLUDE_DIRS}
+    ${PPCONSUL_INCLUDE_DIR}
     ${Common_INCLUDE_DIRS}
     ${MYSQL_INCLUDE_DIRS}
 )
