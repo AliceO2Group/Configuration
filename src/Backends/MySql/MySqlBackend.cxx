@@ -121,8 +121,12 @@ auto MySqlBackend::getString(const std::string& path) -> Optional<std::string>
     throw std::runtime_error("MySQL returned incorrect number of fields (!=1)");
   }
 
-  MYSQL_ROW row = mysql_fetch_row(result);
-  return std::string(row[0]);
+  if (mysql_num_rows(result) == 1) {
+    MYSQL_ROW row = mysql_fetch_row(result);
+    return std::string(row[0]);
+  } else {
+    return {};
+  }
 }
 
 auto MySqlBackend::getRecursive(const std::string& path) -> Tree::Node
