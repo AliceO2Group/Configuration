@@ -33,6 +33,12 @@ namespace Backends
 {
 namespace
 {
+/// The request key is prefixed to the response keys, this strips that from it.
+auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
+{
+  assert(response.find(requestKey) == 0);
+  return response.substr(requestKey.length());
+}
 } // Anonymous namespace
 
 struct MySqlHandle
@@ -154,7 +160,7 @@ auto MySqlBackend::getRecursive(const std::string& path) -> Tree::Node
   {
     MYSQL_ROW row;
     while ((row = mysql_fetch_row(result))) {
-      keyValuePairs.emplace_back(std::string(row[0]), std::string(row[1]));
+      keyValuePairs.emplace_back(stripRequestKey(path, std::string(row[0])), std::string(row[1]));
     }
   }
 
