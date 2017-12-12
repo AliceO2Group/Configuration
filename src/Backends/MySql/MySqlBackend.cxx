@@ -8,6 +8,7 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <mysql/mysql.h>
+#include <Common/GuardFunction.h>
 
 using namespace std::string_literals;
 
@@ -59,6 +60,19 @@ struct MySqlHandle
     }
 
     MYSQL* handle;
+};
+
+struct MySqlResult
+{
+    ~MySqlResult()
+    {
+      if (result) {
+        mysql_free_result(result);
+        result = nullptr;
+      }
+    }
+
+    MYSQL_RES* result = nullptr;
 };
 
 class MySqlBackendPimpl
@@ -117,18 +131,17 @@ auto MySqlBackend::getString(const std::string& path) -> Optional<std::string>
     throw std::runtime_error("MySQL query failed");
   }
 
-  // TODO read data
-  MYSQL_RES* result = mysql_store_result(mPimpl->getHandle());
-  if (result == nullptr) {
+  MySqlResult result {mysql_store_result(mPimpl->getHandle())};
+  if (result.result == nullptr) {
     throw std::runtime_error("MySQL result == nullptr");
   }
 
-  if (mysql_num_fields(result) != 1) {
+  if (mysql_num_fields(result.result) != 1) {
     throw std::runtime_error("MySQL returned incorrect number of fields (!=1)");
   }
 
-  if (mysql_num_rows(result) == 1) {
-    MYSQL_ROW row = mysql_fetch_row(result);
+  if (mysql_num_rows(result.result) == 1) {
+    MYSQL_ROW row = mysql_fetch_row(result.result);
     return std::string(row[0]);
   } else {
     return {};
@@ -146,20 +159,19 @@ auto MySqlBackend::getRecursive(const std::string& path) -> Tree::Node
     throw std::runtime_error("MySQL query failed");
   }
 
-  // TODO read data
-  MYSQL_RES* result = mysql_store_result(mPimpl->getHandle());
-  if (result == nullptr) {
+  MySqlResult result {mysql_store_result(mPimpl->getHandle())};
+  if (result.result == nullptr) {
     throw std::runtime_error("MySQL result == nullptr");
   }
 
-  if (mysql_num_fields(result) != 2) {
+  if (mysql_num_fields(result.result) != 2) {
     throw std::runtime_error("MySQL returned incorrect number of fields (!=2)");
   }
 
   std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs;
   {
     MYSQL_ROW row;
-    while ((row = mysql_fetch_row(result))) {
+    while ((row = mysql_fetch_row(result.result))) {
       keyValuePairs.emplace_back(stripRequestKey(path, std::string(row[0])), std::string(row[1]));
     }
   }
