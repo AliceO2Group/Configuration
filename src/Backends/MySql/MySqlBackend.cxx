@@ -9,7 +9,6 @@
 #include <boost/algorithm/string.hpp>
 #include <mysql/mysql.h>
 #include <mysql/errmsg.h>
-#include <Common/GuardFunction.h>
 
 using namespace std::string_literals;
 
