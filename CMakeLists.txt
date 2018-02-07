@@ -69,7 +69,6 @@ O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
         src/Backends/File/FileBackend.cxx
-        src/Configuration.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
         src/Tree.cxx
@@ -87,7 +86,6 @@ include_directories(
 
 set(HEADERS # needed for the dictionary generation
         "${CMAKE_CURRENT_BINARY_DIR}/include/${MODULE_NAME}/Version.h" # Generated header
-        include/${MODULE_NAME}/Configuration.h # Normal header
         include/${MODULE_NAME}/ConfigurationInterface.h # Normal header
         include/${MODULE_NAME}/ConfigurationFactory.h # Normal header
         include/${MODULE_NAME}/Tree.h # Normal header
