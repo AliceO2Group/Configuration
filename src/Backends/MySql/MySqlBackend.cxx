@@ -8,7 +8,6 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <mysql/mysql.h>
-#include <Common/GuardFunction.h>
 
 using namespace std::string_literals;
 
