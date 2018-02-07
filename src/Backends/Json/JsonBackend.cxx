@@ -62,6 +62,17 @@ auto JsonBackend::getRecursive(const std::string& path) -> Tree::Node
   return node;
 }
 
+auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
+{
+  KeyValueMap map;
+  const Tree::Node& node = Tree::getSubtree(mCurrentNode, path);
+  const std::vector<std::pair<std::string, Tree::Leaf>> keyValues = Tree::treeToKeyValues(node);
+  for (const auto& pair : keyValues) {
+    map[pair.first] = Tree::convert<std::string>(pair.second);
+  }
+  return map;
+}
+
 void JsonBackend::setPrefix(const std::string& path)
 {
   const Tree::Node& node = Tree::getSubtree(mRootNode, path);

@@ -27,6 +27,7 @@ class JsonBackend final : public BackendBase
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
     virtual auto getRecursive(const std::string& path) -> Tree::Node override;
+    virtual auto getRecursiveMap(const std::string& path) -> KeyValueMap override;
 
   private:
     std::string mFilePath;

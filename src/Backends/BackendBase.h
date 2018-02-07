@@ -32,9 +32,14 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
       return mSeparator;
     }
 
-    virtual Tree::Node getRecursive(const std::string&)
+    virtual Tree::Node getRecursive(const std::string&) override
     {
       throw std::runtime_error("getRecursive() unsupported by backend");
+    }
+
+    virtual KeyValueMap getRecursiveMap(const std::string&) override
+    {
+      throw std::runtime_error("getRecursiveMap() unsupported by backend");
     }
 
   private:
