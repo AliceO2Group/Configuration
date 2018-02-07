@@ -74,17 +74,31 @@ auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
   }
 }
 
+auto ConsulBackend::getItems(const std::string& requestKey) -> std::vector<ppconsul::kv::KeyValue>
+{
+  return mStorage.items(requestKey, ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
+}
+
 auto ConsulBackend::getRecursive(const std::string& path) -> Tree::Node
 {
   auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
-  auto items = mStorage.items(requestKey, ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
-  std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs;
-
+  auto items = getItems(requestKey);
+  std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs(items.size());
   for (const auto& item : items) {
     keyValuePairs.emplace_back(stripRequestKey(requestKey, item.key), std::move(item.value));
   }
-
   return Tree::keyValuesToTree(keyValuePairs);
+}
+
+auto ConsulBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
+{
+  auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
+  auto items = getItems(requestKey);
+  KeyValueMap map;
+  for (const auto& item : items) {
+    map[stripRequestKey(requestKey, item.key)] = std::move(item.value);
+  }
+  return map;
 }
 
 } // namespace Backends

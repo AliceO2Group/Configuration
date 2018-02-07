@@ -3,9 +3,10 @@
 
 find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.
-find_package(RapidJSON)
 find_package(CURL REQUIRED)
 find_package(Common REQUIRED)
+find_package(PpConsul)
+find_package(RapidJSON)
 
 # Message as RapidJSON is silent when it's not found
 if(RAPIDJSON_FOUND)
@@ -55,14 +56,13 @@ o2_define_bucket(
 # This bucket does not inherit from configuration_bucket because we want to enforce a certain order of includes.
 o2_define_bucket(
     NAME
-    configuration_bucket_with_rapidjson_etcd3
+    configuration_bucket_with_rapidjson_with_consul
 
     DEPENDENCIES
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${CURL_LIBRARIES}
     ${PPCONSUL_LIBRARIES}
     ${Common_LIBRARIES}
-    ${MYSQL_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${CURL_INCLUDE_DIRS}
@@ -70,7 +70,6 @@ o2_define_bucket(
     ${RAPIDJSON_INCLUDE_DIRS}
     ${PPCONSUL_INCLUDE_DIR}
     ${Common_INCLUDE_DIRS}
-    ${MYSQL_INCLUDE_DIRS}
 )
 
 o2_define_bucket(
@@ -87,10 +86,10 @@ o2_define_bucket(
 
 o2_define_bucket(
     NAME
-    configuration_app_bucket_with_rapidjson_etcd3
+    configuration_app_bucket_with_rapidjson_with_consul
 
     DEPENDENCIES
-    configuration_bucket_with_rapidjson_etcd3
+    configuration_bucket_with_rapidjson_with_consul
     ${Common_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES

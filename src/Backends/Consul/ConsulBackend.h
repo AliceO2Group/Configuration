@@ -27,15 +27,16 @@ class ConsulBackend final : public BackendBase
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
     virtual auto getRecursive(const std::string& path) -> Tree::Node override;
+    virtual auto getRecursiveMap(const std::string&) -> KeyValueMap override;
 
   private:
     auto addPrefix(const std::string& path) -> std::string;
     auto replaceSeparator(const std::string& path) -> std::string;
+    auto getItems(const std::string& path) -> std::vector<ppconsul::kv::KeyValue>;
 
     std::string mHost;
     int mPort;
     std::string mPrefix;
-    std::string mDefaultValue;
     ppconsul::Consul mConsul;
     ppconsul::kv::Storage mStorage;
 };

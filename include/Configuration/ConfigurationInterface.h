@@ -7,6 +7,7 @@
 #define ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_
 
 #include <string>
+#include <unordered_map>
 #include <boost/optional.hpp>
 #include "Configuration/Tree.h"
 
@@ -29,6 +30,8 @@ class ConfigurationInterface
 {
   public:
     template <typename T> using Optional = boost::optional<T>; // Hopefully, we can move to std::optional someday.
+    using KeyValueMap = std::unordered_map<std::string, std::string>;
+
     virtual ~ConfigurationInterface();
 
     /// Puts a string into the configuration.
@@ -106,6 +109,11 @@ class ConfigurationInterface
     /// \param path The path of the values to get
     /// \return A tree containing the values that were retrieved
     virtual Tree::Node getRecursive(const std::string& path) = 0;
+
+    /// Gets key-values recursively from the given path
+    /// \param path The path of the values to get
+    /// \return A map containing the key-values
+    virtual KeyValueMap getRecursiveMap(const std::string& path) = 0;
 };
 
 } // namespace Configuration

@@ -96,8 +96,7 @@ set(HEADERS # needed for the dictionary generation
 set(LIBRARY_NAME ${MODULE_NAME})
 
 if(RAPIDJSON_FOUND AND PPCONSUL_FOUND)
-    # Add ETCD v3 backend if the protocol buffer dependency was found
-    set(BUCKET_NAME_SUFFIX _with_rapidjson_etcd3)
+    set(BUCKET_NAME_SUFFIX _with_rapidjson_with_consul)
 
     # Add Consul backend if the PpConsul dependency was found
     list(APPEND SRCS
