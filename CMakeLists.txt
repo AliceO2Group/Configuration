@@ -97,43 +97,10 @@ set(HEADERS # needed for the dictionary generation
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
-# MySQL
-if(MYSQL_FOUND)
-    list(APPEND SRCS src/Backends/MySql/MySqlBackend.cxx)
-endif()
-
-# MySQL NCB Cluster
-#list(APPEND SRCS src/Backends/MySqlNdbCluster/NdbBackend.cxx)
-#include_directories(/usr/include/mysql/storage/ndb/)
-
-if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
+if(RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
     set(BUCKET_NAME_SUFFIX _with_rapidjson_etcd3)
-    include_directories(src/Backends/EtcdV3/proto/googleapis)
-    list(APPEND SRCS
-            src/Backends/EtcdV3/EtcdV3Backend.cxx
-            src/Backends/EtcdV3/proto/auth.grpc.pb.cc
-            src/Backends/EtcdV3/proto/auth.pb.cc
-            src/Backends/EtcdV3/proto/kv.grpc.pb.cc
-            src/Backends/EtcdV3/proto/kv.pb.cc
-            src/Backends/EtcdV3/proto/rpc.grpc.pb.cc
-            src/Backends/EtcdV3/proto/rpc.pb.cc
-            )
-    # Note: these should probably be replaced by a google api lib installed in the system.
-    list(APPEND SRCS
-            src/Backends/EtcdV3/proto/googleapis/google/api/annotations.grpc.pb.cc
-            src/Backends/EtcdV3/proto/googleapis/google/api/annotations.pb.cc
-            src/Backends/EtcdV3/proto/googleapis/google/api/http.grpc.pb.cc
-            src/Backends/EtcdV3/proto/googleapis/google/api/http.pb.cc
-            )
-    message(STATUS "etcd-v3 backend enabled")
 
-    # Add ETCD backend if the RapidJSON dependency was found
-    list(APPEND SRCS
-            src/Backends/EtcdV2/EtcdBackend.cxx
-            )
-    message(STATUS "etcd-v2 backend enabled")
-    
     # Add Consul backend if the PpConsul dependency was found
     list(APPEND SRCS
             src/Backends/Consul/ConsulBackend.cxx
@@ -147,7 +114,7 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     message(STATUS "json file backend enabled")
 else ()
   set(BUCKET_NAME_SUFFIX "")
-    message(STATUS "json file, etcd v2, etcd v3, consul dependencies missing, compilation skipped for corresponding classes")
+    message(STATUS "json, consul dependencies missing, compilation skipped for corresponding back-ends")
 endif ()
 set(BUCKET_NAME configuration_bucket${BUCKET_NAME_SUFFIX})
 set(APP_BUCKET_NAME configuration_app_bucket${BUCKET_NAME_SUFFIX})
