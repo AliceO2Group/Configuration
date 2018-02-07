@@ -177,7 +177,6 @@ O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-copy
         SOURCES src/CommandLineUtilities/Copy.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME configuration_app_bucket
         BUCKET_NAME ${APP_BUCKET_NAME}
 )
 
