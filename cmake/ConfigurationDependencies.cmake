@@ -70,15 +70,14 @@ o2_define_bucket(
     DEPENDENCIES
     ${CURL_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    ${Common_LIBRARIES}
     ${MYSQL_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
-    ${Common_INCLUDE_DIRS}
     ${MYSQL_INCLUDE_DIRS}
 )
+
 
 # This bucket does not inherit from configuration_bucket because we want to enforce a certain order of includes.
 o2_define_bucket(
@@ -105,3 +104,26 @@ o2_define_bucket(
     ${MYSQL_INCLUDE_DIRS}
 )
 
+o2_define_bucket(
+    NAME
+    configuration_app_bucket
+
+    DEPENDENCIES
+    configuration_bucket
+    ${Common_LIBRARIES}
+
+    SYSTEMINCLUDE_DIRECTORIES
+    ${Common_INCLUDE_DIRS}
+  )
+
+o2_define_bucket(
+    NAME
+    configuration_app_bucket_with_rapidjson_etcd3
+
+    DEPENDENCIES
+    configuration_bucket_with_rapidjson_etcd3
+    ${Common_LIBRARIES}
+
+    SYSTEMINCLUDE_DIRECTORIES
+    ${Common_INCLUDE_DIRS}
+  )

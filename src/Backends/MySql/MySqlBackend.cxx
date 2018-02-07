@@ -8,7 +8,7 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 #include <mysql/mysql.h>
-#include <Common/GuardFunction.h>
+#include <mysql/errmsg.h>
 
 using namespace std::string_literals;
 
@@ -117,8 +117,14 @@ void MySqlBackend::putString(const std::string& path, const std::string& value)
   auto query = (boost::format("INSERT INTO " MYSQL_DATABASE_TABLE " VALUES('%1%', '%2%')")
       % addPrefix(replaceSeparator(path)) % value).str();
 
-  if (mysql_query(mPimpl->getHandle(), query.c_str())) {
-    throw std::runtime_error("MySQL query failed");
+  switch (mysql_query(mPimpl->getHandle(), query.c_str())) {
+    case CR_COMMANDS_OUT_OF_SYNC: throw std::runtime_error("MySQL query failed: CR_COMMANDS_OUT_OF_SYNC");
+    case CR_SERVER_GONE_ERROR: throw std::runtime_error("MySQL query failed: CR_SERVER_GONE_ERROR");
+    case CR_SERVER_LOST: throw std::runtime_error("MySQL query failed: CR_SERVER_LOST");
+    case CR_UNKNOWN_ERROR: throw std::runtime_error("MySQL query failed: CR_UNKNOWN_ERROR");
+    case 0:
+    default:
+      break;
   }
 }
 

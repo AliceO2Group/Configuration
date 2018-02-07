@@ -106,7 +106,7 @@ endif()
 
 if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     # Add ETCD v3 backend if the protocol buffer dependency was found
-    set(BUCKET_NAME_CONFIG configuration_bucket_with_rapidjson_etcd3)
+    set(BUCKET_NAME_SUFFIX _with_rapidjson_etcd3)
     include_directories(src/Backends/EtcdV3/proto/googleapis)
     list(APPEND SRCS
             src/Backends/EtcdV3/EtcdV3Backend.cxx
@@ -144,37 +144,38 @@ if(PROTOBUF_FOUND AND GRPC_FOUND AND RAPIDJSON_FOUND AND PPCONSUL_FOUND)
             )
     message(STATUS "json file backend enabled")
 else ()
-    set(BUCKET_NAME_CONFIG configuration_bucket)
+  set(BUCKET_NAME_SUFFIX "")
     message(STATUS "json file, etcd v2, etcd v3, consul dependencies missing, compilation skipped for corresponding classes")
 endif ()
-set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
+set(BUCKET_NAME configuration_bucket${BUCKET_NAME_SUFFIX})
+set(APP_BUCKET_NAME configuration_app_bucket${BUCKET_NAME_SUFFIX})
 
 O2_GENERATE_LIBRARY()
 
 # todo we repeat ourselves because the above macro dares deleting the variables we pass to it.
 set(LIBRARY_NAME ${MODULE_NAME})
-set(BUCKET_NAME ${BUCKET_NAME_CONFIG})
 
 message(STATUS LIBRARY_NAME: ${LIBRARY_NAME})
 message(STATUS BUCKET_NAME: ${BUCKET_NAME})
+message(STATUS APP_BUCKET_NAME: ${APP_BUCKET_NAME})
 
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-put
         SOURCES src/CommandLineUtilities/Put.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
+        BUCKET_NAME ${APP_BUCKET_NAME}
 )
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-get
         SOURCES src/CommandLineUtilities/Get.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
+        BUCKET_NAME ${APP_BUCKET_NAME}
 )
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-copy
         SOURCES src/CommandLineUtilities/Copy.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
+        BUCKET_NAME ${APP_BUCKET_NAME}
 )
 
 enable_testing()
@@ -187,7 +188,7 @@ set(TEST_SRCS
 
 O2_GENERATE_TESTS(
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
+        BUCKET_NAME ${APP_BUCKET_NAME}
         TEST_SRCS ${TEST_SRCS}
 )
 
