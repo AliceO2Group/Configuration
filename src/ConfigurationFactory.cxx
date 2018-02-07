@@ -10,20 +10,8 @@
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
 # include "Backends/Json/JsonBackend.h"
 #endif
-#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
-# include "Backends/EtcdV2/EtcdBackend.h"
-#endif
-#ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
-# include "Backends/EtcdV3/EtcdV3Backend.h"
-#endif
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
-#endif
-#ifdef FLP_CONFIGURATION_BACKEND_MYSQL_ENABLED
-# include "Backends/MySql/MySqlBackend.h"
-#endif
-#ifdef FLP_CONFIGURATION_BACKEND_NDB_ENABLED
-# include "Backends/MySqlNdbCluster/NdbBackend.h"
 #endif
 #include "UriParser/UriParser.hpp"
 
@@ -57,34 +45,6 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
 #endif
 }
 
-template <typename Backend>
-auto getEtcd(const http::url& uri) -> UniqueConfiguration
-{
-  auto etcd = std::make_unique<Backend>(uri.host, uri.port);
-  if (!uri.path.empty()) {
-    etcd->setPrefix(uri.path);
-  }
-  return etcd;
-}
-
-auto getEtcdV2(const http::url& uri) -> UniqueConfiguration
-{
-#ifdef FLP_CONFIGURATION_BACKEND_ETCD_ENABLED
-  return getEtcd<Backends::EtcdBackend>(uri);
-#else
-  throw std::runtime_error("Back-end 'etcd-v2' not enabled");
-#endif
-}
-
-auto getEtcdV3(const http::url& uri) -> UniqueConfiguration
-{
-#ifdef FLP_CONFIGURATION_BACKEND_ETCDV3_ENABLED
-  return getEtcd<Backends::EtcdV3Backend>(uri);
-#else
-  throw std::runtime_error("Back-end 'etcd-v3' not enabled");
-#endif
-}
-
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
@@ -95,32 +55,6 @@ auto getConsul(const http::url& uri) -> UniqueConfiguration
   return consul;
 #else
   throw std::runtime_error("Back-end 'consul' not enabled");
-#endif
-}
-
-auto getMySql(const http::url& uri) -> UniqueConfiguration
-{
-#ifdef FLP_CONFIGURATION_BACKEND_MYSQL_ENABLED
-  auto backend = std::make_unique<Backends::MySqlBackend>(uri.host, uri.port);
-  if (!uri.path.empty()) {
-    backend->setPrefix(uri.path);
-  }
-  return backend;
-#else
-  throw std::runtime_error("Back-end 'mysql' not enabled");
-#endif
-}
-
-auto getNdb(const http::url& uri) -> UniqueConfiguration
-{
-#ifdef FLP_CONFIGURATION_BACKEND_NDB_ENABLED
-  auto backend = std::make_unique<Backends::NdbBackend>("", "");
-  if (!uri.path.empty()) {
-    backend->setPrefix(uri.path);
-  }
-  return backend;
-#else
-  throw std::runtime_error("Back-end 'ndb' not enabled");
 #endif
 }
 } // Anonymous namespace
@@ -135,14 +69,9 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   }
 
   static const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
-      {"file",    getFile},
-      {"json",    getJson},
-      {"etcd",    getEtcdV3},  // Default etcd is now V3
-      {"etcd-v2", getEtcdV2},  // Legacy etcd option still available
-      {"etcd-v3", getEtcdV3},
+      {"file", getFile},
+      {"json", getJson},
       {"consul", getConsul},
-      {"mysql", getMySql},
-      {"ndb",     getNdb},
   };
 
   auto iterator = map.find(parsedUrl.protocol);

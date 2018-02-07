@@ -17,34 +17,17 @@ This section provides some basic information on the available backends and their
 * Reads .json files
 * Requires RapidJSON
 
-## etcd v2
-* Interface to etcd v2 API
-* Requires RapidJSON
-
-## etcd v3
-* Interface to etcd v3 API
-* Requires Protobuf and gRPC 
-
 ## Consul
 * Interface to Consul API
 * Requires ppconsul
 * Work in progress
-
-## MySQL
-* Interface to MySQL API
-* Requires MySQL/MariaDB library
-
-## MySQL NDB
-* Interface to MySQL Cluster NDB API
-* Work in progress (currently inactivated)
-
 
 
 # Examples
 Basic usage:
 
 ~~~
-std::string uri = "etcd://localhost:2379"; 
+std::string uri = "consul://localhost:8500"; 
 std::unique_ptr<ConfigurationInterface> conf = ConfigurationFactory::getConfiguration(uri);
 conf->put<int>("/my_dir/my_key", 123);
 int value = conf->get<int>("/my_dir/my_key");
@@ -63,7 +46,6 @@ For usage, refer to their respective `--help` options.
 
 
 # Installation
-
 First make sure you have the devtoolset-6 GCC
 ~~~
 sudo yum -y install centos-release-scl
@@ -100,7 +82,6 @@ make -j install
 For more information: https://alisw.github.io/alibuild/o2-tutorial.html
 
 ## Manual installation
-
 This section provides instructions for manually installing the Configuration module and its dependencies
 
 First get some additional prerequisite packages:
@@ -108,32 +89,8 @@ First get some additional prerequisite packages:
 sudo yum -y install wget git cmake cmake3 autoconf automake
 ~~~
 
-### Protocol Buffer & gRPC
-Needed for etcd-v3 back-end.
-
-Install protobuf 3.0.0
-~~~
-cd /tmp
-wget https://github.com/google/protobuf/releases/download/v3.0.0/protobuf-cpp-3.0.0.tar.gz
-tar zxf protobuf-cpp-3.0.0.tar.gz
-cd protobuf-3.0.0
-./configure
-make -j
-sudo make install
-~~~
-
-Install grpc
-~~~
-cd /tmp
-git clone -b v1.2.5 https://github.com/grpc/grpc
-cd grpc
-git submodule update --init
-make -j
-sudo make install
-~~~
-
 ### RapidJSON
-Needed for etcd-v2 back-end.
+Needed for JSON back-end.
 ~~~
 cd /tmp
 git clone https://github.com/miloyip/rapidjson.git
@@ -188,23 +145,6 @@ sudo cp output/*.so /usr/local/lib/
 sudo cp -r ../include/* /usr/local/include/
 ~~~
 
-### MySQL NDB Cluster
-Needed for MySQL NDB Cluster backend (which is a work in progress)
-~~~
-wget https://dev.mysql.com/get/Downloads/MySQL-Cluster-7.5/mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
-tar xvf mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
-yum install ./mysql-cluster-community-devel-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-libs-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-common-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-libs-compat-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-ndbclient-7.5.7-1.el7.x86_64.rpm
-~~~
-
-### MySQL
-~~~
-yum install mariadb-devel mariadb-libs
-~~~
-
 ### Configuration
 ~~~
 cd /tmp
@@ -215,32 +155,11 @@ make -j
 sudo make install
 ~~~
 
-
 ## Backend server setup
 First install Docker
 ~~~
 sudo yum -y install docker
 ~~~
-
-### etcd
-Local-only development setup
-~~~
-sudo docker run --name=etcd --net=host quay.io/coreos/etcd:v3.0.14
-sudo systemctl enable docker # Optional, if you want the Docker daemon starting on boot
-sudo systemctl start docker
-~~~
-
-Externally visible
-~~~
-docker run -d --name=etcd --net=host quay.io/coreos/etcd:v3.0.14 \
-  /usr/local/bin/etcd --name my-etcd-1 --data-dir /etcd --listen-client-urls http://0.0.0.0:2379 \
-  --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 \
-  --initial-advertise-peer-urls http://0.0.0.0:2380
-~~~
-
-For more information:
-https://github.com/coreos/etcd/releases/
-
 
 ### Consul
 Local-only development setup
@@ -258,116 +177,6 @@ sudo docker run -d --name=consul --net=host consul:0.7.5 \
 For more information: 
 https://hub.docker.com/_/consul/
 
-### MySQL NDB Cluster
-Docker:
-~~~
-docker network create cluster --subnet=192.168.0.0/16
-docker run -d --net=cluster --name=management1 --ip=192.168.0.2 \
-    -p1186:1186 \
-    mysql/mysql-cluster ndb_mgmd
-docker run -d --net=cluster --name=ndb1 --ip=192.168.0.3 mysql/mysql-cluster ndbd
-docker run -d --net=cluster --name=ndb2 --ip=192.168.0.4 mysql/mysql-cluster ndbd
-docker run -d --net=cluster --name=mysql1 --ip=192.168.0.10 \
-    -p2202:2202 -p3306:3306 -p33060:33060 \
-    -e MYSQL_ROOT_PASSWORD=mypasswd mysql/mysql-cluster mysqld
-~~~
-
-Native:
-~~~
-wget https://dev.mysql.com/get/Downloads/MySQL-Cluster-7.5/mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
-tar xvf mysql-cluster-community-7.5.7-1.el7.x86_64.rpm-bundle.tar
-yum install ./mysql-cluster-community-devel-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-libs-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-common-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-libs-compat-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-ndbclient-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-server-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-client-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-data-node-7.5.7-1.el7.x86_64.rpm \
-  ./mysql-cluster-community-management-server-7.5.7-1.el7.x86_64.rpm
-~~~
-
-For more information:
-https://hub.docker.com/r/mysql/mysql-cluster/
-https://github.com/mysql/mysql-docker/tree/mysql-cluster
-
-### MariaDB Galera Cluster
-~~~
-#!/bin/bash
-
-cat > /etc/yum.repos.d/MariaDB.repo << EOL
-[mariadb]
-name = MariaDB
-baseurl = http://yum.mariadb.org/10.1/centos7-amd64
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-gpgcheck=1
-EOL
-
-yum -y install MariaDB-server MariaDB-client
-
-# Note: you may need to open ports ???4567, 3306??? in your firewall
-
-GALERA_NODES='gcomm://my-node-1,gcomm://my-node-2,gcomm://my-node-3'
-GALERA_OPTS='--wsrep-provider=/usr/lib64/galera/libgalera_smm.so --binlog-format=ROW --default-storage-engine=InnoDB --innodb-autoinc-lock-mode=2 --innodb-doublewrite=1 --query-cache-size=0 --wsrep-on=1'
-
-
-# First node starts the cluster
-mysqld --user=mysql --wsrep-new-cluster --wsrep-cluster-address="gcomm://" $GALERA_OPTS &
-
-# Rest of nodes
-mysqld --user=mysql --wsrep_cluster_address=$GALERA_NODES $GALERA_OPTS &
-
-# Check status with
-mysql --user=mysql -e "SHOW STATUS LIKE 'wsrep_%';"
-~~~
-
-For more information:
-https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/
-
-
-### MariaDB Galera Cluster
-~~~
-cat > /etc/yum.repos.d/MariaDB.repo << EOL
-[mariadb]
-name = MariaDB
-baseurl = http://yum.mariadb.org/10.1/centos7-amd64
-gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-gpgcheck=1
-EOL
-
-yum -y install MariaDB-server MariaDB-client
-
-# Note: you may need to open ports ???4567, 3306??? in your firewall
-
-GALERA_NODES='gcomm://pboescho-conf-cluster-1,gcomm://pboescho-conf-cluster-2,gcomm://pboescho-conf-cluster-3'
-GALERA_OPTS='--wsrep-provider=/usr/lib64/galera/libgalera_smm.so --binlog-format=ROW --default-storage-engine=InnoDB --innodb-autoinc-lock-mode=2 --innodb-doublewrite=1 --query-cache-size=0 --wsrep-on=1'
-
-
-# First node starts the cluster
-mysqld --user=mysql --wsrep-new-cluster --wsrep-cluster-address="gcomm://" $GALERA_OPTS &
-
-# Rest of nodes
-mysqld --user=mysql --wsrep_cluster_address=$GALERA_NODES $GALERA_OPTS &
-
-# Check status with
-mysql -e "show status like 'wsrep_cluster_size%';"
-
-# Create user
-mysql -e "CREATE USER 'conf'@'localhost' IDENTIFIED BY 'conf';"
-mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'conf'@'localhost' WITH GRANT OPTION;"
-mysql -e "CREATE USER 'conf'@'%' IDENTIFIED BY 'conf';"
-mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'conf'@'%' WITH GRANT OPTION;"
-mysql -e "FLUSH PRIVILEGES;"
-
-# Create table
-mysql -e "create database if not exists o2;"
-mysql -e "create table if not exists o2.configuration (kee VARCHAR(512) primary key, value TEXT);"
-~~~
-
-For more information:
-https://mariadb.com/kb/en/library/getting-started-with-mariadb-galera-cluster/
-
-
 ## GUI
 There is currently no generalized Configuration GUI, although this feature is planned.
 For now, we recommend using backend-specific GUIs.
@@ -377,19 +186,7 @@ It can be accessed using the `/ui` URL path, for example `http://myconsulserver:
 For more information: 
 https://www.consul.io/intro/getting-started/ui.html
 
-If you use etcd, there are some unofficial options available, such as:
-* etcd-viewer 
-  * https://github.com/nikfoundas/etcd-viewer
-  * Note it only supports the v2 interface, which is in a different namespace than the v3 interface.
-
-* e3w
-  * https://github.com/soyking/e3w
-  * Supports v3 interface
-
-
-
 ## Doxygen
-
 `make doc` will generate the doxygen documentation.
 To access the resulting documentation, open doc/html/index.html in your
 build directory. To install the documentation when calling `make install`
