@@ -69,6 +69,7 @@ O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
         src/Backends/File/FileBackend.cxx
+        src/CommandLineUtilities/Program.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
         src/Tree.cxx

@@ -6,14 +6,14 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
-#include <Common/Program.h>
+#include "Program.h"
 #include "Configuration/ConfigurationFactory.h"
 #include "Configuration/Tree.h"
 
 namespace po = boost::program_options;
 namespace
 {
-class Copy : public AliceO2::Common::Program
+class Copy : public AliceO2::Configuration::Program
 {
     virtual Description getDescription() override
     {
