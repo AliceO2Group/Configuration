@@ -4,7 +4,6 @@
 find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.
 find_package(CURL REQUIRED)
-find_package(Common REQUIRED)
 find_package(PpConsul)
 find_package(RapidJSON)
 
@@ -29,10 +28,6 @@ if (RAPIDJSON_FOUND AND PPCONSUL_FOUND)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED)
     add_definitions(-DFLP_CONFIGURATION_BACKEND_CONSUL_ENABLED)
 endif()
-
-#if (MYSQL_NDB_FOUND)
-#    add_definitions(-DFLP_CONFIGURATION_BACKEND_NDB_ENABLED)
-#endif()
 
 
 ########## Bucket definitions ############
