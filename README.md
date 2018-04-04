@@ -1,3 +1,5 @@
+[![JIRA](https://img.shields.io/badge/JIRA-issues-blue.svg)](https://alice.its.cern.ch/jira/projects/OCONF)
+
 # Configuration module
 The Configuration module provides a way to access Configuration data from various backends in a uniform way.
 Users get an interface to backends by providing a URI to the ConfigurationFactory class, which returns an implementation 
