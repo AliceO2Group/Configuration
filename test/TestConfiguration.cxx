@@ -319,6 +319,6 @@ BOOST_AUTO_TEST_CASE(TreeConversionTest)
          {"/dir/subdir/subsubdir/string", "string"s}};
 
   Node convertedTree = keyValuesToTree(pairs);
-  treeToKeyValues(convertedTree) == pairs;
+  BOOST_CHECK(treeToKeyValues(convertedTree) == pairs);
 }
 } // Anonymous namespace

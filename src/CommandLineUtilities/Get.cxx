@@ -28,7 +28,7 @@ class Get : public AliceO2::Configuration::Program
           ("recursive,r", po::bool_switch(&mRecursive), "Recursive get");
     }
 
-    virtual void run(const boost::program_options::variables_map& variablesMap) override
+    virtual void run(const boost::program_options::variables_map&) override
     {
       auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(mServerUri);
       if (mRecursive) {
