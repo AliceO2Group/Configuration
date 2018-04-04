@@ -5,6 +5,9 @@ of ConfigurationInterface.
 Values can be retrieved from the interface one-by-one using simple getters, or multiple at a time using `getRecursive()`.
 The `getRecursive()` function returns a tree-like data structure, which models the hierarchy of directories or paths.
 
+# Reporting Bugs
+
+In order to report bugs or feature requests, please use the associated JIRA project, <https://alice.its.cern.ch/jira/projects/OCONF>.
 
 # Backends
 This section provides some basic information on the available backends and their dependencies  
