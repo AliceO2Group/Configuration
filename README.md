@@ -1,3 +1,5 @@
+[![JIRA](https://img.shields.io/badge/JIRA-issues-blue.svg)](https://alice.its.cern.ch/jira/projects/OCONF)
+
 # Configuration module
 The Configuration module provides a way to access Configuration data from various backends in a uniform way.
 Users get an interface to backends by providing a URI to the ConfigurationFactory class, which returns an implementation 
@@ -5,6 +7,9 @@ of ConfigurationInterface.
 Values can be retrieved from the interface one-by-one using simple getters, or multiple at a time using `getRecursive()`.
 The `getRecursive()` function returns a tree-like data structure, which models the hierarchy of directories or paths.
 
+# Reporting Bugs
+
+In order to report bugs or feature requests, please use the associated JIRA project, <https://alice.its.cern.ch/jira/projects/OCONF>.
 
 # Backends
 This section provides some basic information on the available backends and their dependencies  
