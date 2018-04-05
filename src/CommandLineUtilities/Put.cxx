@@ -28,7 +28,7 @@ class Put : public AliceO2::Configuration::Program
           ("value,v", po::value<std::string>(&mValue)->required(), "Value to put");
     }
 
-    virtual void run(const boost::program_options::variables_map& variablesMap) override
+    virtual void run(const boost::program_options::variables_map&) override
     {
       auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(mServerUri);
       configuration->putString(mKey, mValue);

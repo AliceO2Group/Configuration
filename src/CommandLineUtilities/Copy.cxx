@@ -28,7 +28,7 @@ class Copy : public AliceO2::Configuration::Program
           ("dest,d", po::value<std::string>(&mDestinationUri)->required(), "Destination server URI");
     }
 
-    virtual void run(const boost::program_options::variables_map& variablesMap) override
+    virtual void run(const boost::program_options::variables_map&) override
     {
       using namespace AliceO2::Configuration;
       auto source = ConfigurationFactory::getConfiguration(mSourceUri);

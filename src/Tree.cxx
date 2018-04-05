@@ -39,7 +39,7 @@ auto getSubtree(const Node& tree, const std::string& path) -> const Node&
 
   // Traverse branches
   const Node* node = &tree;
-  for (int i = 0; i < pathSegments.size(); ++i) {
+  for (std::string::size_type i = 0; i < pathSegments.size(); ++i) {
     try {
       node = &(boost::get<const Branch&>(node)->at(pathSegments[i]));
     }
@@ -68,7 +68,7 @@ auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> 
 
     // Traverses or creates directories
     Branch* node = &treeRoot; // Current node
-    for (int i = 0; i < pathSegments.size(); ++i) {
+    for (std::string::size_type i = 0; i < pathSegments.size(); ++i) {
       const auto& directory = pathSegments[i]; // The "directory" to add or get
       if (node->count(directory)) {
         // Key was already present
@@ -99,7 +99,7 @@ void treeToKeyValuesHelper(const Node& node, std::vector<std::pair<std::string, 
   auto makeKey = [&pathStack]{
       std::ostringstream stream;
       stream << '/'; // Add leading slash
-      for (int i = 0; i < pathStack.size(); ++i) {
+      for (std::string::size_type i = 0; i < pathStack.size(); ++i) {
         stream << pathStack[i];
         if (i + 1 < pathStack.size()) {
           // Add slash between paths only if we're not at the end

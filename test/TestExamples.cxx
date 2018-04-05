@@ -120,8 +120,8 @@ BOOST_AUTO_TEST_CASE(VisitorExample)
   //! [Visitor]
   auto variant = boost::variant<int, std::string>(42);
   auto visitor = Visitor::make<std::string>(
-      [](int i)        { return "It's an int!"; },
-      [](std::string s){ return "It's a string!"; });
+      [](int)        { return "It's an int!"; },
+      [](std::string){ return "It's a string!"; });
   auto whatIsIt = boost::apply_visitor(visitor, variant);
   assert(whatIsIt == "It's an int!");
   //! [Visitor]
@@ -132,8 +132,8 @@ BOOST_AUTO_TEST_CASE(ApplyVisitorExample)
   //! [Apply visitor]
   auto variant = boost::variant<int, std::string>(42);
   auto whatIsIt = Visitor::apply<std::string>(variant,
-      [](int i)        { return "It's an int!"; },
-      [](std::string s){ return "It's a string!"; });
+      [](int)        { return "It's an int!"; },
+      [](std::string){ return "It's a string!"; });
   assert(whatIsIt == "It's an int!");
   //! [Apply visitor]
 }
@@ -157,8 +157,8 @@ BOOST_AUTO_TEST_CASE(Example)
       // Putting & getting
       conf->put<int>(myKey, myValue);
       // Getters return a boost::optional that will be empty if the value is not present
-      int getValue = conf->get<int>(myKey).value();
-      int getValueWithDefault = conf->get<int>("/this/key/does/not/exist").value_or(-1);
+      conf->get<int>(myKey).value();
+      conf->get<int>("/this/key/does/not/exist").value_or(-1);
 
 
       // Assuming our backend has these key-value pairs:
