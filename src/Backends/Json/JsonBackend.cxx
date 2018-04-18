@@ -13,11 +13,11 @@
 #include <rapidjson/document.h>     // rapidjson's DOM-style API
 #include "JsonHandler.h"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Backends
+namespace backends
 {
 namespace
 {
@@ -79,6 +79,6 @@ void JsonBackend::setPrefix(const std::string& path)
   mCurrentNode = node;
 }
 
-} // namespace Backends
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace backends
+} // namespace configuration
+} // namespace o2

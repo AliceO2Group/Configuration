@@ -16,9 +16,9 @@
 #include <boost/lexical_cast.hpp>
 #include "Configuration/Visitor.h"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 
 /// This namespace contains the Tree data structure returned by getRecursive() and various helper functions to interact
@@ -31,7 +31,7 @@ namespace Configuration
 /// Example of traversing a tree:
 ///   \snippet test/TestExamples.cxx [Tree traversal]
 /// Also see the printTree() function how to traverse the tree using a visitor
-namespace Tree
+namespace tree
 {
 template <typename T> using Optional = boost::optional<T>; // Hopefully, we can move to std::optional someday.
 
@@ -85,7 +85,7 @@ T convert(const Leaf& variant)
   } else {
     // Else, try to convert
     try {
-      return Visitor::apply<T>(variant,
+      return visitor::apply<T>(variant,
           [](const std::string& value) { return boost::lexical_cast<T>(value); },
           [](int value) { return boost::lexical_cast<T>(value); },
           [](bool value) { return boost::lexical_cast<T>(value); },
@@ -122,7 +122,7 @@ T getRequired(const Node& node, const std::string& key)
 template <class T>
 Optional<T> get(const Node& node)
 {
-  return Visitor::apply<boost::optional<T>>(node,
+  return visitor::apply<boost::optional<T>>(node,
       [](const Branch&) {return boost::none;},
       [](const Leaf& leaf) {return convert<T>(leaf);});
 }
@@ -155,7 +155,7 @@ inline void printTree(const Node& node, std::ostream& stream, int level = 0)
 {
   // The visitor is applied recursively to the tree.
   // The appropriate lambda is called depending on what type is contained in the node variant
-  Visitor::apply(node,
+  visitor::apply(node,
       [&](const Branch& branch) {
         if (level != 0) {
           stream << '\n';
@@ -168,7 +168,7 @@ inline void printTree(const Node& node, std::ostream& stream, int level = 0)
       },
       [&](const Leaf& leaf) {
         // We can again visit each data type if we need
-        Visitor::apply(leaf,
+        visitor::apply(leaf,
             [&](const std::string& value) { stream << "String: " << value; },
             [&](int value) { stream << "Int:    " << value; },
             [&](bool value) { stream << "Bool:   " << value; },
@@ -213,8 +213,8 @@ auto keyValuesToTree(const std::vector<std::pair<std::string, Leaf>>& pairs) -> 
 auto treeToKeyValues(const Node& node) -> const std::vector<std::pair<std::string, Leaf>>;
 
 
-} // namespace Tree
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace tree
+} // namespace configuration
+} // namespace o2
 
 #endif /* ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATION_TREE_H_ */

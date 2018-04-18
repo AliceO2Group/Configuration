@@ -10,9 +10,9 @@
 #include <memory>
 #include "Configuration/ConfigurationInterface.h"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 
 class ConfigurationFactory

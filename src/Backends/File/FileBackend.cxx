@@ -9,11 +9,11 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Backends
+namespace backends
 {
 
 FileBackend::~FileBackend()
@@ -76,6 +76,6 @@ void FileBackend::setPrefix(const std::string& path)
   loadConfigFile(mFilePath, mPropertyTree);
 }
 
-} // namespace Configuration
-} // namespace Backends
-} // namespace AliceO2
+} // namespace configuration
+} // namespace backends
+} // namespace o2

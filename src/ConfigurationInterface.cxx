@@ -6,9 +6,9 @@
 #include "Configuration/ConfigurationInterface.h"
 #include <boost/lexical_cast.hpp>
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 
 
@@ -88,5 +88,5 @@ template<> auto ConfigurationInterface::get(const std::string& path) -> Optional
   return getFloat(path);
 }
 
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace configuration
+} // namespace o2

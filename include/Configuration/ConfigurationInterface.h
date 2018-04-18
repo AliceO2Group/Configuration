@@ -11,9 +11,9 @@
 #include <boost/optional.hpp>
 #include "Configuration/Tree.h"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 
 /// \brief Interface for configuration back ends.
@@ -108,7 +108,7 @@ class ConfigurationInterface
     /// Gets key-values recursively from the given path and converts them into a tree structure
     /// \param path The path of the values to get
     /// \return A tree containing the values that were retrieved
-    virtual Tree::Node getRecursive(const std::string& path) = 0;
+    virtual tree::Node getRecursive(const std::string& path) = 0;
 
     /// Gets key-values recursively from the given path
     /// \param path The path of the values to get
@@ -116,7 +116,7 @@ class ConfigurationInterface
     virtual KeyValueMap getRecursiveMap(const std::string& path) = 0;
 };
 
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace configuration
+} // namespace o2
 
 #endif /* ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_ */

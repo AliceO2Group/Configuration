@@ -10,11 +10,11 @@
 #include <ppconsul/kv.h>
 #include <string>
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Backends
+namespace backends
 {
 
 /// Backend for Consul
@@ -41,8 +41,8 @@ class ConsulBackend final : public BackendBase
     ppconsul::kv::Storage mStorage;
 };
 
-} // namespace Backends
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace backends
+} // namespace configuration
+} // namespace o2
 
 #endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_CONSUL_CONSULBACKEND_H_

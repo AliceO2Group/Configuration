@@ -9,8 +9,8 @@
 #include <boost/core/noncopyable.hpp>
 #include "Configuration/ConfigurationInterface.h"
 
-namespace AliceO2 {
-namespace Configuration {
+namespace o2 {
+namespace configuration {
 
 /// Base class for backend implementations. Not it is non-copyable by inheriting form boost::noncopyable
 class BackendBase: public ConfigurationInterface, public boost::noncopyable
@@ -32,7 +32,7 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
       return mSeparator;
     }
 
-    virtual Tree::Node getRecursive(const std::string&) override
+    virtual tree::Node getRecursive(const std::string&) override
     {
       throw std::runtime_error("getRecursive() unsupported by backend");
     }
@@ -50,7 +50,7 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
     char mSeparator = DEFAULT_SEPARATOR;
 };
 
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace configuration
+} // namespace o2
 
 #endif // ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_

@@ -15,9 +15,9 @@
 #endif
 #include "UriParser/UriParser.hpp"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 namespace
 {
@@ -29,7 +29,7 @@ auto getFile(const http::url& uri) -> UniqueConfiguration
   // will consider the thing before the first delimiter ('/') of the path as authority,
   // so we have to include that in the path we use.
   auto path = "/" + uri.host + uri.path;
-  return std::make_unique<Backends::FileBackend>(path);
+  return std::make_unique<backends::FileBackend>(path);
 }
 
 auto getJson(const http::url& uri) -> UniqueConfiguration
@@ -39,7 +39,7 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
   // so we have to include that in the path we use.
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
   auto path = "/" + uri.host + uri.path;
-  return std::make_unique<Backends::JsonBackend>(path);
+  return std::make_unique<backends::JsonBackend>(path);
 #else
   throw std::runtime_error("Back-end 'json' not enabled");
 #endif
@@ -48,7 +48,7 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
-  auto consul = std::make_unique<Backends::ConsulBackend>(uri.host, uri.port);
+  auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
   if (!uri.path.empty()) {
     consul->setPrefix(uri.path);
   }
@@ -82,7 +82,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   }
 }
 
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace configuration
+} // namespace o2
 
 

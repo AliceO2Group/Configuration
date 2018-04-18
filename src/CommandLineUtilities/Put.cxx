@@ -12,7 +12,7 @@
 namespace po = boost::program_options;
 namespace
 {
-class Put : public AliceO2::Configuration::Program
+class Put : public o2::configuration::Program
 {
     virtual Description getDescription() override
     {
@@ -30,7 +30,7 @@ class Put : public AliceO2::Configuration::Program
 
     virtual void run(const boost::program_options::variables_map&) override
     {
-      auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(mServerUri);
+      auto configuration = o2::configuration::ConfigurationFactory::getConfiguration(mServerUri);
       configuration->putString(mKey, mValue);
     }
 

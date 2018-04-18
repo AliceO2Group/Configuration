@@ -9,9 +9,9 @@
 #include <atomic>
 #include <boost/program_options.hpp>
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 
 /// Helper class for making a command-line program. It handles:
@@ -57,7 +57,7 @@ class Program
     bool mVerbose;
 };
 
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace configuration
+} // namespace o2
 
 #endif // PROGRAM

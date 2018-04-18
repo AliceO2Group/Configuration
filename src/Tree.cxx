@@ -13,11 +13,11 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Tree
+namespace tree
 {
 
 // Split path into segments (either directories or the name of the key)
@@ -109,7 +109,7 @@ void treeToKeyValuesHelper(const Node& node, std::vector<std::pair<std::string, 
       return stream.str();
   };
 
-  Visitor::apply(node,
+  visitor::apply(node,
       [&](const Branch& branch) {
         for (const auto& keyValuePair : branch) {
           pathStack.push_back(keyValuePair.first);
@@ -132,7 +132,7 @@ auto treeToKeyValues(const Node& node) -> const std::vector<std::pair<std::strin
 }
 
 
-} // namespace Tree
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace tree
+} // namespace configuration
+} // namespace o2
 

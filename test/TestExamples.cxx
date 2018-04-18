@@ -18,7 +18,7 @@
 #include <assert.h>
 
 using namespace std::literals::string_literals;
-using namespace AliceO2::Configuration;
+using namespace o2::configuration;
 using std::cout;
 using std::endl;
 
@@ -27,7 +27,7 @@ namespace
 
 BOOST_AUTO_TEST_CASE(TreeExample)
 {
-  using namespace Tree;
+  using namespace tree;
 
   //! [Tree declaration]
   Node tree = Branch
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(TreeExample)
 
 BOOST_AUTO_TEST_CASE(ConversionExample)
 {
-  using namespace Tree;
+  using namespace tree;
 
   //! [Key-value pair conversion]
   std::vector<std::pair<std::string, Leaf>> pairs {
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(ConversionExample)
 
 BOOST_AUTO_TEST_CASE(SubtreeExample)
 {
-  using namespace Tree;
+  using namespace tree;
 
   //! [Get subtree]
   auto tree = Branch {
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(VisitorExample)
 {
   //! [Visitor]
   auto variant = boost::variant<int, std::string>(42);
-  auto visitor = Visitor::make<std::string>(
+  auto visitor = visitor::make<std::string>(
       [](int)        { return "It's an int!"; },
       [](std::string){ return "It's a string!"; });
   auto whatIsIt = boost::apply_visitor(visitor, variant);
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(ApplyVisitorExample)
 {
   //! [Apply visitor]
   auto variant = boost::variant<int, std::string>(42);
-  auto whatIsIt = Visitor::apply<std::string>(variant,
+  auto whatIsIt = visitor::apply<std::string>(variant,
       [](int)        { return "It's an int!"; },
       [](std::string){ return "It's a string!"; });
   assert(whatIsIt == "It's an int!");
@@ -171,19 +171,19 @@ BOOST_AUTO_TEST_CASE(Example)
       //   * a Branch, which represents a directory or path segment. It's implemented as a map, where the key is
       //     the path segment and the value is a Node
       //   * a Leaf, which represents a value. It's a boost::variant that can contain a string, int, double or bool
-      Tree::Node tree = conf->getRecursive("/");
+      tree::Node tree = conf->getRecursive("/");
 
       // Then we can get a Branch and some values from it
-      Tree::Node dir = Tree::getBranch(tree, "dir");
-      assert(Tree::getRequired<bool>(dir, "myBool") == false);
+      tree::Node dir = tree::getBranch(tree, "dir");
+      assert(tree::getRequired<bool>(dir, "myBool") == false);
 
       // We can also traverse multiple steps
-      Tree::Node subdir = Tree::getSubtree(tree, "/dir/subdir");
-      assert(Tree::getRequired<int>(subdir, "myInt") == 123);
+      tree::Node subdir = tree::getSubtree(tree, "/dir/subdir");
+      assert(tree::getRequired<int>(subdir, "myInt") == 123);
 
       // Traversal works down to leaf nodes
-      Tree::Node myString = Tree::getSubtree(tree, "/dir/subdir/subsubdir/myString");
-      assert(Tree::getRequired<std::string>(myString) == "abc");
+      tree::Node myString = tree::getSubtree(tree, "/dir/subdir/subsubdir/myString");
+      assert(tree::getRequired<std::string>(myString) == "abc");
     }
 
     {

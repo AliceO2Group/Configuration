@@ -8,10 +8,10 @@
 
 #include <boost/variant/static_visitor.hpp>
 
-namespace AliceO2 {
-namespace Configuration {
-namespace Visitor {
-namespace Implementation {
+namespace o2 {
+namespace configuration {
+namespace visitor {
+namespace implementation {
 
 /// Class for creating lambda-based visitors for boost::variant
 /// Based on: http://stackoverflow.com/questions/7870498/using-declaration-in-variadic-template/7870614#7870614
@@ -48,9 +48,9 @@ struct Visitor<ReturnT> : public boost::static_visitor<ReturnT>
     }
 };
 
-} // namespace Implementation
-} // namespace Visitor
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace implementation
+} // namespace visitor
+} // namespace configuration
+} // namespace o2
 
 #endif /* ALICEO2_CONFIGURATION_INCLUDE_VISITOR_IMPLEMENTATION_H_ */

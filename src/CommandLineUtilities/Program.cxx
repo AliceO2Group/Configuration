@@ -13,9 +13,9 @@ using std::cout;
 using std::endl;
 namespace po = boost::program_options;
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
 namespace
 {
@@ -133,5 +133,5 @@ int Program::execute(int argc, char** argv)
   return 0;
 }
 
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace configuration
+} // namespace o2
