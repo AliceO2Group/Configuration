@@ -9,9 +9,9 @@
 #include "VisitorImplementation.h"
 #include <boost/variant/apply_visitor.hpp>
 
-namespace AliceO2 {
-namespace Configuration {
-namespace Visitor {
+namespace o2 {
+namespace configuration {
+namespace visitor {
 
 /// Creates a boost::variant visitor with functions.
 ///
@@ -22,7 +22,7 @@ namespace Visitor {
 /// \tparam Types of the lambda functions.
 /// \param functions Functions. One for each type that can be visited.
 template<typename ReturnType, typename ... Functions>
-Implementation::Visitor<ReturnType, Functions...> make(Functions ... functions)
+implementation::Visitor<ReturnType, Functions...> make(Functions ... functions)
 {
   return {functions...};
 }
@@ -40,11 +40,11 @@ Implementation::Visitor<ReturnType, Functions...> make(Functions ... functions)
 template<typename ReturnType = void, typename Variant, typename ... Functions>
 ReturnType apply(const Variant& variant, Functions ... functions)
 {
-  return boost::apply_visitor(Visitor::make<ReturnType>(functions...), variant);
+  return boost::apply_visitor(visitor::make<ReturnType>(functions...), variant);
 }
 
-} // namespace Visitor
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace visitor
+} // namespace configuration
+} // namespace o2
 
 #endif /* INCLUDE_CONFIGURATION_VISITOR_H_ */

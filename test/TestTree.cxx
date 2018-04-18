@@ -17,11 +17,11 @@ namespace
 {
 
 using namespace std::literals::string_literals;
-using namespace AliceO2::Configuration;
+using namespace o2::configuration;
 
 BOOST_AUTO_TEST_CASE(TreeTest)
 {
-  using namespace Tree;
+  using namespace tree;
 
   Node tree = Branch
   {
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(TreeTest)
 /// Tests the conversion of key value pairs to a tree
 BOOST_AUTO_TEST_CASE(KeyValuePairConversionTest)
 {
-  using namespace Tree;
+  using namespace tree;
 
   std::vector<std::pair<std::string, Leaf>> referencePairs {
       {"/dir/bool", false},

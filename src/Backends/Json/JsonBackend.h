@@ -10,11 +10,11 @@
 #include <boost/property_tree/ptree.hpp>
 #include "../BackendBase.h"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Backends
+namespace backends
 {
 
 /// Backend for .json files
@@ -35,8 +35,8 @@ class JsonBackend final : public BackendBase
     Tree::Node mCurrentNode;
 };
 
-} // namespace Backends
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace backends
+} // namespace configuration
+} // namespace o2
 
 #endif /* ALICEO2_CONFIGURATION_SRC_JSONBACKEND_H_ */

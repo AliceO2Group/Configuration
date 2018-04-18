@@ -13,7 +13,7 @@
 namespace po = boost::program_options;
 namespace
 {
-class Copy : public AliceO2::Configuration::Program
+class Copy : public o2::configuration::Program
 {
     virtual Description getDescription() override
     {
@@ -30,10 +30,10 @@ class Copy : public AliceO2::Configuration::Program
 
     virtual void run(const boost::program_options::variables_map&) override
     {
-      using namespace AliceO2::Configuration;
+      using namespace o2::configuration;
       auto source = ConfigurationFactory::getConfiguration(mSourceUri);
       auto destination = ConfigurationFactory::getConfiguration(mDestinationUri);
-      auto keyValues = Tree::treeToKeyValues(source->getRecursive("/"));
+      auto keyValues = tree::treeToKeyValues(source->getRecursive("/"));
 
       if (isVerbose()) {
         std::cout << "Got " << keyValues.size() << " key-value pairs\n";
@@ -44,7 +44,7 @@ class Copy : public AliceO2::Configuration::Program
           std::cout << kv.first << " -> " << kv.second << '\n';
         }
 
-        Visitor::apply(kv.second,
+        visitor::apply(kv.second,
             [&](const std::string& value) { destination->put<std::string>(kv.first, value); },
             [&](int value) { destination->put<int>(kv.first, value); },
             [&](bool value) { destination->put<int>(kv.first, int(value)); },

@@ -12,7 +12,7 @@
 namespace po = boost::program_options;
 namespace
 {
-class Get : public AliceO2::Configuration::Program
+class Get : public o2::configuration::Program
 {
     virtual Description getDescription() override
     {
@@ -30,9 +30,9 @@ class Get : public AliceO2::Configuration::Program
 
     virtual void run(const boost::program_options::variables_map&) override
     {
-      auto configuration = AliceO2::Configuration::ConfigurationFactory::getConfiguration(mServerUri);
+      auto configuration = o2::configuration::ConfigurationFactory::getConfiguration(mServerUri);
       if (mRecursive) {
-        AliceO2::Configuration::Tree::printTree(configuration->getRecursive(mKey), std::cout);
+        o2::configuration::tree::printTree(configuration->getRecursive(mKey), std::cout);
       } else {
         std::cout << configuration->getString(mKey).value_or("Key did not exist") << '\n';
       }

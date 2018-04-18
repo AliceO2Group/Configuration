@@ -11,11 +11,11 @@
 #include <boost/property_tree/ptree.hpp>
 #include "../BackendBase.h"
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Backends
+namespace backends
 {
 
 /// Backend for .ini files
@@ -33,8 +33,8 @@ class FileBackend final : public BackendBase
     boost::property_tree::ptree mPropertyTree;
 };
 
-} // namespace Backends
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace backends
+} // namespace configuration
+} // namespace o2
 
 #endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_

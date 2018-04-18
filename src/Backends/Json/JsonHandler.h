@@ -13,11 +13,11 @@
 #include <boost/throw_exception.hpp>
 #include <rapidjson/rapidjson.h>     // rapidjson's DOM-style API
 
-namespace AliceO2
+namespace o2
 {
-namespace Configuration
+namespace configuration
 {
-namespace Backends
+namespace backends
 {
 
 struct JsonHandler {
@@ -140,8 +140,8 @@ struct JsonHandler {
     std::vector<std::pair<std::string, Tree::Leaf>> keyValues;
 };
 
-} // namespace Backends
-} // namespace Configuration
-} // namespace AliceO2
+} // namespace backends
+} // namespace configuration
+} // namespace o2
 
 #endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_JSON_JSONHANDLER_H_
