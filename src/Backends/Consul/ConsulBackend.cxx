@@ -79,15 +79,15 @@ auto ConsulBackend::getItems(const std::string& requestKey) -> std::vector<ppcon
   return mStorage.items(requestKey, ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
 }
 
-auto ConsulBackend::getRecursive(const std::string& path) -> Tree::Node
+auto ConsulBackend::getRecursive(const std::string& path) -> tree::Node
 {
   auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
   auto items = getItems(requestKey);
-  std::vector<std::pair<std::string, Tree::Leaf>> keyValuePairs(items.size());
+  std::vector<std::pair<std::string, tree::Leaf>> keyValuePairs(items.size());
   for (const auto& item : items) {
     keyValuePairs.emplace_back(stripRequestKey(requestKey, item.key), std::move(item.value));
   }
-  return Tree::keyValuesToTree(keyValuePairs);
+  return tree::keyValuesToTree(keyValuePairs);
 }
 
 auto ConsulBackend::getRecursiveMap(const std::string& path) -> KeyValueMap

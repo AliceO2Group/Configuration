@@ -22,13 +22,13 @@ namespace backends
 namespace
 {
 
-auto jsonToTree(const std::string& json) -> Tree::Node
+auto jsonToTree(const std::string& json) -> tree::Node
 {
   rapidjson::Reader reader;
   rapidjson::StringStream ss(json.c_str());
   JsonHandler handler;
   reader.Parse(ss, handler);
-  return Tree::keyValuesToTree(handler.keyValues);
+  return tree::keyValuesToTree(handler.keyValues);
 }
 } // Anonymous namespace
 
@@ -52,30 +52,30 @@ void JsonBackend::putString(const std::string&, const std::string&)
 
 auto JsonBackend::getString(const std::string& path) -> Optional<std::string>
 {
-  const Tree::Node& node = Tree::getSubtree(mRootNode, path);
-  return Tree::get<std::string>(node);
+  const tree::Node& node = tree::getSubtree(mRootNode, path);
+  return tree::get<std::string>(node);
 }
 
-auto JsonBackend::getRecursive(const std::string& path) -> Tree::Node
+auto JsonBackend::getRecursive(const std::string& path) -> tree::Node
 {
-  const Tree::Node& node = Tree::getSubtree(mCurrentNode, path);
+  const tree::Node& node = tree::getSubtree(mCurrentNode, path);
   return node;
 }
 
 auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
 {
   KeyValueMap map;
-  const Tree::Node& node = Tree::getSubtree(mCurrentNode, path);
-  const std::vector<std::pair<std::string, Tree::Leaf>> keyValues = Tree::treeToKeyValues(node);
+  const tree::Node& node = tree::getSubtree(mCurrentNode, path);
+  const std::vector<std::pair<std::string, tree::Leaf>> keyValues = tree::treeToKeyValues(node);
   for (const auto& pair : keyValues) {
-    map[pair.first] = Tree::convert<std::string>(pair.second);
+    map[pair.first] = tree::convert<std::string>(pair.second);
   }
   return map;
 }
 
 void JsonBackend::setPrefix(const std::string& path)
 {
-  const Tree::Node& node = Tree::getSubtree(mRootNode, path);
+  const tree::Node& node = tree::getSubtree(mRootNode, path);
   mCurrentNode = node;
 }
 
