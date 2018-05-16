@@ -84,13 +84,10 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
     std::ofstream stream(TEMP_FILE);
     stream << R"({"menu": {
       "id": "file",
-      "value": "File",
       "popup": {
-        "menuitem": [
-          {"value": "New", "onclick": "CreateNewDoc"},
-          {"value": "Open", "onclick": "OpenDoc"},
-          {"value": "Close", "onclick": "CloseDoc"}
-        ]
+        "menuitem": {
+          "one": {"value": "123", "onclick": "CreateNewDoc"}
+        }
       }
     }})";
   }
@@ -98,6 +95,22 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
 
   BOOST_CHECK(conf->get<std::string>("menu/id").get_value_or("") == "file");
+  BOOST_CHECK(conf->get<std::string>("menu/popup/menuitem/one/onclick").get_value_or("") == "CreateNewDoc");
+  BOOST_CHECK(conf->get<int>("menu/popup/menuitem/one/value").get_value_or(0) == 123);
+
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream << R"({"menu": {
+      "id": "file",
+      "popup": {
+        "menuitem": [
+          {"value": "123", "onclick": "CreateNewDoc"},
+          {"value": "123", "onclick": "DeleteNewDoc"}
+        ]
+      }
+    }})";
+  }
+  BOOST_CHECK_THROW(ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE), std::runtime_error);
 }
 
 inline std::string getReferenceFileName()
