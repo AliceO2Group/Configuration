@@ -77,6 +77,7 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK(conf->get<std::string>("section.key_string").get_value_or("") == "hello");
 }
 
+#ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
 BOOST_AUTO_TEST_CASE(JsonFileTest)
 {
   const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
@@ -112,6 +113,7 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
   }
   BOOST_CHECK_THROW(ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE), std::runtime_error);
 }
+#endif
 
 inline std::string getReferenceFileName()
 {
