@@ -96,53 +96,40 @@ set(HEADERS # needed for the dictionary generation
 
 set(LIBRARY_NAME ${MODULE_NAME})
 
-if(RAPIDJSON_FOUND AND PPCONSUL_FOUND)
-    set(BUCKET_NAME_SUFFIX _with_rapidjson_with_consul)
+if(PPCONSUL_FOUND)
+    list(APPEND SRCS src/Backends/Consul/ConsulBackend.cxx)
+endif()
 
-    # Add Consul backend if the PpConsul dependency was found
-    list(APPEND SRCS
-            src/Backends/Consul/ConsulBackend.cxx
-            )
-    message(STATUS "Consul backend enabled")
-
-    # Add JSON file backend if the RapidJSON dependency was found
-    list(APPEND SRCS
-            src/Backends/Json/JsonBackend.cxx
-            )
-    message(STATUS "json file backend enabled")
-else ()
-  set(BUCKET_NAME_SUFFIX "")
-    message(STATUS "json, consul dependencies missing, compilation skipped for corresponding back-ends")
+if(RAPIDJSON_FOUND)
+    list(APPEND SRCS src/Backends/Json/JsonBackend.cxx)
 endif ()
-set(BUCKET_NAME configuration_bucket${BUCKET_NAME_SUFFIX})
-set(APP_BUCKET_NAME configuration_app_bucket${BUCKET_NAME_SUFFIX})
+
+set(BUCKET_NAME configuration_bucket)
 
 O2_GENERATE_LIBRARY()
 
-# todo we repeat ourselves because the above macro dares deleting the variables we pass to it.
 set(LIBRARY_NAME ${MODULE_NAME})
 
 message(STATUS LIBRARY_NAME: ${LIBRARY_NAME})
 message(STATUS BUCKET_NAME: ${BUCKET_NAME})
-message(STATUS APP_BUCKET_NAME: ${APP_BUCKET_NAME})
 
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-put
         SOURCES src/CommandLineUtilities/Put.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${APP_BUCKET_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
 )
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-get
         SOURCES src/CommandLineUtilities/Get.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${APP_BUCKET_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
 )
 O2_GENERATE_EXECUTABLE(
         EXE_NAME configuration-copy
         SOURCES src/CommandLineUtilities/Copy.cxx
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${APP_BUCKET_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
 )
 
 enable_testing()
@@ -155,7 +142,7 @@ set(TEST_SRCS
 
 O2_GENERATE_TESTS(
         MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${APP_BUCKET_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
         TEST_SRCS ${TEST_SRCS}
 )
 
