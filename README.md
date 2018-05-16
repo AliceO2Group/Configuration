@@ -9,19 +9,13 @@ Values can be retrieved from the interface one-by-one using simple getters, or m
 The `getRecursive()` function returns a tree-like data structure, which models the hierarchy of directories or paths.
 
 ## Backends
-This section provides some basic information on the available backends and their dependencies  
+The table below provides some basic information on the available backends and their dependencies:
 
-### File
-* Reads .ini style files
-* No dependencies
-
-### JSON
-* Reads .json files
-* Requires RapidJSON
-
-### Consul
-* Interface to Consul API
-* Requires ppconsul
+| Backend name | URL protocol    | Dependency |
+| ------------ |:---------------:| ----------:|
+| INI file     | `file://`       | -          |
+| JSON file    | `json://`       | [RapidJSON](https://github.com/Tencent/rapidjson) |
+| Consul       | `consul://`     | [ppconsul](https://github.com/oliora/ppconsul) |
 
 ## Examples
 Basic usage:
