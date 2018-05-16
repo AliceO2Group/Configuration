@@ -77,6 +77,29 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK(conf->get<std::string>("section.key_string").get_value_or("") == "hello");
 }
 
+BOOST_AUTO_TEST_CASE(JsonFileTest)
+{
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream << R"({"menu": {
+      "id": "file",
+      "value": "File",
+      "popup": {
+        "menuitem": [
+          {"value": "New", "onclick": "CreateNewDoc"},
+          {"value": "Open", "onclick": "OpenDoc"},
+          {"value": "Close", "onclick": "CloseDoc"}
+        ]
+      }
+    }})";
+  }
+
+  auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
+
+  BOOST_CHECK(conf->get<std::string>("menu/id").get_value_or("") == "file");
+}
+
 inline std::string getReferenceFileName()
 {
   return "/tmp/aliceo2_configuration_recursive_test.json";
