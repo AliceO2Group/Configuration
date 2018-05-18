@@ -136,7 +136,8 @@ enable_testing()
 
 set(TEST_SRCS
         test/TestExamples.cxx
-        test/TestConfiguration.cxx
+        test/TestRecursiveGet.cxx
+        test/TestBackends.cxx
         test/TestTree.cxx
         )
 

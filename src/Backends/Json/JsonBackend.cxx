@@ -52,8 +52,12 @@ void JsonBackend::putString(const std::string&, const std::string&)
 
 auto JsonBackend::getString(const std::string& path) -> Optional<std::string>
 {
-  const tree::Node& node = tree::getSubtree(mRootNode, path);
-  return tree::get<std::string>(node);
+  try {
+    const tree::Node& node = tree::getSubtree(mRootNode, path);
+    return tree::get<std::string>(node);
+  } catch (...) {
+    return Optional<std::string>();
+  }
 }
 
 auto JsonBackend::getRecursive(const std::string& path) -> tree::Node
