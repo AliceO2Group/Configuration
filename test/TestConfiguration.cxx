@@ -77,6 +77,44 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK(conf->get<std::string>("section.key_string").get_value_or("") == "hello");
 }
 
+#ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
+BOOST_AUTO_TEST_CASE(JsonFileTest)
+{
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream << R"({"menu": {
+      "id": "file",
+      "popup": {
+        "menuitem": {
+          "one": {"value": "123", "onclick": "CreateNewDoc"}
+        }
+      }
+    }})";
+  }
+
+  auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
+
+  BOOST_CHECK(conf->get<std::string>("menu/id").get_value_or("") == "file");
+  BOOST_CHECK(conf->get<std::string>("menu/popup/menuitem/one/onclick").get_value_or("") == "CreateNewDoc");
+  BOOST_CHECK(conf->get<int>("menu/popup/menuitem/one/value").get_value_or(0) == 123);
+
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream << R"({"menu": {
+      "id": "file",
+      "popup": {
+        "menuitem": [
+          {"value": "123", "onclick": "CreateNewDoc"},
+          {"value": "123", "onclick": "DeleteNewDoc"}
+        ]
+      }
+    }})";
+  }
+  BOOST_CHECK_THROW(ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE), std::runtime_error);
+}
+#endif
+
 inline std::string getReferenceFileName()
 {
   return "/tmp/aliceo2_configuration_recursive_test.json";
