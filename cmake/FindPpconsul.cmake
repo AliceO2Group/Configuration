@@ -19,7 +19,7 @@ find_path(PPCONSUL_INCLUDE_DIR
           PATH_SUFFIXES include)
 
 find_package_handle_standard_args(Ppconsul DEFAULT_MSG
-                                  PPCONSUL_LIBRARIES_PPCONSUL
+                                  _LIBPPCONSUL
                                   PPCONSUL_INCLUDE_DIR)
 
 set(PPCONSUL_LIBRARIES ${_LIBPPCONSUL})
