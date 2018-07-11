@@ -32,12 +32,10 @@ o2_define_bucket(
     DEPENDENCIES
     ${CURL_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    ${MYSQL_LIBRARIES}
     ${extra_deps}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
-    ${MYSQL_INCLUDE_DIRS}
     ${extra_deps_include}
 )
