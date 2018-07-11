@@ -14,7 +14,9 @@ macro(O2_SETUP)
       ${ARGN} # arguments
   )
   CHECK_VARIABLE(PARSED_ARGS_NAME "You must provide a name")
-
+  set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib")
+  set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
+  set(INCLUDE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 endmacro()
 
 #------------------------------------------------------------------------------
@@ -39,9 +41,6 @@ function(O2_DEFINE_BUCKET)
 #  endforeach ()
 #  foreach (inc_dir ${PARSED_ARGS_INCLUDE_DIRECTORIES})
 #    message(STATUS "   - ${inc_dir} (inc_dir)")
-#  endforeach ()
-#      foreach (inc_dir ${PARSED_ARGS_SYSTEMINCLUDE_DIRECTORIES})
-#    message(STATUS "   - ${inc_dir} (sysinc_dir)")
 #  endforeach ()
 
   # Save this information
@@ -171,15 +170,13 @@ function(O2_TARGET_LINK_BUCKET)
   set(RESULT_inc_dirs "")
   set(RESULT_systeminc_dirs "")
   GET_BUCKET_CONTENT(${PARSED_ARGS_BUCKET} RESULT_libs RESULT_inc_dirs RESULT_systeminc_dirs) # RESULT_lib_dirs)
-#  message(STATUS "All dependencies of the bucket ${PARSED_ARGS_BUCKET} : ${RESULT_libs}")
+#  message(STATUS "All dependencies of the bucket : ${RESULT_libs}")
 #  message(STATUS "All inc_dirs of the bucket ${PARSED_ARGS_BUCKET} : ${RESULT_inc_dirs}")
-#  message(STATUS "All sysinc_dirs of the bucket ${PARSED_ARGS_BUCKET} : ${RESULT_systeminc_dirs}")
 
   # for each dependency in the bucket invoke target_link_library
   #  set(DEPENDENCIES ${bucket_map_libs_${PARSED_ARGS_BUCKET}})
   #  message(STATUS "   invoke target_link_libraries for target ${PARSED_ARGS_TARGET} : ${RESULT_libs} ${PARSED_ARGS_MODULE_LIBRARY_NAME}")
 
-  message(STATUS "LINK ${PARSED_ARGS_TARGET} - ${RESULT_libs} - ${PARSED_ARGS_MODULE_LIBRARY_NAME}")
   target_link_libraries(${PARSED_ARGS_TARGET} ${RESULT_libs} ${PARSED_ARGS_MODULE_LIBRARY_NAME})
 
   # Same thing for lib_dirs and inc_dirs
@@ -274,24 +271,26 @@ macro(O2_GENERATE_LIBRARY)
   target_include_directories(
       ${Int_LIB}
       PUBLIC
-      ${CMAKE_CURRENT_SOURCE_DIR}/include
+          # TODO retrofit to O2
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
       PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src # internal headers
       ${CMAKE_CURRENT_SOURCE_DIR}   # For the modules that generate a dictionary
   )
 
   ############### install the library ###################
-  install(TARGETS ${Int_LIB} DESTINATION lib)
+  # TODO remove ? keep ?
+  install(TARGETS ${Int_LIB}
+          EXPORT ${PROJECT_NAME}Targets            # for downstream dependencies
+          DESTINATION lib)
 
   # Install all the public headers
-  install(DIRECTORY include/${MODULE_NAME} DESTINATION include)
-
-  Set(LIBRARY_NAME)
-  Set(DICTIONARY)
-  Set(LINKDEF)
-  Set(SRCS)
-  Set(HEADERS)
-  Set(NO_DICT_SRCS)
-  Set(DEPENDENCIES)
+  # TODO retrofit to O2
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/${MODULE_NAME})
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${MODULE_NAME}
+            DESTINATION include)
+  endif()
 
 endmacro(O2_GENERATE_LIBRARY)
 
@@ -306,7 +305,7 @@ function(O2_GENERATE_EXECUTABLE)
 
   cmake_parse_arguments(
       PARSED_ARGS
-      "INSTALL" # bool args
+      "NO_INSTALL" # bool args
       "EXE_NAME;BUCKET_NAME;MODULE_LIBRARY_NAME" # mono-valued arguments
       "SOURCES" # multi-valued arguments
       ${ARGN} # arguments
@@ -326,7 +325,7 @@ function(O2_GENERATE_EXECUTABLE)
       MODULE_LIBRARY_NAME ${PARSED_ARGS_MODULE_LIBRARY_NAME}
   )
 
-  if (NOT ${PARSED_ARGS_INSTALL} OR ${PARSED_ARGS_INSTALL})
+  if (NOT ${PARSED_ARGS_NO_INSTALL})
     ############### install the executable #################
     install(TARGETS ${PARSED_ARGS_EXE_NAME} DESTINATION bin)
 
@@ -343,11 +342,12 @@ endfunction(O2_GENERATE_EXECUTABLE)
 # arg BUCKET_NAME
 # arg TEST_SRCS
 # arg MODULE_LIBRARY_NAME - Name of the library of the module this executable belongs to.
+# arg TIMEOUT in seconds after which the test is considered failed.
 function(O2_GENERATE_TESTS)
   cmake_parse_arguments(
       PARSED_ARGS
       "" # bool args
-      "BUCKET_NAME;MODULE_LIBRARY_NAME" # mono-valued arguments
+      "BUCKET_NAME;MODULE_LIBRARY_NAME;TIMEOUT" # mono-valued arguments
       "TEST_SRCS" # multi-valued arguments
       ${ARGN} # arguments
   )
@@ -367,10 +367,13 @@ function(O2_GENERATE_TESTS)
         SOURCES ${test}
         MODULE_LIBRARY_NAME ${PARSED_ARGS_MODULE_LIBRARY_NAME}
         BUCKET_NAME ${PARSED_ARGS_BUCKET_NAME}
-        INSTALL FALSE
+        NO_INSTALL FALSE
     )
     target_link_libraries(${test_name} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
     add_test(NAME ${test_name} COMMAND ${test_name})
+    if(PARSED_ARGS_TIMEOUT)
+      set_tests_properties(${test_name} PROPERTIES TIMEOUT ${PARSED_ARGS_TIMEOUT})
+    endif()
   endforeach ()
 endfunction()
 
@@ -433,6 +436,7 @@ macro(O2_ROOT_GENERATE_DICTIONARY)
   set(Int_SYSTEMINC "")
   GET_BUCKET_CONTENT(${BUCKET_NAME} RESULT_libs Int_INC Int_SYSTEMINC)
   set(Int_INC ${Int_INC} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  set(Int_INC ${Int_INC} ${CMAKE_CURRENT_SOURCE_DIR}/src) # internal headers
   set(Int_INC ${Int_INC} ${GLOBAL_ALL_MODULES_INCLUDE_DIRECTORIES})
   set(Int_INC ${Int_INC} ${Int_SYSTEMINC})
 
@@ -480,30 +484,3 @@ macro(O2_ROOT_GENERATE_DICTIONARY)
   endif ()
 
 endmacro(O2_ROOT_GENERATE_DICTIONARY)
-
-#------------------------------------------------------------------------------
-# PrepareDocTarget
-function(PREPARE_DOC_TARGET)
-
-  # Configure the doxygen config file with current settings:
-  configure_file(documentation-config.doxygen.in ${CMAKE_CURRENT_BINARY_DIR}/documentation-config.doxygen @ONLY)
-
-  # Set the name of the target : "doc" if it doesn't already exist and "doc<projectname>" if it does.
-  # This way we make sure to have a single "doc" target. Either it is the one of the top directory or
-  # it is the one of the subproject that we are compiling alone.
-  set(DOC_TARGET_NAME "doc")
-  if(TARGET doc)
-    set(DOC_TARGET_NAME "doc${PROJECT_NAME}")
-  endif()
-
-  add_custom_target(${DOC_TARGET_NAME} ${TARGET_ALL}
-          ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/documentation-config.doxygen
-          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-          COMMENT "Generating API documentation using doxygen for ${PROJECT_NAME}" VERBATIM)
-
-  set(INSTALL_DOC_DIR ${CMAKE_BINARY_DIR}/doc/${PROJECT_NAME}/html)
-  file(MAKE_DIRECTORY ${INSTALL_DOC_DIR}) # needed for install
-
-  install(DIRECTORY ${INSTALL_DOC_DIR} DESTINATION share/${PROJECT_NAME}-${VERSION_MAJOR} COMPONENT doc)
-
-endfunction()
