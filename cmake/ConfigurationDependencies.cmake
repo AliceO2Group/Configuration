@@ -1,7 +1,7 @@
 find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET) # if we don't find git or FindGit.cmake is not on the system we ignore it.
 find_package(CURL REQUIRED)
-find_package(PpConsul)
+find_package(Ppconsul REQUIRED)
 find_package(RapidJSON)
 
 set(extra_deps "")
