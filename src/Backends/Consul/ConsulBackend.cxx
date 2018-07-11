@@ -60,13 +60,13 @@ auto ConsulBackend::replaceSeparator(const std::string& path) -> std::string
 
 void ConsulBackend::putString(const std::string& path, const std::string& value)
 {
-  mStorage.put(addPrefix(replaceSeparator(trimLeadingSlash(path))), value);
+  mStorage.set(addPrefix(replaceSeparator(trimLeadingSlash(path))), value);
 }
 
 auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
 {
   auto item = mStorage.item(addPrefix(replaceSeparator(trimLeadingSlash(path))),
-      ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
+      ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   if (item.valid()) {
     return std::move(item.value);
   } else {
@@ -76,7 +76,7 @@ auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
 
 auto ConsulBackend::getItems(const std::string& requestKey) -> std::vector<ppconsul::kv::KeyValue>
 {
-  return mStorage.items(requestKey, ppconsul::keywords::consistency = ppconsul::Consistency::Stale);
+  return mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
 }
 
 auto ConsulBackend::getRecursive(const std::string& path) -> tree::Node

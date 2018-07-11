@@ -38,7 +38,7 @@ class ConsulBackend final : public BackendBase
     int mPort;
     std::string mPrefix;
     ppconsul::Consul mConsul;
-    ppconsul::kv::Storage mStorage;
+    ppconsul::kv::Kv mStorage;
 };
 
 } // namespace backends
