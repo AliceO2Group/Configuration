@@ -26,7 +26,7 @@ namespace {
 BOOST_AUTO_TEST_CASE(TestIllFormedUri)
 {
   try {
-    ConfigurationFactory::getConfiguration("file:/bad/uri.ini");
+    ConfigurationFactory::getConfiguration("ini:/bad/uri.ini");
   }
   catch (const std::runtime_error &e) {
     BOOST_CHECK(std::string(e.what()).find("Ill-formed URI") != std::string::npos);
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   }
 
   // Get file configuration interface from factory
-  auto conf = ConfigurationFactory::getConfiguration("file:/" + TEMP_FILE);
+  auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
 
   std::string key{"/test/key"};
   std::string value{"test_value"};

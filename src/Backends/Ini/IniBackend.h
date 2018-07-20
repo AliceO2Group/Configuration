@@ -1,11 +1,11 @@
-/// \file FileBackend.h
+/// \file IniBackend.h
 /// \brief Configuration interface for files. Port of Configuration.h & Configuration.cxx
 ///
 /// \author Sylvain Chapeland, CERN
 /// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
 
-#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_
-#define ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_
+#ifndef O2_CONFIGURATION_INIBACKEND_H_
+#define O2_CONFIGURATION_INIBACKEND_H_
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -19,11 +19,11 @@ namespace backends
 {
 
 /// Backend for .ini files
-class FileBackend final : public BackendBase
+class IniBackend final : public BackendBase
 {
   public:
-    FileBackend(const std::string& filePath);
-    virtual ~FileBackend();
+    IniBackend(const std::string& filePath);
+    virtual ~IniBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
@@ -37,4 +37,4 @@ class FileBackend final : public BackendBase
 } // namespace configuration
 } // namespace o2
 
-#endif // ALICEO2_CONFIGURATION_SRC_BACKENDS_FILE_FILEBACKEND_H_
+#endif // O2_CONFIGURATION_INIBACKEND_H_
