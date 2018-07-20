@@ -83,7 +83,6 @@ O2_SETUP(NAME ${MODULE_NAME})
 set(SRCS
         src/Backends/File/FileBackend.cxx
         src/Backends/Json/JsonBackend.cxx
-        src/CommandLineUtilities/Program.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
         src/Tree.cxx
@@ -122,25 +121,6 @@ set(LIBRARY_NAME ${MODULE_NAME})
 
 message(STATUS LIBRARY_NAME: ${LIBRARY_NAME})
 message(STATUS BUCKET_NAME: ${BUCKET_NAME})
-
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME configuration-put
-        SOURCES src/CommandLineUtilities/Put.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME configuration-get
-        SOURCES src/CommandLineUtilities/Get.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
-O2_GENERATE_EXECUTABLE(
-        EXE_NAME configuration-copy
-        SOURCES src/CommandLineUtilities/Copy.cxx
-        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
-        BUCKET_NAME ${BUCKET_NAME}
-)
 
 enable_testing()
 
