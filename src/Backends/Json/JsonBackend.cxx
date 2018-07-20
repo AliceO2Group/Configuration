@@ -28,7 +28,7 @@ Json2Backend::Json2Backend(const std::string& filePath)
   try {
     boost::property_tree::read_json(filePath, mTree);
   }
-  catch (const ptree_error &error) {
+  catch (const boost::property_tree::ptree_error &error) {
      throw std::runtime_error("Unable to read JSON file: " + filePath);
   }
 }
