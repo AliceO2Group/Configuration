@@ -32,7 +32,7 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
       return mSeparator;
     }
 
-    virtual boost::property_tree::ptree getSubTree(const std::string& path) override
+    virtual boost::property_tree::ptree getSubTree(const std::string&) override
     {
       throw std::runtime_error("getSubTree() unsupported by backend");
     }
