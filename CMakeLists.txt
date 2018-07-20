@@ -125,7 +125,9 @@ enable_testing()
 
 set(TEST_SRCS
         test/TestExamples.cxx
-        test/TestBackends.cxx
+        test/TestIni.cxx
+        test/TestJson.cxx
+        test/TestConsul.cxx
         )
 
 O2_GENERATE_TESTS(
