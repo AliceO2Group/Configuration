@@ -1,4 +1,4 @@
-/// \file Json2Backend.cxx
+/// \file JsonBackend.cxx
 /// \brief Configuration interface for files. Port of Configuration.h & Configuration.cxx
 ///
 /// \author Adam Wegrzynek, CERN
@@ -28,8 +28,8 @@ Json2Backend::Json2Backend(const std::string& filePath)
   try {
     boost::property_tree::read_json(filePath, mTree);
   }
-  catch (std::exception const& error) {
-    std::cout << "Unable to read JSON file: " << error.what() << std::endl;
+  catch (const ptree_error &error) {
+     throw std::runtime_error("Unable to read JSON file: " + filePath);
   }
 }
 
