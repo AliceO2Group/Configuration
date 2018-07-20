@@ -1,5 +1,5 @@
-/// \file TestBackends.cxx
-/// \brief Unit tests for the Configuration.
+/// \file TestIni.cxx
+/// \brief INI file backend unit tests.
 ///
 /// \author Adam Wegrzynek, CERN
 ///

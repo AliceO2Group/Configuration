@@ -127,6 +127,7 @@ set(TEST_SRCS
         test/TestExamples.cxx
         test/TestIni.cxx
         test/TestJson.cxx
+        test/TestConsul.cxx
         )
 
 O2_GENERATE_TESTS(

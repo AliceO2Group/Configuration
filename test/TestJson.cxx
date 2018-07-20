@@ -1,5 +1,5 @@
-/// \file TestBackends.cxx
-/// \brief Unit tests for the Configuration.
+/// \file TestJson.cxx
+/// \brief JSON backend unit tests.
 ///
 /// \author Adam Wegrzynek, CERN
 ///
