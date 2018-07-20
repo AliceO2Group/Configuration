@@ -7,6 +7,8 @@
 #include <functional>
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
+#include "Backends/Json2/Json2Backend.h"
+
 #ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
 # include "Backends/Json/JsonBackend.h"
 #endif
@@ -45,6 +47,12 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
 #endif
 }
 
+auto getJson2(const http::url& uri) -> UniqueConfiguration
+{
+  auto path = "/" + uri.host + uri.path;
+  return std::make_unique<backends::Json2Backend>(path);
+}
+
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
@@ -71,6 +79,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   static const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
       {"file", getFile},
       {"json", getJson},
+      {"json2", getJson2},
       {"consul", getConsul},
   };
 

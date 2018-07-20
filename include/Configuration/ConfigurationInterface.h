@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include <boost/optional.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include "Configuration/Tree.h"
 
 namespace o2
@@ -114,6 +115,7 @@ class ConfigurationInterface
     /// \param path The path of the values to get
     /// \return A map containing the key-values
     virtual KeyValueMap getRecursiveMap(const std::string& path) = 0;
+    virtual boost::property_tree::ptree getSubTree(const std::string& path) = 0;
 };
 
 } // namespace configuration

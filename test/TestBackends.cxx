@@ -113,7 +113,53 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
   }
   BOOST_CHECK_THROW(ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE), std::runtime_error);
 }
-
 #endif
+
+
+BOOST_AUTO_TEST_CASE(Json2FileTest)
+{
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream << R"({"menu": {
+      "id": "file",
+      "popup": {
+        "menuitem": {
+          "one": {"value": "123", "onclick": "CreateNewDoc"}
+        }
+      }
+    }})";
+  }
+
+  auto conf = ConfigurationFactory::getConfiguration("json2:/" + TEMP_FILE);
+
+  BOOST_CHECK_EQUAL(conf->get<std::string>("menu/id").get_value_or(""), "file");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("menu/popup/menuitem/one/onclick").get_value_or(""), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("menu/popup/menuitem/one/value").get_value_or(0), 123);
+
+  BOOST_CHECK_EQUAL(conf->get<int>("menu/popup/menuitem/one/wrong_key").get_value_or(0), 0);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("menu/popup/menuitem/one/wrong_key_string").get_value_or("string"), "string");
+}
+
+BOOST_AUTO_TEST_CASE(Json2FileRecursiveTest)
+{
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
+  {
+    std::ofstream stream(TEMP_FILE);
+    stream << R"({"menu": {
+      "id": "file",
+      "popup": {
+        "menuitem": {
+          "one": {"value": "123", "onclick": "CreateNewDoc"}
+        }
+      }
+    }})";
+  }
+
+  auto conf = ConfigurationFactory::getConfiguration("json2:/" + TEMP_FILE);
+  auto subTree = conf->getSubTree("menu/popup/menuitem/one");
+  BOOST_CHECK_EQUAL(subTree.get<int>("value"), 123);
+  BOOST_CHECK_EQUAL(subTree.get<std::string>("onclick"), "CreateNewDoc");
+}
 
 } // Anonymous namespace
