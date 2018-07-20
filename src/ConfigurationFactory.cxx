@@ -35,7 +35,7 @@ auto getIni(const http::url& uri) -> UniqueConfiguration
 auto getJson(const http::url& uri) -> UniqueConfiguration
 {
   auto path = "/" + uri.host + uri.path;
-  return std::make_unique<backends::Json2Backend>(path);
+  return std::make_unique<backends::JsonBackend>(path);
 }
 
 auto getConsul(const http::url& uri) -> UniqueConfiguration

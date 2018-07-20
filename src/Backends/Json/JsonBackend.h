@@ -1,4 +1,4 @@
-/// \file Json2Backend.h
+/// \file JsonBackend.h
 /// \brief Read JSON file into ptree data structure
 ///
 /// \author Adam Wegrzynek, CERN
@@ -17,11 +17,11 @@ namespace configuration
 namespace backends
 {
 
-class Json2Backend final : public BackendBase
+class JsonBackend final : public BackendBase
 {
   public:
-    Json2Backend(const std::string& filePath);
-    virtual ~Json2Backend();
+    JsonBackend(const std::string& filePath);
+    virtual ~JsonBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;

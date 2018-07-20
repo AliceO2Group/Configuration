@@ -14,11 +14,11 @@ namespace configuration
 namespace backends
 {
 
-Json2Backend::~Json2Backend()
+JsonBackend::~JsonBackend()
 {
 }
 
-Json2Backend::Json2Backend(const std::string& filePath)
+JsonBackend::JsonBackend(const std::string& filePath)
     : mFilePath(filePath)
 {
   if (filePath.length() == 0) {
@@ -33,23 +33,23 @@ Json2Backend::Json2Backend(const std::string& filePath)
   }
 }
 
-void Json2Backend::putString(const std::string&, const std::string&)
+void JsonBackend::putString(const std::string&, const std::string&)
 {
-  throw std::runtime_error("Json2Backend does not support putting values");
+  throw std::runtime_error("JsonBackend does not support putting values");
 }
 
-auto Json2Backend::getString(const std::string& path) -> Optional<std::string>
+auto JsonBackend::getString(const std::string& path) -> Optional<std::string>
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
   return mTree.get_optional<std::string>(decltype(mTree)::path_type(path, getSeparator()));
 }
 
-void Json2Backend::setPrefix(const std::string& path)
+void JsonBackend::setPrefix(const std::string& path)
 {
   mFilePath = path;
 }
 
-boost::property_tree::ptree Json2Backend::getSubTree(const std::string& path)
+boost::property_tree::ptree JsonBackend::getSubTree(const std::string& path)
 {
   return mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
 }
