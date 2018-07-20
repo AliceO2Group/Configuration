@@ -115,6 +115,10 @@ class ConfigurationInterface
     /// \param path The path of the values to get
     /// \return A map containing the key-values
     virtual KeyValueMap getRecursiveMap(const std::string& path) = 0;
+
+    /// Provides subtree from given path
+    /// \param path The path to the subtree
+    /// \return Subtree
     virtual boost::property_tree::ptree getSubTree(const std::string& path) = 0;
 };
 
