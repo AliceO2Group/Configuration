@@ -56,7 +56,7 @@ before_script:
 script:
   - cmake .. -DPPCONSUL_DIR=$TRAVIS_BUILD_DIR/ppconsul_install
   - if [[ $TOOL == "test" ]]; then make -j; fi
-  - if [[ $TOOL == "test" ]]; then ./bin/TestExamples; make test; fi
+  - if [[ $TOOL == "test" ]]; then make test; fi
   - if [[ $TOOL == "doxygen" ]]; then make doc; fi
   - if [[ $TOOL == "clang-format" ]] && [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
       cd $TRAVIS_BUILD_DIR;
