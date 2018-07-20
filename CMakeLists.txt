@@ -85,7 +85,6 @@ set(SRCS
         src/Backends/Json/JsonBackend.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
-        src/Tree.cxx
         )
 
 # Produce the final Version.h using template Version.h.in and substituting variables.
@@ -126,9 +125,7 @@ enable_testing()
 
 set(TEST_SRCS
         test/TestExamples.cxx
-#       test/TestRecursiveGet.cxx
         test/TestBackends.cxx
-        test/TestTree.cxx
         )
 
 O2_GENERATE_TESTS(

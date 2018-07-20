@@ -9,8 +9,6 @@
 #include <unordered_map>
 #include "Configuration/ConfigurationFactory.h"
 #include "Configuration/ConfigurationInterface.h"
-#include "Configuration/Visitor.h"
-#include "Configuration/Tree.h"
 
 #define BOOST_TEST_MODULE Backends
 #define BOOST_TEST_MAIN
