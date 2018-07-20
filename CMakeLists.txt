@@ -82,6 +82,7 @@ O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
         src/Backends/File/FileBackend.cxx
+        src/Backends/Json/JsonBackend.cxx
         src/CommandLineUtilities/Program.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx
@@ -112,10 +113,6 @@ set(LIBRARY_NAME ${MODULE_NAME})
 if(PPCONSUL_FOUND)
     list(APPEND SRCS src/Backends/Consul/ConsulBackend.cxx)
 endif()
-
-if(RAPIDJSON_FOUND)
-    list(APPEND SRCS src/Backends/Json/JsonBackend.cxx)
-endif ()
 
 set(BUCKET_NAME configuration_bucket)
 
@@ -149,7 +146,7 @@ enable_testing()
 
 set(TEST_SRCS
         test/TestExamples.cxx
-        test/TestRecursiveGet.cxx
+#       test/TestRecursiveGet.cxx
         test/TestBackends.cxx
         test/TestTree.cxx
         )
