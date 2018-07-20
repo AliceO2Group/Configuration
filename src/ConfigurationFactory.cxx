@@ -3,9 +3,10 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
-#include <src/Backends/Ini/IniBackend.h>
 #include <functional>
+#include <map>
 #include <stdexcept>
+#include <src/Backends/Ini/IniBackend.h>
 #include "Configuration/ConfigurationFactory.h"
 #include "Backends/Json/JsonBackend.h"
 

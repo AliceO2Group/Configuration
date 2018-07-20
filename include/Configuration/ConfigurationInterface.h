@@ -10,7 +10,6 @@
 #include <unordered_map>
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include "Configuration/Tree.h"
 
 namespace o2
 {
@@ -105,11 +104,6 @@ class ConfigurationInterface
     virtual void resetPathSeparator() = 0;
 
     // Prototype interface for getRecursive()
-
-    /// Gets key-values recursively from the given path and converts them into a tree structure
-    /// \param path The path of the values to get
-    /// \return A tree containing the values that were retrieved
-    virtual tree::Node getRecursive(const std::string& path) = 0;
 
     /// Gets key-values recursively from the given path
     /// \param path The path of the values to get
