@@ -81,7 +81,7 @@ set(MODULE_NAME "Configuration")
 O2_SETUP(NAME ${MODULE_NAME})
 
 set(SRCS
-        src/Backends/File/FileBackend.cxx
+        src/Backends/Ini/IniBackend.cxx
         src/Backends/Json/JsonBackend.cxx
         src/ConfigurationInterface.cxx
         src/ConfigurationFactory.cxx

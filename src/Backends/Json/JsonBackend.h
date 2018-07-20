@@ -1,10 +1,10 @@
 /// \file Json2Backend.h
-/// \brief TODO
+/// \brief Read JSON file into ptree data structure
 ///
 /// \author Adam Wegrzynek, CERN
 
-#ifndef O2_CONFIGURATION_FILEBACKEND_H_
-#define O2_CONFIGURATION_FILEBACKEND_H_
+#ifndef O2_CONFIGURATION_JSONBACKEND_H_
+#define O2_CONFIGURATION_JSONBACKEND_H_
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -35,4 +35,4 @@ class Json2Backend final : public BackendBase
 } // namespace configuration
 } // namespace o2
 
-#endif // O2_CONFIGURATION_FILEBACKEND_H_
+#endif // O2_CONFIGURATION_JSONBACKEND_H_

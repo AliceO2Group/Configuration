@@ -3,7 +3,7 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
-#include <src/Backends/File/FileBackend.h>
+#include <src/Backends/Ini/IniBackend.h>
 #include <functional>
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
@@ -22,13 +22,13 @@ namespace
 {
 using UniqueConfiguration = std::unique_ptr<ConfigurationInterface>;
 
-auto getFile(const http::url& uri) -> UniqueConfiguration
+auto getIni(const http::url& uri) -> UniqueConfiguration
 {
   // If the "authority" part of the URI is missing (host, port, etc), the parser
   // will consider the thing before the first delimiter ('/') of the path as authority,
   // so we have to include that in the path we use.
   auto path = "/" + uri.host + uri.path;
-  return std::make_unique<backends::FileBackend>(path);
+  return std::make_unique<backends::IniBackend>(path);
 }
 
 auto getJson(const http::url& uri) -> UniqueConfiguration
@@ -61,7 +61,7 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   }
 
   static const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
-      {"file", getFile},
+      {"ini", getIni},
       {"json", getJson},
       {"consul", getConsul},
   };
