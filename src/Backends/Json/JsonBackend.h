@@ -1,10 +1,10 @@
-/// \file JsonBackend.cxx
-/// \brief Definition of configuration interface for JSON files
+/// \file Json2Backend.h
+/// \brief TODO
 ///
-/// \author Pascal Boeschoten, CERN
+/// \author Adam Wegrzynek, CERN
 
-#ifndef ALICEO2_CONFIGURATION_SRC_JSONBACKEND_H_
-#define ALICEO2_CONFIGURATION_SRC_JSONBACKENDH_
+#ifndef O2_CONFIGURATION_FILEBACKEND_H_
+#define O2_CONFIGURATION_FILEBACKEND_H_
 
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -17,26 +17,22 @@ namespace configuration
 namespace backends
 {
 
-/// Backend for .json files
-class JsonBackend final : public BackendBase
+class Json2Backend final : public BackendBase
 {
   public:
-    JsonBackend(const std::string& filePath);
-    virtual ~JsonBackend();
+    Json2Backend(const std::string& filePath);
+    virtual ~Json2Backend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual auto getString(const std::string& path) -> Optional<std::string> override;
     virtual void setPrefix(const std::string& path) override;
-    virtual auto getRecursive(const std::string& path) -> tree::Node override;
-    virtual auto getRecursiveMap(const std::string& path) -> KeyValueMap override;
-
+    virtual boost::property_tree::ptree getSubTree(const std::string& path) override;
   private:
     std::string mFilePath;
-    tree::Node mRootNode;
-    tree::Node mCurrentNode;
+    boost::property_tree::ptree mTree;
 };
 
 } // namespace backends
 } // namespace configuration
 } // namespace o2
 
-#endif /* ALICEO2_CONFIGURATION_SRC_JSONBACKEND_H_ */
+#endif // O2_CONFIGURATION_FILEBACKEND_H_

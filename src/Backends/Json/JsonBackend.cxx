@@ -1,17 +1,11 @@
-/// \file JsonBackend.cxx
-/// \brief Implementation of configuration interface for JSON files
+/// \file Json2Backend.cxx
+/// \brief Configuration interface for files. Port of Configuration.h & Configuration.cxx
 ///
-/// \author Pascal Boeschoten, CERN
+/// \author Adam Wegrzynek, CERN
 
 #include "JsonBackend.h"
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <streambuf>
-#include <vector>
-#include <boost/algorithm/string.hpp>
-#include <rapidjson/document.h>     // rapidjson's DOM-style API
-#include "JsonHandler.h"
+#include <boost/property_tree/json_parser.hpp>
 
 namespace o2
 {
@@ -19,70 +13,47 @@ namespace configuration
 {
 namespace backends
 {
-namespace
-{
 
-auto jsonToTree(const std::string& json) -> tree::Node
-{
-  rapidjson::Reader reader;
-  rapidjson::StringStream ss(json.c_str());
-  JsonHandler handler;
-  reader.Parse(ss, handler);
-  return tree::keyValuesToTree(handler.keyValues);
-}
-} // Anonymous namespace
-
-JsonBackend::~JsonBackend()
+Json2Backend::~Json2Backend()
 {
 }
 
-JsonBackend::JsonBackend(const std::string& filePath)
+Json2Backend::Json2Backend(const std::string& filePath)
     : mFilePath(filePath)
 {
-  std::ifstream stream(filePath);
-  std::string json((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-  mRootNode = jsonToTree(json);
-  mCurrentNode = mRootNode;
-}
+  if (filePath.length() == 0) {
+    throw std::runtime_error("JSON filepath is empty");
+  }
 
-void JsonBackend::putString(const std::string&, const std::string&)
-{
-  throw std::runtime_error("JsonBackend does not support putting values");
-}
-
-auto JsonBackend::getString(const std::string& path) -> Optional<std::string>
-{
   try {
-    const tree::Node& node = tree::getSubtree(mRootNode, path);
-    return tree::get<std::string>(node);
-  } catch (...) {
-    return Optional<std::string>();
+    boost::property_tree::read_json(filePath, mTree);
+  }
+  catch (std::exception const& error) {
+    std::cout << "Unable to read JSON file: " << error.what() << std::endl;
   }
 }
 
-auto JsonBackend::getRecursive(const std::string& path) -> tree::Node
+void Json2Backend::putString(const std::string&, const std::string&)
 {
-  const tree::Node& node = tree::getSubtree(mCurrentNode, path);
-  return node;
+  throw std::runtime_error("Json2Backend does not support putting values");
 }
 
-auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
+auto Json2Backend::getString(const std::string& path) -> Optional<std::string>
 {
-  KeyValueMap map;
-  const tree::Node& node = tree::getSubtree(mCurrentNode, path);
-  const std::vector<std::pair<std::string, tree::Leaf>> keyValues = tree::treeToKeyValues(node);
-  for (const auto& pair : keyValues) {
-    map[pair.first] = tree::convert<std::string>(pair.second);
-  }
-  return map;
+  // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
+  return mTree.get_optional<std::string>(decltype(mTree)::path_type(path, getSeparator()));
 }
 
-void JsonBackend::setPrefix(const std::string& path)
+void Json2Backend::setPrefix(const std::string& path)
 {
-  const tree::Node& node = tree::getSubtree(mRootNode, path);
-  mCurrentNode = node;
+  mFilePath = path;
 }
 
-} // namespace backends
+boost::property_tree::ptree Json2Backend::getSubTree(const std::string& path)
+{
+  return mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
+}
+
 } // namespace configuration
+} // namespace backends
 } // namespace o2

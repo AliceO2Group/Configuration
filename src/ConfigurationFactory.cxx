@@ -7,11 +7,8 @@
 #include <functional>
 #include <stdexcept>
 #include "Configuration/ConfigurationFactory.h"
-#include "Backends/Json2/Json2Backend.h"
+#include "Backends/Json/JsonBackend.h"
 
-#ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
-# include "Backends/Json/JsonBackend.h"
-#endif
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
 #endif
@@ -35,19 +32,6 @@ auto getFile(const http::url& uri) -> UniqueConfiguration
 }
 
 auto getJson(const http::url& uri) -> UniqueConfiguration
-{
-  // If the "authority" part of the URI is missing (host, port, etc), the parser
-  // will consider the thing before the first delimiter ('/') of the path as authority,
-  // so we have to include that in the path we use.
-#ifdef FLP_CONFIGURATION_BACKEND_FILE_JSON_ENABLED
-  auto path = "/" + uri.host + uri.path;
-  return std::make_unique<backends::JsonBackend>(path);
-#else
-  throw std::runtime_error("Back-end 'json' not enabled");
-#endif
-}
-
-auto getJson2(const http::url& uri) -> UniqueConfiguration
 {
   auto path = "/" + uri.host + uri.path;
   return std::make_unique<backends::Json2Backend>(path);
@@ -79,7 +63,6 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
   static const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
       {"file", getFile},
       {"json", getJson},
-      {"json2", getJson2},
       {"consul", getConsul},
   };
 
