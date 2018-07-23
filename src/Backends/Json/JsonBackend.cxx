@@ -49,7 +49,7 @@ void JsonBackend::setPrefix(const std::string& path)
   mFilePath = path;
 }
 
-boost::property_tree::ptree JsonBackend::getSubTree(const std::string& path)
+boost::property_tree::ptree JsonBackend::getRecursive(const std::string& path)
 {
   return mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
 }

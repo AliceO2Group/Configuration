@@ -54,12 +54,12 @@ BOOST_AUTO_TEST_CASE(ConsulMap)
 BOOST_AUTO_TEST_CASE(ConsulPtree)
 {
   auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
-  auto subTree = conf->getSubTree("configuration_library");
+  auto subTree = conf->getRecursive("configuration_library");
   BOOST_CHECK_EQUAL(subTree.get<std::string>("id"), "file");
   BOOST_CHECK_EQUAL(subTree.get<int>("popup/menuitem/one/value"), 123);
   BOOST_CHECK_EQUAL(subTree.get<std::string>("popup/menuitem/one/onclick"), "CreateNewDoc");
 
-  auto leaf = conf->getSubTree("configuration_library/popup/menuitem/one");
+  auto leaf = conf->getRecursive("configuration_library/popup/menuitem/one");
   BOOST_CHECK_EQUAL(leaf.get<int>("value"), 123);
   BOOST_CHECK_EQUAL(leaf.get<std::string>("onclick"), "CreateNewDoc");
 }

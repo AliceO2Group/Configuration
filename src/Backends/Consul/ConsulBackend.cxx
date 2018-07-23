@@ -79,7 +79,7 @@ auto ConsulBackend::getItems(const std::string& requestKey) -> std::vector<ppcon
   return mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
 }
 
-boost::property_tree::ptree ConsulBackend::getSubTree(const std::string& path)
+boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
   auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
   auto items = getItems(requestKey);
