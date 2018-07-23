@@ -26,7 +26,7 @@ std::string trimLeadingSlash(const std::string& s)
 auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
 {
   assert(response.find(requestKey) == 0);
-  return response.substr(requestKey.length());
+  return response.substr(requestKey.length() + 1);
 }
 } // Anonymous namespace
 
@@ -96,6 +96,9 @@ auto ConsulBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
   auto items = getItems(requestKey);
   KeyValueMap map;
   for (const auto& item : items) {
+    if (item.value.size() == 0) {
+      continue;
+    }
     map[stripRequestKey(requestKey, item.key)] = std::move(item.value);
   }
   return map;
