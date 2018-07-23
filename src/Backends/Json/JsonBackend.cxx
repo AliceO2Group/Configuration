@@ -54,6 +54,30 @@ boost::property_tree::ptree JsonBackend::getSubTree(const std::string& path)
   return mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
 }
 
+auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
+{
+  auto subTree = mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
+  KeyValueMap map;
+
+  // define lambda to recursively interate tree
+  std::function<void(const boost::property_tree::ptree&, std::string)> parseTree;
+  parseTree = [&map, &parseTree](const boost::property_tree::ptree& pt, std::string key) {
+    std::string nkey;
+    if (!key.empty()) {
+      if (pt.data().size() != 0) {
+        map[key] = std::move(pt.data());
+      }
+      nkey = key + "/";
+    }
+    for (auto const &it: pt) {
+      parseTree(it.second, nkey + it.first);
+    }
+  };
+
+  parseTree(subTree, "");
+  return map;
+}
+
 } // namespace configuration
 } // namespace backends
 } // namespace o2
