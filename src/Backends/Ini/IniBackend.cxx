@@ -57,6 +57,22 @@ IniBackend::IniBackend(const std::string& filePath)
     : mFilePath(filePath)
 {
   loadConfigFile(filePath, mPropertyTree);
+  boost::property_tree::ptree finalTree;
+  std::function<void(const boost::property_tree::ptree&, std::string)> parseTree;
+  parseTree = [&finalTree, &parseTree](const boost::property_tree::ptree& pt, std::string key) {
+    std::string nkey;
+    if (!key.empty()) {
+      if (pt.data().size() != 0) {
+        finalTree.put(boost::property_tree::ptree::path_type(key, '/'), pt.data());
+      }
+      nkey = key + "/";
+    }
+    for (auto const &it: pt) {
+      parseTree(it.second, nkey + it.first);
+    }
+  };
+  parseTree(mPropertyTree, "");
+  mPropertyTree = finalTree;
 }
 
 void IniBackend::putString(const std::string&, const std::string&)

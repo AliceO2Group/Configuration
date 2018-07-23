@@ -42,7 +42,10 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
         "[section]\n"
         "key_int=123\n"
         "key_float=4.56\n"
-        "key_string=hello\n";
+        "key_string=hello\n"
+        "[root_section/child_section]\n"
+        "key_string=world\n"
+        "key_int=321\n";
   }
 
   // Get file configuration interface from factory
@@ -62,6 +65,8 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK(conf->get<int>("section/key_int").get_value_or(-1) == 123);
   BOOST_CHECK(conf->get<double>("section/key_float").get_value_or(-1.0) == 4.56);
   BOOST_CHECK(conf->get<std::string>("section/key_string").get_value_or("") == "hello");
+  BOOST_CHECK(conf->get<std::string>("root_section/child_section/key_string").get_value_or("") == "world");
+  BOOST_CHECK(conf->get<int>("root_section/child_section/key_int").get_value_or(-1) == 321);
 
 
   // Check with custom separator
