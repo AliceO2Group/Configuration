@@ -61,13 +61,13 @@ auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
 
   // define lambda to recursively interate tree
   std::function<void(const boost::property_tree::ptree&, std::string)> parseTree;
-  parseTree = [&map, &parseTree](const boost::property_tree::ptree& pt, std::string key) {
+  parseTree = [&](const boost::property_tree::ptree& pt, std::string key) {
     std::string nkey;
     if (!key.empty()) {
       if (pt.data().size() != 0) {
         map[key] = std::move(pt.data());
       }
-      nkey = key + "/";
+      nkey = key + getSeparator();
     }
     for (auto const &it: pt) {
       parseTree(it.second, nkey + it.first);
