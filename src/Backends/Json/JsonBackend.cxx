@@ -56,24 +56,20 @@ boost::property_tree::ptree JsonBackend::getRecursive(const std::string& path)
 
 auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
 {
-  auto subTree = mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
   KeyValueMap map;
+  auto subTree = mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
 
   // define lambda to recursively interate tree
-  std::function<void(const boost::property_tree::ptree&, std::string)> parseTree;
-  parseTree = [&](const boost::property_tree::ptree& pt, std::string key) {
-    if (!key.empty()) {
-      if (pt.data().size() != 0) {
-        map[key] = std::move(pt.data());
-      }
-      key += getSeparator();
-    }
-    for (auto const &it: pt) {
-      parseTree(it.second, key + it.first);
+  using boost::property_tree::ptree;
+  std::function<void(const ptree&, std::string)> parse = [&](const ptree& node, std::string key) {
+    map[key] = std::move(node.data());
+    key = key.empty() ? "" : key + getSeparator();
+    for (auto const &it: node) {
+      parse(it.second, key + it.first);
     }
   };
 
-  parseTree(subTree, "");
+  parse(subTree, std::string());
   return map;
 }
 

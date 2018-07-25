@@ -90,13 +90,11 @@ BOOST_AUTO_TEST_CASE(JsonFileRecursiveMapTest)
 
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
   auto map = conf->getRecursiveMap("configuration_library");
-  BOOST_CHECK_EQUAL(map.size(), 3);
   BOOST_CHECK_EQUAL(map["id"], "file");
   BOOST_CHECK_EQUAL(map["popup/menuitem/one/onclick"], "CreateNewDoc");
   BOOST_CHECK_EQUAL(map["popup/menuitem/one/value"], "123");
 
   auto leaf = conf->getRecursiveMap("configuration_library/popup/menuitem/one");
-  BOOST_CHECK_EQUAL(leaf.size(), 2);
   BOOST_CHECK_EQUAL(leaf["value"], "123");
   BOOST_CHECK_EQUAL(leaf["onclick"], "CreateNewDoc");
 }
