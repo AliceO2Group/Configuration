@@ -23,7 +23,7 @@ class JsonBackend final : public BackendBase
     JsonBackend(const std::string& filePath);
     virtual ~JsonBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
-    virtual std::string getString(const std::string& path) override;
+    virtual boost::optional<std::string> getString(const std::string& path) override;
     virtual void setPrefix(const std::string& path) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
     virtual KeyValueMap getRecursiveMap(const std::string& path) override;

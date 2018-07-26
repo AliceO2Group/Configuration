@@ -42,8 +42,8 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
   BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/onclick"), "CreateNewDoc");
   BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/value"), 123);
 
-  //BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key").get_value_or(0), 0);
-  //BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string").get_value_or("string"), "string");
+  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key", 0), 0);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string", "string"), "string");
 }
 
 BOOST_AUTO_TEST_CASE(JsonFileRecursiveTest)

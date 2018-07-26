@@ -37,10 +37,10 @@ void JsonBackend::putString(const std::string&, const std::string&)
   throw std::runtime_error("JsonBackend does not support putting values");
 }
 
-std::string JsonBackend::getString(const std::string& path)
+boost::optional<std::string> JsonBackend::getString(const std::string& path)
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
-  return mTree.get<std::string>(decltype(mTree)::path_type(path, getSeparator()));
+  return mTree.get_optional<std::string>(decltype(mTree)::path_type(path, getSeparator()));
 }
 
 void JsonBackend::setPrefix(const std::string& path)

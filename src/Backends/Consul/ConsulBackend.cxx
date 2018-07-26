@@ -63,7 +63,7 @@ void ConsulBackend::putString(const std::string& path, const std::string& value)
   mStorage.set(addPrefix(replaceSeparator(trimLeadingSlash(path))), value);
 }
 
-std::string ConsulBackend::getString(const std::string& path)
+boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 {
   auto item = mStorage.item(addPrefix(replaceSeparator(trimLeadingSlash(path))),
       ppconsul::kw::consistency = ppconsul::Consistency::Stale);

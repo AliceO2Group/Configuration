@@ -33,19 +33,40 @@ template<> void ConfigurationInterface::put(const std::string& path, const doubl
   putString(path, boost::lexical_cast<std::string>(value));
 }
 
-template<> auto ConfigurationInterface::get(const std::string& path) -> std::string
+template<> std::string ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
 {
-  return getString(path);
+  auto optional = getString(path);
+  return (optional != boost::none) ? optional.value() : throw std::runtime_error("Could not find: " + path);
 }
 
-template<> auto ConfigurationInterface::get(const std::string& path) -> int
+template<> int ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
 {
-  return std::stoi(getString(path));
+  auto optional = getString(path);
+  return (optional != boost::none) ? std::stoi(optional.value()) : throw std::runtime_error("Could not find: " + path);
 }
 
-template<> auto ConfigurationInterface::get(const std::string& path) -> double
+template<> double ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
 {
-  return std::stod(getString(path));
+  auto optional = getString(path);
+  return (optional != boost::none) ? std::stod(optional.value()) : throw std::runtime_error("Could not find: " + path);
+}
+
+template<> auto ConfigurationInterface::get(const std::string& path, const std::string& defaultValue) -> std::string
+{
+  auto optional = getString(path);
+  return (optional != boost::none) ? optional.value() : defaultValue;
+}
+
+template<> auto ConfigurationInterface::get(const std::string& path, const int& defaultValue) -> int
+{
+  auto optional = getString(path);
+  return (optional != boost::none) ? stoi(optional.value()) : defaultValue;
+}
+
+template<> auto ConfigurationInterface::get(const std::string& path, const double& defaultValue) -> double
+{
+  auto optional = getString(path);
+  return (optional != boost::none) ? std::stod(optional.value()) : defaultValue;
 }
 
 } // namespace configuration

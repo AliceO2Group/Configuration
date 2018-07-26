@@ -8,6 +8,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 namespace o2
@@ -39,21 +40,27 @@ class ConfigurationInterface
     /// Retrieves a string value from the configuration.
     /// \param path The path of the value
     /// \return The retrieved value
-    virtual std::string getString(const std::string& path) = 0;
+    virtual boost::optional<std::string> getString(const std::string& path) = 0;
 
     /// Template convenience interface for put operations. Redirects to the appropriate virtual method.
-    /// \tparam T The type of the value. Supported types are "std::string", "int" and "double"
+    /// \param T The type of the value. Supported types are "std::string", "int" and "double"
     /// \param path The path of the value
     /// \param value The value to put
     template<typename T>
     void put(const std::string& path, const T& value);
 
-    /// Template convenience interface for get operations. Redirects to the appropriate virtual method.
-    /// \tparam T The type of the value. Supported types are "std::string", "int" and "double"
+    /// Template convenience interface for get operations.
     /// \param path The path of the value
-    /// \return The retrieved value
+    /// \return The retrieved value. Supported types are "std::string", "int" and "double"
+    /// \throw std::runtime_error when value does not exist
     template<typename T>
-    T get(const std::string& path);
+    T get(const std::string& path) throw(std::runtime_error);
+
+    /// Template convenience interface for get operations with additiona parameter default value
+    /// \param path The path of the value
+    /// \param defaultValue default value which is assigned when requested key does not exist
+    template<typename T>
+    T get(const std::string& path, const T& defaultValue);
 
     /// Sets a 'prefix' or 'directory' for the backend.
     /// After this call, all paths given to this object will be prefixed with this.
