@@ -6,9 +6,9 @@
 #ifndef O2_CONFIGURATION_JSONBACKEND_H_
 #define O2_CONFIGURATION_JSONBACKEND_H_
 
+#include "../BackendBase.h"
 #include <string>
 #include <boost/property_tree/ptree.hpp>
-#include "../BackendBase.h"
 
 namespace o2
 {
@@ -23,10 +23,10 @@ class JsonBackend final : public BackendBase
     JsonBackend(const std::string& filePath);
     virtual ~JsonBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
-    virtual auto getString(const std::string& path) -> Optional<std::string> override;
+    virtual std::string getString(const std::string& path) override;
     virtual void setPrefix(const std::string& path) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
-    virtual auto getRecursiveMap(const std::string& path) -> KeyValueMap override;
+    virtual KeyValueMap getRecursiveMap(const std::string& path) override;
   private:
     std::string mFilePath;
     boost::property_tree::ptree mTree;

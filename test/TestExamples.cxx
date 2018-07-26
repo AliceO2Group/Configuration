@@ -41,9 +41,8 @@ BOOST_AUTO_TEST_CASE(Example)
 
       // Putting & getting
       conf->put<int>(myKey, myValue);
-      // Getters return a boost::optional that will be empty if the value is not present
-      conf->get<int>(myKey).value();
-      conf->get<int>("/this/key/does/not/exist").value_or(-1);
+      conf->get<int>(myKey);
+      conf->get<int>("/this/key/does/not/exist");
 
 
       // Assuming our backend has these key-value pairs:
@@ -59,10 +58,10 @@ BOOST_AUTO_TEST_CASE(Example)
       cout << "Assigning value '111' to key '" << myKey << "'" << endl;
       conf->put<int>(myPath, 111);
 
-      int getValue = conf->get<int>(myPath).value();
+      int getValue = conf->get<int>(myPath);
       cout << "Got key '" << myPath << "' with value '" << getValue << "'" << endl;
 
-      int getValueWithDefault = conf->get<int>("/this/key/does/not/exist").value_or(-1);
+      int getValueWithDefault = conf->get<int>("/this/key/does/not/exist");
       cout << "Got key '" << myPath << "' with value '" << getValueWithDefault << "'" << endl;
     }
 
@@ -70,7 +69,7 @@ BOOST_AUTO_TEST_CASE(Example)
     {
       auto conf = ConfigurationFactory::getConfiguration(uri + "/test_dir/");
       conf->put<int>(myKey, 222);
-      cout << "Should be 222: " << conf->get<int>(myKey).value() << '\n';
+      cout << "Should be 222: " << conf->get<int>(myKey) << '\n';
     }
 
     // Yet another way to access the same values
@@ -78,7 +77,7 @@ BOOST_AUTO_TEST_CASE(Example)
       auto conf = ConfigurationFactory::getConfiguration(uri);
       conf->setPrefix("/test_dir/");
       conf->put<int>(myKey, 333);
-      cout << "Should be 333: " << conf->get<int>(myKey).value() << '\n';
+      cout << "Should be 333: " << conf->get<int>(myKey) << '\n';
     }
   }
   catch (const std::runtime_error& e) {

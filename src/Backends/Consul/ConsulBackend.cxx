@@ -63,7 +63,7 @@ void ConsulBackend::putString(const std::string& path, const std::string& value)
   mStorage.set(addPrefix(replaceSeparator(trimLeadingSlash(path))), value);
 }
 
-auto ConsulBackend::getString(const std::string& path) -> Optional<std::string>
+std::string ConsulBackend::getString(const std::string& path)
 {
   auto item = mStorage.item(addPrefix(replaceSeparator(trimLeadingSlash(path))),
       ppconsul::kw::consistency = ppconsul::Consistency::Stale);
@@ -90,7 +90,7 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
   return tree;
 }
 
-auto ConsulBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
+KeyValueMap ConsulBackend::getRecursiveMap(const std::string& path)
 {
   auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
   auto items = getItems(requestKey);
