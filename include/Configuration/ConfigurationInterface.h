@@ -8,7 +8,6 @@
 
 #include <string>
 #include <unordered_map>
-#include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 namespace o2
@@ -30,8 +29,6 @@ using KeyValueMap = std::unordered_map<std::string, std::string>;
 class ConfigurationInterface
 {
   public:
-    template <typename T> using Optional = boost::optional<T>; // Hopefully, we can move to std::optional someday.
-
     virtual ~ConfigurationInterface();
 
     /// Puts a string into the configuration.
