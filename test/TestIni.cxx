@@ -57,6 +57,9 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   // File backend does not support putting values
   BOOST_CHECK_THROW(conf->put(key, value), std::runtime_error);
 
+  // Throw when default value not provided
+  BOOST_CHECK_THROW(conf->get<int>("this_is/a_bad/key"), std::runtime_error);
+
   // Check with default separator
   BOOST_CHECK(conf->get<std::string>("key") == "value");
   BOOST_CHECK(conf->get<int>("section/key_int") == 123);
