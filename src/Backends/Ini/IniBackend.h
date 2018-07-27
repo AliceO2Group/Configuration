@@ -26,7 +26,6 @@ class IniBackend final : public BackendBase
     virtual ~IniBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual boost::optional<std::string> getString(const std::string& path) override;
-    virtual void setPrefix(const std::string& path) override;
 
   private:
     std::string mFilePath;

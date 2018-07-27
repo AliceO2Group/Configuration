@@ -67,6 +67,19 @@ BOOST_AUTO_TEST_CASE(ConsulPtree)
   BOOST_CHECK_EQUAL(leaf.get<std::string>("onclick"), "CreateNewDoc");
 }
 
+BOOST_AUTO_TEST_CASE(ConsulPrefix)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
+  conf->setPrefix("configuration_library");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("id"), "file");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("popup/menuitem/one/onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("popup/menuitem/one/value"), 123);
+
+  conf->setPrefix("configuration_library/popup/menuitem/one");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("value"), 123);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(Dummy)

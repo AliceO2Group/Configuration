@@ -40,23 +40,18 @@ void JsonBackend::putString(const std::string&, const std::string&)
 boost::optional<std::string> JsonBackend::getString(const std::string& path)
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
-  return mTree.get_optional<std::string>(decltype(mTree)::path_type(path, getSeparator()));
-}
-
-void JsonBackend::setPrefix(const std::string& path)
-{
-  mFilePath = path;
+  return mTree.get_optional<std::string>(decltype(mTree)::path_type(addPrefix(path), getSeparator()));
 }
 
 boost::property_tree::ptree JsonBackend::getRecursive(const std::string& path)
 {
-  return mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
+  return mTree.get_child(decltype(mTree)::path_type(addPrefix(path), getSeparator()));
 }
 
 KeyValueMap JsonBackend::getRecursiveMap(const std::string& path)
 {
   KeyValueMap map;
-  auto subTree = mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
+  auto subTree = mTree.get_child(decltype(mTree)::path_type(addPrefix(path), getSeparator()));
 
   // define lambda to recursively interate tree
   using boost::property_tree::ptree;

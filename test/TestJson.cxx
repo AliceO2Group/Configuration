@@ -21,9 +21,10 @@ using namespace o2::configuration;
 
 namespace {
 
+const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
+
 BOOST_AUTO_TEST_CASE(JsonFileTest)
 {
-  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
   {
     std::ofstream stream(TEMP_FILE);
     stream << R"({"configuration_library": {
@@ -51,19 +52,6 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
 
 BOOST_AUTO_TEST_CASE(JsonFileRecursiveTest)
 {
-  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
-  {
-    std::ofstream stream(TEMP_FILE);
-    stream << R"({"configuration_library": {
-      "id": "file",
-      "popup": {
-        "menuitem": {
-          "one": {"value": "123", "onclick": "CreateNewDoc"}
-        }
-      }
-    }})";
-  }
-
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
   auto subTree = conf->getRecursive("configuration_library");
   BOOST_CHECK_EQUAL(subTree.get<std::string>("id"), "file");
@@ -78,19 +66,6 @@ BOOST_AUTO_TEST_CASE(JsonFileRecursiveTest)
 
 BOOST_AUTO_TEST_CASE(JsonFileRecursiveMapTest)
 {
-  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
-  {
-    std::ofstream stream(TEMP_FILE);
-    stream << R"({"configuration_library": {
-      "id": "file",
-      "popup": {
-        "menuitem": {
-          "one": {"value": "123", "onclick": "CreateNewDoc"}
-        }
-      }
-    }})";
-  }
-
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
   auto map = conf->getRecursiveMap("configuration_library");
   BOOST_CHECK_EQUAL(map["id"], "file");
@@ -100,6 +75,19 @@ BOOST_AUTO_TEST_CASE(JsonFileRecursiveMapTest)
   auto leaf = conf->getRecursiveMap("configuration_library/popup/menuitem/one");
   BOOST_CHECK_EQUAL(leaf["value"], "123");
   BOOST_CHECK_EQUAL(leaf["onclick"], "CreateNewDoc");
+}
+
+BOOST_AUTO_TEST_CASE(JsonFilePrefix)
+{
+  auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
+  conf->setPrefix("configuration_library");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("id"), "file");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("popup/menuitem/one/onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("popup/menuitem/one/value"), 123);
+
+  conf->setPrefix("configuration_library/popup/menuitem/one");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("value"), 123);
 }
 
 } // Anonymous namespace
