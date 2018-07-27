@@ -34,7 +34,7 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
 
     virtual void setPrefix(const std::string& path) override
     {
-      mPrefix = trimLeadingSlash(path) + getSeparator();
+      mPrefix = path + getSeparator();
     }
 
   protected:
@@ -43,18 +43,9 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
       return mPrefix + path;
     }
 
-    std::string trimLeadingSlash(const std::string& s)
-    {
-      if ((s.size() >= 1) && (s[0] == DEFAULT_SEPARATOR)) {
-        return s.substr(1, s.size() - 1);
-      } else {
-        return s;
-      }
-    }
-
   private:
     /// Default separator for keys/paths
-    static constexpr char DEFAULT_SEPARATOR = '/';
+    static constexpr char DEFAULT_SEPARATOR = '.';
 
     std::string mPrefix;
 };

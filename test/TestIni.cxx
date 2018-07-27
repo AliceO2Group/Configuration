@@ -48,23 +48,23 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   // Get file configuration interface from factory
   auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
 
-  std::string key{"/test/key"};
+  std::string key{"test.key"};
   std::string value{"test_value"};
 
   // Check with nonexistant keys
-  BOOST_CHECK_NO_THROW(BOOST_CHECK(conf->get<int>("this_is/a_bad/key", -1) == -1));
+  BOOST_CHECK_NO_THROW(BOOST_CHECK(conf->get<int>("this_is.a_bad.key", -1) == -1));
 
   // File backend does not support putting values
   BOOST_CHECK_THROW(conf->put(key, value), std::runtime_error);
 
   // Throw when default value not provided
-  BOOST_CHECK_THROW(conf->get<int>("this_is/a_bad/key"), std::runtime_error);
+  BOOST_CHECK_THROW(conf->get<int>("this_is.a_bad.key"), std::runtime_error);
 
   // Check with default separator
   BOOST_CHECK(conf->get<std::string>("key") == "value");
-  BOOST_CHECK(conf->get<int>("section/key_int") == 123);
-  BOOST_CHECK(conf->get<double>("section/key_float") == 4.56);
-  BOOST_CHECK(conf->get<std::string>("section/key_string") == "hello");
+  BOOST_CHECK(conf->get<int>("section.key_int") == 123);
+  BOOST_CHECK(conf->get<double>("section.key_float") == 4.56);
+  BOOST_CHECK(conf->get<std::string>("section.key_string") == "hello");
 }
 
 BOOST_AUTO_TEST_CASE(IniFileTestPrefix)
