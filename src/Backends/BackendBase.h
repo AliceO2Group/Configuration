@@ -42,12 +42,34 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
       throw std::runtime_error("getRecursiveMap() unsupported by backend");
     }
 
+    virtual void setPrefix(const std::string& path) override
+    {
+      mPrefix = trimLeadingSlash(path) + getSeparator();
+    }
+
+  protected:
+    std::string addPrefix(const std::string& path)
+    {
+      return mPrefix + path;
+    }
+
+    std::string trimLeadingSlash(const std::string& s)
+    {
+      if ((s.size() >= 1) && (s[0] == DEFAULT_SEPARATOR)) {
+        return s.substr(1, s.size() - 1);
+      } else {
+        return s;
+      }
+    }
+
   private:
     /// Default separator for keys/paths
     static constexpr char DEFAULT_SEPARATOR = '/';
 
     /// Currently used separator for keys/paths
     char mSeparator = DEFAULT_SEPARATOR;
+
+    std::string mPrefix;
 };
 
 } // namespace configuration

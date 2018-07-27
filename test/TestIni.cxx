@@ -31,10 +31,10 @@ BOOST_AUTO_TEST_CASE(TestIllFormedUri)
   }
 }
 
+const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.ini";
 BOOST_AUTO_TEST_CASE(IniFileTest)
 {
   // Put stuff in temp file
-  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.ini";
   {
     std::ofstream stream(TEMP_FILE);
     stream <<
@@ -73,6 +73,15 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK(conf->get<int>("section.key_int") == 123);
   BOOST_CHECK(conf->get<double>("section.key_float") == 4.56);
   BOOST_CHECK(conf->get<std::string>("section.key_string") == "hello");
+}
+
+BOOST_AUTO_TEST_CASE(IniFileTestPrefix)
+{
+  auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
+  conf->setPrefix("section");
+  BOOST_CHECK_EQUAL(conf->get<int>("key_int"), 123);
+  BOOST_CHECK_EQUAL(conf->get<double>("key_float"), 4.56);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("key_string"), "hello");
 }
 
 } // Anonymous namespace

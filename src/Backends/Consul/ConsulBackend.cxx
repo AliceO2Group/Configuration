@@ -13,16 +13,7 @@ namespace backends
 {
 namespace
 {
-std::string trimLeadingSlash(const std::string& s)
-{
-  if ((s.size() >= 1) && (s[0] == '/')) {
-    return s.substr(1, s.size() - 1);
-  } else {
-    return s;
-  }
-}
 
-/// The request key is prefixed to the response keys, this strips that from it.
 auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
 {
   assert(response.find(requestKey) == 0);
@@ -37,17 +28,6 @@ ConsulBackend::ConsulBackend(const std::string& host, int port) : mHost(host), m
 
 ConsulBackend::~ConsulBackend()
 {
-}
-
-void ConsulBackend::setPrefix(const std::string& path)
-{
-  mPrefix = trimLeadingSlash(path);
-}
-
-/// Prefix the prefix to the path
-auto ConsulBackend::addPrefix(const std::string& path) -> std::string
-{
-  return mPrefix + path;
 }
 
 /// Replace separators in the path
