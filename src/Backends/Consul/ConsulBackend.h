@@ -29,7 +29,8 @@ class ConsulBackend final : public BackendBase
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
 
   private:
-    auto replaceSeparator(const std::string& path) -> std::string;
+    auto replaceDefaultWithSlash(const std::string& path) -> std::string;
+    auto replaceSlashWithDefault(const std::string& path) -> std::string;
     auto getItems(const std::string& path) -> std::vector<ppconsul::kv::KeyValue>;
 
     std::string mHost;

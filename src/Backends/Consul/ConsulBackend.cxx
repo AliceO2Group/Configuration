@@ -31,7 +31,14 @@ ConsulBackend::~ConsulBackend()
 }
 
 /// Replace separators in the path
-auto ConsulBackend::replaceSeparator(const std::string& path) -> std::string
+auto ConsulBackend::replaceDefaultWithSlash(const std::string& path) -> std::string
+{
+  auto p = path;
+  std::replace(p.begin(), p.end(), getSeparator(), '/');
+  return p;
+}
+
+auto ConsulBackend::replaceSlashWithDefault(const std::string& path) -> std::string
 {
   auto p = path;
   std::replace(p.begin(), p.end(), '/', getSeparator());
@@ -40,12 +47,12 @@ auto ConsulBackend::replaceSeparator(const std::string& path) -> std::string
 
 void ConsulBackend::putString(const std::string& path, const std::string& value)
 {
-  mStorage.set(addPrefix(replaceSeparator(trimLeadingSlash(path))), value);
+  mStorage.set(replaceDefaultWithSlash(addPrefix(path)), value);
 }
 
 boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 {
-  auto item = mStorage.item(addPrefix(replaceSeparator(trimLeadingSlash(path))),
+  auto item = mStorage.item(replaceDefaultWithSlash(addPrefix(path)),
       ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   if (item.valid()) {
     return std::move(item.value);
@@ -61,25 +68,25 @@ auto ConsulBackend::getItems(const std::string& requestKey) -> std::vector<ppcon
 
 boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
-  auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
+  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
   auto items = getItems(requestKey);
   boost::property_tree::ptree tree;
   for (const auto& item : items) {
-    tree.put(stripRequestKey(requestKey, item.key), std::move(item.value));
+    tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
   }
   return tree;
 }
 
 KeyValueMap ConsulBackend::getRecursiveMap(const std::string& path)
 {
-  auto requestKey = addPrefix(replaceSeparator(trimLeadingSlash(path)));
+  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
   auto items = getItems(requestKey);
   KeyValueMap map;
   for (const auto& item : items) {
     if (item.value.size() == 0) {
       continue;
     }
-    map[stripRequestKey(requestKey, item.key)] = std::move(item.value);
+    map[replaceSlashWithDefault(stripRequestKey(requestKey, item.key))] = std::move(item.value);
   }
   return map;
 }
