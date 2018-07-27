@@ -24,9 +24,9 @@ class ConsulBackend final : public BackendBase
     ConsulBackend(const std::string& host, int port);
     virtual ~ConsulBackend();
     virtual void putString(const std::string& path, const std::string& value) override;
-    virtual auto getString(const std::string& path) -> Optional<std::string> override;
+    virtual boost::optional<std::string> getString(const std::string& path) override;
     virtual void setPrefix(const std::string& path) override;
-    virtual auto getRecursiveMap(const std::string&) -> KeyValueMap override;
+    virtual KeyValueMap getRecursiveMap(const std::string&) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
 
   private:

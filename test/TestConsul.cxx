@@ -27,13 +27,16 @@ BOOST_AUTO_TEST_SUITE(optionalTest, * boost::unit_test::disabled())
 BOOST_AUTO_TEST_CASE(ConsulBackend)
 {
   auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
-  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/id").get_value_or(""), "file");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/id"), "file");
 
-  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/onclick").get_value_or(""), "CreateNewDoc");
-  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/value").get_value_or(0), 123);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/value"), 123);
 
-  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key").get_value_or(0), 0); 
-  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_string").get_value_or("string"), "string");
+  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key", 0), 0); 
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string", "string"), "string");
+
+  BOOST_CHECK_THROW(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key"), std::runtime_error);
+  BOOST_CHECK_THROW(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string"), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(ConsulMap)

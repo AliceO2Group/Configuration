@@ -38,12 +38,15 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
 
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
 
-  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/id").get_value_or(""), "file");
-  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/onclick").get_value_or(""), "CreateNewDoc");
-  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/value").get_value_or(0), 123);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/id"), "file");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/value"), 123);
 
-  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key").get_value_or(0), 0);
-  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string").get_value_or("string"), "string");
+  BOOST_CHECK_EQUAL(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key", 0), 0);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string", "string"), "string");
+
+  BOOST_CHECK_THROW(conf->get<int>("configuration_library/popup/menuitem/one/wrong_key"), std::runtime_error);
+  BOOST_CHECK_THROW(conf->get<std::string>("configuration_library/popup/menuitem/one/wrong_key_string"), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(JsonFileRecursiveTest)

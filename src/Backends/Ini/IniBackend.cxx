@@ -64,7 +64,7 @@ void IniBackend::putString(const std::string&, const std::string&)
   throw std::runtime_error("IniBackend does not support putting values");
 }
 
-auto IniBackend::getString(const std::string& path) -> Optional<std::string>
+boost::optional<std::string> IniBackend::getString(const std::string& path)
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
   return mPropertyTree.get_optional<std::string>(decltype(mPropertyTree)::path_type(path, getSeparator()));

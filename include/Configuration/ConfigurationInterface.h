@@ -26,12 +26,10 @@ namespace configuration
 /// To maintain runtime polymorphism, while also having a convenient template-like interface,
 /// the implementations of put/get operations are in the virtual methods,
 /// and template methods are provided that redirect to these, functioning as a kind of syntactic sugar.
+using KeyValueMap = std::unordered_map<std::string, std::string>;
 class ConfigurationInterface
 {
   public:
-    template <typename T> using Optional = boost::optional<T>; // Hopefully, we can move to std::optional someday.
-    using KeyValueMap = std::unordered_map<std::string, std::string>;
-
     virtual ~ConfigurationInterface();
 
     /// Puts a string into the configuration.
@@ -39,52 +37,30 @@ class ConfigurationInterface
     /// \param value The value to put
     virtual void putString(const std::string& path, const std::string& value) = 0;
 
-    /// Puts an integer value into the configuration.
-    /// \param path The path of the value
-    /// \param value The value to put
-    virtual void putInt(const std::string& path, int value);
-
-    /// Puts a floating point value into the configuration.
-    /// \param path The path of the value
-    /// \param value The value to put
-    virtual void putFloat(const std::string& path, double value);
-
     /// Retrieves a string value from the configuration.
     /// \param path The path of the value
     /// \return The retrieved value
-    virtual Optional<std::string> getString(const std::string& path) = 0;
-
-    /// Retrieves an integer value from the configuration.
-    /// \param path The path of the value
-    /// \return The retrieved value
-    virtual Optional<int> getInt(const std::string& path);
-
-    /// Retrieves a floating point value from the configuration.
-    /// \param path The path of the value
-    /// \return The retrieved value
-    virtual Optional<double> getFloat(const std::string& path);
+    virtual boost::optional<std::string> getString(const std::string& path) = 0;
 
     /// Template convenience interface for put operations. Redirects to the appropriate virtual method.
-    /// \tparam T The type of the value. Supported types are "std::string", "int" and "double"
+    /// \param T The type of the value. Supported types are "std::string", "int" and "double"
     /// \param path The path of the value
     /// \param value The value to put
     template<typename T>
     void put(const std::string& path, const T& value);
 
-    /// Template convenience interface for get operations. Redirects to the appropriate virtual method.
-    /// \tparam T The type of the value. Supported types are "std::string", "int" and "double"
+    /// Template convenience interface for get operations.
     /// \param path The path of the value
-    /// \return The retrieved value
+    /// \return The retrieved value. Supported types are "std::string", "int" and "double"
+    /// \throw std::runtime_error when value does not exist
     template<typename T>
-    Optional<T> get(const std::string& path);
+    T get(const std::string& path) throw(std::runtime_error);
 
-    /// Checks if the given value exists.
-    /// Note: this function should not be used in a "if this value exists, then get the value" pattern, as it is not a
-    /// trivial operation for every backend. This pattern is supported in a more lightweight manner by the optional
-    /// return value of the getters.
+    /// Template convenience interface for get operations with additiona parameter default value
     /// \param path The path of the value
-    /// \return A boolean: true indicates it exists, false indicates it doesn't
-    virtual bool exists(const std::string& path);
+    /// \param defaultValue default value which is assigned when requested key does not exist
+    template<typename T>
+    T get(const std::string& path, const T& defaultValue);
 
     /// Sets a 'prefix' or 'directory' for the backend.
     /// After this call, all paths given to this object will be prefixed with this.

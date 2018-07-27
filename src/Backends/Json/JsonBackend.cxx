@@ -4,7 +4,6 @@
 /// \author Adam Wegrzynek, CERN
 
 #include "JsonBackend.h"
-#include <iostream>
 #include <boost/property_tree/json_parser.hpp>
 
 namespace o2
@@ -38,7 +37,7 @@ void JsonBackend::putString(const std::string&, const std::string&)
   throw std::runtime_error("JsonBackend does not support putting values");
 }
 
-auto JsonBackend::getString(const std::string& path) -> Optional<std::string>
+boost::optional<std::string> JsonBackend::getString(const std::string& path)
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
   return mTree.get_optional<std::string>(decltype(mTree)::path_type(path, getSeparator()));
@@ -54,7 +53,7 @@ boost::property_tree::ptree JsonBackend::getRecursive(const std::string& path)
   return mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
 }
 
-auto JsonBackend::getRecursiveMap(const std::string& path) -> KeyValueMap
+KeyValueMap JsonBackend::getRecursiveMap(const std::string& path)
 {
   KeyValueMap map;
   auto subTree = mTree.get_child(decltype(mTree)::path_type(path, getSeparator()));
