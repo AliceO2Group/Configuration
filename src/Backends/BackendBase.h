@@ -16,20 +16,10 @@ namespace configuration {
 class BackendBase: public ConfigurationInterface, public boost::noncopyable
 {
   public:
-    virtual void setPathSeparator(char separator) override
-    {
-      mSeparator = separator;
-    }
-
-    virtual void resetPathSeparator() override
-    {
-      mSeparator = DEFAULT_SEPARATOR;
-    }
-
     /// Get the separator used for keys/paths
     char getSeparator()
     {
-      return mSeparator;
+      return DEFAULT_SEPARATOR;
     }
 
     virtual boost::property_tree::ptree getRecursive(const std::string&) override
@@ -65,9 +55,6 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
   private:
     /// Default separator for keys/paths
     static constexpr char DEFAULT_SEPARATOR = '/';
-
-    /// Currently used separator for keys/paths
-    char mSeparator = DEFAULT_SEPARATOR;
 
     std::string mPrefix;
 };

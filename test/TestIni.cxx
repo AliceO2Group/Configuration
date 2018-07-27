@@ -65,14 +65,6 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK(conf->get<int>("section/key_int") == 123);
   BOOST_CHECK(conf->get<double>("section/key_float") == 4.56);
   BOOST_CHECK(conf->get<std::string>("section/key_string") == "hello");
-
-
-  // Check with custom separator
-  conf->setPathSeparator('.');
-  BOOST_CHECK(conf->get<std::string>("key") == "value");
-  BOOST_CHECK(conf->get<int>("section.key_int") == 123);
-  BOOST_CHECK(conf->get<double>("section.key_float") == 4.56);
-  BOOST_CHECK(conf->get<std::string>("section.key_string") == "hello");
 }
 
 BOOST_AUTO_TEST_CASE(IniFileTestPrefix)
