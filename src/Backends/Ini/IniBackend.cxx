@@ -16,10 +16,6 @@ namespace configuration
 namespace backends
 {
 
-IniBackend::~IniBackend()
-{
-}
-
 /// Load the configuration from given path
 /// \param path  Path to configuration data.
 ///              Example: file:/configDir/example.cfg
@@ -54,7 +50,6 @@ void loadConfigFile(const std::string& filePath, boost::property_tree::ptree& pt
 }
 
 IniBackend::IniBackend(const std::string& filePath)
-    : mFilePath(filePath)
 {
   loadConfigFile(filePath, mPropertyTree);
 }

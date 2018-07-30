@@ -1,10 +1,11 @@
 /// \file BackendBase.h
 /// \brief Base class for ConfigurationInterface backend implementations
 ///
-/// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
+/// \author Pascal Boeschoten, CERN
+/// \author Adam Wegrzynek, CERN
 
-#ifndef ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
-#define ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
+#ifndef O2_CONFIGURATION_BACKENDBASE_H_
+#define O2_CONFIGURATION_BACKENDBASE_H_
 
 #include <boost/core/noncopyable.hpp>
 #include "Configuration/ConfigurationInterface.h"
@@ -16,28 +17,35 @@ namespace configuration {
 class BackendBase: public ConfigurationInterface, public boost::noncopyable
 {
   public:
-    /// Get the separator used for keys/paths
-    char getSeparator()
+    /// Path separator getter
+    char getSeparator() const
     {
       return DEFAULT_SEPARATOR;
     }
 
+    /// When a backend does not support getRecursiveMap an error is thrown
     virtual boost::property_tree::ptree getRecursive(const std::string&) override
     {
       throw std::runtime_error("getRecursive() unsupported by backend");
     }
 
+    /// When a backend does not support getRecursiveMap an error is thrown
     virtual KeyValueMap getRecursiveMap(const std::string&) override
     {
       throw std::runtime_error("getRecursiveMap() unsupported by backend");
     }
 
-    virtual void setPrefix(const std::string& path) override
+    /// Sets path prefix
+    /// \param A path prefix
+    virtual void setPrefix(const std::string& prefix) override
     {
-      mPrefix = path + getSeparator();
+      mPrefix = prefix + getSeparator();
     }
 
   protected:
+    /// Prepends path with prefix
+    /// \param path A path
+    /// \return Provided path with prepended prefix
     std::string addPrefix(const std::string& path)
     {
       return mPrefix + path;
@@ -47,10 +55,11 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
     /// Default separator for keys/paths
     static constexpr char DEFAULT_SEPARATOR = '.';
 
+    /// Get path prefix
     std::string mPrefix;
 };
 
 } // namespace configuration
 } // namespace o2
 
-#endif // ALICEO2_CONFIGURATION_SRC_BACKENDBASE_H_
+#endif // O2_CONFIGURATION_BACKENDBASE_H_
