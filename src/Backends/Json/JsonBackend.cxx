@@ -13,12 +13,7 @@ namespace configuration
 namespace backends
 {
 
-JsonBackend::~JsonBackend()
-{
-}
-
 JsonBackend::JsonBackend(const std::string& filePath)
-    : mFilePath(filePath)
 {
   if (filePath.length() == 0) {
     throw std::runtime_error("JSON filepath is empty");

@@ -1,10 +1,11 @@
 /// \file ConfigurationInterface.h
 /// \brief Interface for putting and getting configuration parameters.
 ///
-/// \author Pascal Boeschoten (pascal.boeschoten@cern.ch)
+/// \author Pascal Boeschoten, CERN
+/// \author Adam Wegrzynek, CERN
 
-#ifndef ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_
-#define ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_
+#ifndef O2_CONFIGURATION_CONFIGURATIONINTERFACE_H_
+#define O2_CONFIGURATION_CONFIGURATIONINTERFACE_H_
 
 #include <string>
 #include <unordered_map>
@@ -16,6 +17,8 @@ namespace o2
 namespace configuration
 {
 
+using KeyValueMap = std::unordered_map<std::string, std::string>;
+
 /// \brief Interface for configuration back ends.
 ///
 /// Interface for configuration back ends, to put and get configuration parameters.
@@ -26,7 +29,6 @@ namespace configuration
 /// To maintain runtime polymorphism, while also having a convenient template-like interface,
 /// the implementations of put/get operations are in the virtual methods,
 /// and template methods are provided that redirect to these, functioning as a kind of syntactic sugar.
-using KeyValueMap = std::unordered_map<std::string, std::string>;
 class ConfigurationInterface
 {
   public:
@@ -82,4 +84,4 @@ class ConfigurationInterface
 } // namespace configuration
 } // namespace o2
 
-#endif /* ALICEO2_CONFIGURATION_INCLUDE_CONFIGURATIONINTERFACE_H_ */
+#endif /* O2_CONFIGURATION_CONFIGURATIONINTERFACE_H_ */

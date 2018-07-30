@@ -21,16 +21,11 @@ auto stripRequestKey(const std::string& requestKey, const std::string& response)
 }
 } // Anonymous namespace
 
-ConsulBackend::ConsulBackend(const std::string& host, int port) : mHost(host), mPort(port),
+ConsulBackend::ConsulBackend(const std::string& host, int port) :
     mConsul(host + ":" + std::to_string(port)), mStorage(mConsul)
 {
 }
 
-ConsulBackend::~ConsulBackend()
-{
-}
-
-/// Replace separators in the path
 auto ConsulBackend::replaceDefaultWithSlash(const std::string& path) -> std::string
 {
   auto p = path;
@@ -61,15 +56,10 @@ boost::optional<std::string> ConsulBackend::getString(const std::string& path)
   }
 }
 
-auto ConsulBackend::getItems(const std::string& requestKey) -> std::vector<ppconsul::kv::KeyValue>
-{
-  return mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
-}
-
 boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
   auto requestKey = replaceDefaultWithSlash(addPrefix(path));
-  auto items = getItems(requestKey);
+  auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   boost::property_tree::ptree tree;
   for (const auto& item : items) {
     tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
@@ -80,7 +70,7 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 KeyValueMap ConsulBackend::getRecursiveMap(const std::string& path)
 {
   auto requestKey = replaceDefaultWithSlash(addPrefix(path));
-  auto items = getItems(requestKey);
+  auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   KeyValueMap map;
   for (const auto& item : items) {
     if (item.value.size() == 0) {
