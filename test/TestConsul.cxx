@@ -43,7 +43,6 @@ BOOST_AUTO_TEST_CASE(ConsulMap)
 {
   auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
   auto map = conf->getRecursiveMap("configuration_library");
-  BOOST_CHECK_EQUAL(map.size(), 3);
   BOOST_CHECK_EQUAL(map["id"], "file");
   BOOST_CHECK_EQUAL(map["popup.menuitem.one.onclick"], "CreateNewDoc");
   BOOST_CHECK_EQUAL(map["popup.menuitem.one.value"], "123");
@@ -78,6 +77,34 @@ BOOST_AUTO_TEST_CASE(ConsulPrefix)
   conf->setPrefix("configuration_library.popup.menuitem.one");
   BOOST_CHECK_EQUAL(conf->get<std::string>("onclick"), "CreateNewDoc");
   BOOST_CHECK_EQUAL(conf->get<int>("value"), 123);
+}
+
+BOOST_AUTO_TEST_CASE(ConsulArray)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
+  auto anArray = conf->getRecursive("configuration_library.array[]");
+  std::string keys = "";
+  std::string merged = "";
+  for (auto const &it: anArray) {
+    keys += it.first;
+    merged += it.second.data();
+  }
+  BOOST_CHECK_EQUAL(keys, "");
+  BOOST_CHECK_EQUAL(merged, "zeroundeux");
+}
+
+BOOST_AUTO_TEST_CASE(ConsulNestedArray)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
+  auto anArray = conf->getRecursive("configuration_library.complex_array[]");
+  int ports = 0;
+  std::string hosts = "";
+  for (auto const &it: anArray) {
+    hosts += it.second.get<std::string>("host");
+    ports += it.second.get<int>("port");
+  }
+  BOOST_CHECK_EQUAL(ports, 9258);
+  BOOST_CHECK_EQUAL(hosts, "127.0.0.1192.168.1.1255.0.0.0");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
