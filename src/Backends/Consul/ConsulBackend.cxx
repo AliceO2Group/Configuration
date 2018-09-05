@@ -66,11 +66,9 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
     requestKey = requestKey.substr(0, requestKey.size() - 2);
     items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   }
-  std::cout << "Size: " << items.size() << ", Key: " << requestKey << std::endl;
   boost::property_tree::ptree tree;
   for (const auto& item : items) {
     if (!item.value.empty()) {
-      std::cout << replaceSlashWithDefault(stripRequestKey(requestKey, item.key)) << std::endl;
       tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
     }
   }
