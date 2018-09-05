@@ -107,6 +107,24 @@ BOOST_AUTO_TEST_CASE(ConsulNestedArray)
   BOOST_CHECK_EQUAL(hosts, "127.0.0.1192.168.1.1255.0.0.0");
 }
 
+BOOST_AUTO_TEST_CASE(ConsulControlSample)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
+  auto controlConfig = conf->getRecursive("configuration_library.control");
+
+  std::string args = "";
+  for (auto const &it: controlConfig.get_child("fairmq").get_child("plugin_args")) {
+    args += it.second.data();
+  }
+  BOOST_CHECK_EQUAL(args, "-SOCC");
+
+  for (auto const &it: controlConfig.get_child("tasks")) {
+    for (auto const &it2: it.second.get_child("command").get_child("modules")) {
+      BOOST_CHECK_EQUAL(it2.second.data(), "Readout/class.version");
+    }
+  }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(Dummy)

@@ -76,8 +76,14 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
       }
       node.swap(children);
     }
-    for (auto& it: node) {
-      (it.first.back() == ']') ? parse(it.second, true) : parse(it.second, false);
+    for (ptree::iterator it = node.begin(); it != node.end(); it++) {
+      if (it->first.back() == ']') {
+        parse(it->second, true);
+        node.insert(it, make_pair(it->first.substr(0, it->first.length() - 2), it->second));
+        node.erase(it);
+      } else {
+        parse(it->second, false);
+      }
     }
   };
 
