@@ -29,12 +29,12 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
     std::ofstream stream(TEMP_FILE);
     stream << R"({"configuration_library": {
       "id": "file",
-      "array[]": [
+      "array": [
         "zero",
         "un",
         "deux"
       ],
-      "complex_array[]": [
+      "complex_array": [
         {"host": "127.0.0.1", "port": 123},
         {"host": "192.168.1.1", "port": 123},
         {"host": "255.0.0.0", "port": 9012}
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(JsonFilePrefix)
 BOOST_AUTO_TEST_CASE(JsonFileArray)
 {
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
-  auto anArray = conf->getRecursive("configuration_library.array[]");
+  auto anArray = conf->getRecursive("configuration_library.array");
   std::string merged = "";
   std::string keys = "";
   for (auto const &it: anArray) {
@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(JsonFileArray)
 BOOST_AUTO_TEST_CASE(JsonFileNestedArray)
 {
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
-  auto anArray = conf->getRecursive("configuration_library.complex_array[]");
+  auto anArray = conf->getRecursive("configuration_library.complex_array");
   int ports = 0;
   std::string hosts = "";
   for (auto const &it: anArray) {
