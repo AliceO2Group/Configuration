@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(ConsulPrefix)
 BOOST_AUTO_TEST_CASE(ConsulArray)
 {
   auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
-  auto anArray = conf->getRecursive("configuration_library.array[]");
+  auto anArray = conf->getRecursive("configuration_library.array");
   std::string keys = "";
   std::string merged = "";
   for (auto const &it: anArray) {
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(ConsulArray)
 BOOST_AUTO_TEST_CASE(ConsulNestedArray)
 {
   auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
-  auto anArray = conf->getRecursive("configuration_library.complex_array[]");
+  auto anArray = conf->getRecursive("configuration_library.complex_array");
   int ports = 0;
   std::string hosts = "";
   for (auto const &it: anArray) {
