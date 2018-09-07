@@ -51,6 +51,8 @@ class ConfigurationInterface
     template<typename T>
     void put(const std::string& path, const T& value);
 
+    virtual void putRecursive(const std::string& path, const boost::property_tree::ptree& tree);
+
     /// Template convenience interface for get operations.
     /// \param path The path of the value
     /// \return The retrieved value. Supported types are "std::string", "int" and "double"

@@ -63,10 +63,10 @@ BOOST_AUTO_TEST_CASE(JsonFileTest)
 BOOST_AUTO_TEST_CASE(JsonFileRecursiveTest)
 {
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
-  auto subTree = conf->getRecursive("configuration_library");
-  BOOST_CHECK_EQUAL(subTree.get<std::string>("id"), "file");
-  BOOST_CHECK_EQUAL(subTree.get<int>("popup.menuitem.one.value"), 123);
-  BOOST_CHECK_EQUAL(subTree.get<std::string>("popup.menuitem.one.onclick"), "CreateNewDoc");
+  auto subTree = conf->getRecursive("");
+  BOOST_CHECK_EQUAL(subTree.get<std::string>("configuration_library.id"), "file");
+  BOOST_CHECK_EQUAL(subTree.get<int>("configuration_library.popup.menuitem.one.value"), 123);
+  BOOST_CHECK_EQUAL(subTree.get<std::string>("configuration_library.popup.menuitem.one.onclick"), "CreateNewDoc");
 
   auto leaf = conf->getRecursive("configuration_library.popup.menuitem.one");
   BOOST_CHECK_EQUAL(leaf.get<int>("value"), 123);

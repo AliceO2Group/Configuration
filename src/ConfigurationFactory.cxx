@@ -43,7 +43,7 @@ auto getConsul(const http::url& uri) -> UniqueConfiguration
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
   auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
   if (!uri.path.empty()) {
-    consul->setPrefix(uri.path);
+    consul->setPrefix(uri.path.substr(1));
   }
   return consul;
 #else

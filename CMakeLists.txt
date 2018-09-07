@@ -121,6 +121,13 @@ set(LIBRARY_NAME ${MODULE_NAME})
 message(STATUS LIBRARY_NAME: ${LIBRARY_NAME})
 message(STATUS BUCKET_NAME: ${BUCKET_NAME})
 
+O2_GENERATE_EXECUTABLE(
+        EXE_NAME configuration-convert
+        SOURCES src/CommandLineUtilities/Convert.cxx
+        MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+        BUCKET_NAME ${BUCKET_NAME}
+)
+
 enable_testing()
 
 set(TEST_SRCS
