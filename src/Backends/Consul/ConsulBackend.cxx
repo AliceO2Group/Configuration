@@ -16,8 +16,12 @@ namespace
 
 auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
 {
+  int length = requestKey.length();
   assert(response.find(requestKey) == 0);
-  return response.substr(requestKey.length() + 1);
+  if (requestKey.back() != '/') {
+    length++;
+  }
+  return response.substr(length);
 }
 } // Anonymous namespace
 
