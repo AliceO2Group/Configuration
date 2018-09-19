@@ -9,7 +9,6 @@
 
 int main(int argc, char *argv[]) {
   std::string sourceUri, destinationUri;
-
   boost::program_options::options_description desc("Copies values from source to destination.");
   desc.add_options()
     ("source", boost::program_options::value<std::string>(&sourceUri)->required(), "Source URI")
