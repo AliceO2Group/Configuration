@@ -31,9 +31,11 @@ class JsonBackend final : public BackendBase
     virtual boost::optional<std::string> getString(const std::string& path) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
     virtual KeyValueMap getRecursiveMap(const std::string& path) override;
+    void readJsonFile();
   private:
     /// Parsed JSON file
     boost::property_tree::ptree mTree;
+    std::string mPath;
 };
 
 } // namespace backends

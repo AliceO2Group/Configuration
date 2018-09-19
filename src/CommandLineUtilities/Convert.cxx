@@ -4,14 +4,11 @@
 ///
 
 #include "Configuration/ConfigurationFactory.h"
-#include <fstream>
+#include "../Backends/Json/JsonBackend.h"
 #include <boost/program_options.hpp>
-
-using namespace std::literals::string_literals;
 
 int main(int argc, char *argv[]) {
   std::string sourceUri, destinationUri;
-  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_convert_file.json";
 
   boost::program_options::options_description desc("Copies values from source to destination.");
   desc.add_options()
@@ -30,11 +27,7 @@ int main(int argc, char *argv[]) {
 
   // Workaround for writing JSON
   if (destinationUri.substr(0,4) == "json") {
-    {
-      std::ofstream stream(TEMP_FILE);
-      stream << R"({})";
-    }
-    auto destination = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
+    auto destination = new backends::JsonBackend("json://");
     destination->putRecursive(destinationUri.substr(5), values);
     return 0;
   }

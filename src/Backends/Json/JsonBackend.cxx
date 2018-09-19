@@ -18,12 +18,16 @@ JsonBackend::JsonBackend(const std::string& filePath)
   if (filePath.length() == 0) {
     throw std::runtime_error("JSON filepath is empty");
   }
+  mPath = filePath;
+}
 
+void JsonBackend::readJsonFile()
+{
   try {
-    boost::property_tree::read_json(filePath, mTree);
+    boost::property_tree::read_json(mPath, mTree);
   }
   catch (const boost::property_tree::ptree_error &error) {
-     throw std::runtime_error("Unable to read JSON file: " + filePath);
+     throw std::runtime_error("Unable to read JSON file: " + mPath);
   }
 }
 
