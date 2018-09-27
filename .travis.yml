@@ -54,7 +54,7 @@ install:
 before_script: 
   - mkdir build; cd build
 script:
-  - cmake .. -DPPCONSUL_DIR=$TRAVIS_BUILD_DIR/ppconsul_install
+  - cmake .. -DPpconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install
   - if [[ $TOOL == "test" ]]; then make -j; fi
   - if [[ $TOOL == "test" && "$TRAVIS_OS_NAME" == "linux" ]]; then make test; fi
   - if [[ $TOOL == "doxygen" ]]; then make doc; fi
