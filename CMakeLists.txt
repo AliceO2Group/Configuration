@@ -89,7 +89,7 @@ target_link_libraries(Configuration
     Boost::boost
   PRIVATE
     CURL::CURL
-#    $<$<BOOL:${Ppconsul_FOUND}>:Ppconsul::PpConsul>
+    $<$<BOOL:${Ppconsul_FOUND}>:Ppconsul::Ppconsul>
 )
 
 # Handle Ppconsul optional dependency
@@ -105,14 +105,6 @@ target_compile_definitions(Configuration
 
 # Use C++14
 target_compile_features(Configuration PUBLIC cxx_std_14)
-
-# Handle optional ApMon dependency
-if(Ppconsul_FOUND)
-  target_link_libraries(Configuration
-    PRIVATE
-      Ppconsul::Ppconsul
-  )
-endif()
 
 
 ####################################
