@@ -1,0 +1,19 @@
+@PACKAGE_INIT@
+
+set(Configuration_VERSION @PROJECT_VERSION@)
+
+get_filename_component(Configuration_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${Configuration_CMAKE_DIR})
+find_dependency(Boost)
+
+list(REMOVE_AT CMAKE_MODULE_PATH -1)
+
+if(NOT TARGET AliceO2::Configuration)
+  include("${Configuration_CMAKE_DIR}/ConfigurationTargets.cmake")
+endif()
+
+set(Configuration_LIBRARIES AliceO2::Configuration)
+
+message(STATUS "Configuration ${Configuration_VERSION} found")
