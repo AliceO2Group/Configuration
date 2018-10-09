@@ -138,6 +138,17 @@ endforeach()
 
 
 ####################################
+# Executables
+####################################
+
+add_executable(configuration-convert src/CommandLineUtilities/Convert.cxx)
+target_link_libraries(configuration-convert
+  PRIVATE
+    Configuration
+    Boost::program_options
+)
+
+####################################
 # Install
 ####################################
 
@@ -156,10 +167,11 @@ endif()
 unset(isSystemDir)
 
 # Install library
-install(TARGETS Configuration
+install(TARGETS Configuration configuration-convert
   EXPORT ConfigurationTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 # Create version file

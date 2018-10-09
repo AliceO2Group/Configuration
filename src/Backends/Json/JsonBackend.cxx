@@ -18,18 +18,27 @@ JsonBackend::JsonBackend(const std::string& filePath)
   if (filePath.length() == 0) {
     throw std::runtime_error("JSON filepath is empty");
   }
+  mPath = filePath;
+}
 
+void JsonBackend::readJsonFile()
+{
   try {
-    boost::property_tree::read_json(filePath, mTree);
+    boost::property_tree::read_json(mPath, mTree);
   }
   catch (const boost::property_tree::ptree_error &error) {
-     throw std::runtime_error("Unable to read JSON file: " + filePath);
+     throw std::runtime_error("Unable to read JSON file: " + mPath);
   }
 }
 
 void JsonBackend::putString(const std::string&, const std::string&)
 {
   throw std::runtime_error("JsonBackend does not support putting values");
+}
+
+void JsonBackend::putRecursive(const std::string& path, const boost::property_tree::ptree& tree)
+{
+  write_json(path, tree);
 }
 
 boost::optional<std::string> JsonBackend::getString(const std::string& path)

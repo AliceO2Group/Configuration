@@ -33,6 +33,11 @@ template<> void ConfigurationInterface::put(const std::string& path, const doubl
   putString(path, boost::lexical_cast<std::string>(value));
 }
 
+void ConfigurationInterface::putRecursive(const std::string&/* path*/, const boost::property_tree::ptree&/* tree*/)
+{
+  throw std::runtime_error("Recursive put not supported in the selected backend");
+}
+
 template<> std::string ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
 {
   auto optional = getString(path);

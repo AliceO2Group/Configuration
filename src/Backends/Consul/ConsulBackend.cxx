@@ -16,8 +16,12 @@ namespace
 
 auto stripRequestKey(const std::string& requestKey, const std::string& response) -> std::string
 {
+  int length = requestKey.length();
   assert(response.find(requestKey) == 0);
-  return response.substr(requestKey.length() + 1);
+  if (requestKey.back() != '/') {
+    length++;
+  }
+  return response.substr(length);
 }
 } // Anonymous namespace
 
@@ -45,6 +49,32 @@ void ConsulBackend::putString(const std::string& path, const std::string& value)
   mStorage.set(replaceDefaultWithSlash(addPrefix(path)), value);
 }
 
+void ConsulBackend::putRecursive(const std::string& path, const boost::property_tree::ptree& tree)
+{
+  using boost::property_tree::ptree;
+  std::function<void(const ptree&, std::string)> parse = [&](const ptree& pt, std::string key) {
+     if (!key.empty()) {
+      if (!pt.data().empty()) {
+        putString(key, pt.data());
+      }
+      key += getSeparator();
+    }
+    int index = 0;
+    for (ptree::const_iterator it = pt.begin(); it != pt.end(); it++) {
+      if (it->first.empty()) {
+        if (it == pt.begin()) {
+          key.pop_back();
+          key = key + "[]" + getSeparator();
+        }
+        parse(it->second, key + std::to_string(index++));
+      } else {
+        parse(it->second, key + it->first);
+      }
+    }
+  };
+  parse(tree, "");
+}
+
 boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 {
   auto item = mStorage.item(replaceDefaultWithSlash(addPrefix(path)),
@@ -58,12 +88,41 @@ boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 
 boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
-  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
+  auto requestKey = replaceDefaultWithSlash(addPrefix(path)) + "[]";
   auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
+  bool isArray = true;
+  if (items.size() == 0) {
+    isArray = false;
+    requestKey = requestKey.substr(0, requestKey.size() - 2);
+    items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
+  }
   boost::property_tree::ptree tree;
   for (const auto& item : items) {
-    tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
+    if (!item.value.empty()) {
+      tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
+    }
   }
+
+  using boost::property_tree::ptree;
+  std::function<void(ptree&, bool)> parse = [&](ptree& node, bool replace) {
+    if (replace) {
+      ptree children;
+      for (auto& it: node) {
+        children.push_back(std::make_pair("", it.second));
+      }
+      node.swap(children);
+    }
+    for (ptree::iterator it = node.begin(); it != node.end(); it++) {
+      if (it->first.back() == ']') {
+        parse(it->second, true);
+        node.insert(it, make_pair(it->first.substr(0, it->first.length() - 2), it->second));
+        node.erase(it);
+      } else {
+        parse(it->second, false);
+      }
+    }
+  };
+  parse(tree, isArray);
   return tree;
 }
 
