@@ -27,6 +27,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 # Set fPIC for all targets
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+# Set CMAKE_INSTALL_LIBDIR explicitly to lib (to avoid lib64 on CC7)
+set(CMAKE_INSTALL_LIBDIR lib)
+
 # Set the default build type to "RelWithDebInfo"
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "RelWithDebInfo"
