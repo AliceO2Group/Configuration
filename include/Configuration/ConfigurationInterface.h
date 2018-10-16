@@ -61,7 +61,7 @@ class ConfigurationInterface
     /// \return The retrieved value. Supported types are "std::string", "int" and "double"
     /// \throw std::runtime_error when value does not exist
     template<typename T>
-    T get(const std::string& path) throw(std::runtime_error);
+    T get(const std::string& path);
 
     /// Template convenience interface for get operations with additiona parameter default value
     /// \param path The path of the value
