@@ -38,19 +38,19 @@ void ConfigurationInterface::putRecursive(const std::string&/* path*/, const boo
   throw std::runtime_error("Recursive put not supported in the selected backend");
 }
 
-template<> std::string ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
+template<> std::string ConfigurationInterface::get(const std::string& path)
 {
   auto optional = getString(path);
   return (optional != boost::none) ? optional.value() : throw std::runtime_error("Could not find: " + path);
 }
 
-template<> int ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
+template<> int ConfigurationInterface::get(const std::string& path)
 {
   auto optional = getString(path);
   return (optional != boost::none) ? std::stoi(optional.value()) : throw std::runtime_error("Could not find: " + path);
 }
 
-template<> double ConfigurationInterface::get(const std::string& path) throw(std::runtime_error)
+template<> double ConfigurationInterface::get(const std::string& path)
 {
   auto optional = getString(path);
   return (optional != boost::none) ? std::stod(optional.value()) : throw std::runtime_error("Could not find: " + path);
