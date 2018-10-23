@@ -71,6 +71,7 @@ BOOST_AUTO_TEST_CASE(JsonFileRecursiveTest)
   auto leaf = conf->getRecursive("configuration_library.popup.menuitem.one");
   BOOST_CHECK_EQUAL(leaf.get<int>("value"), 123);
   BOOST_CHECK_EQUAL(leaf.get<std::string>("onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(leaf.get<std::string>("unexisting", "Default"), "Default");
 
 }
 

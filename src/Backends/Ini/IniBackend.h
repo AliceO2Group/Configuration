@@ -29,7 +29,7 @@ class IniBackend final : public BackendBase
     virtual ~IniBackend() = default;
     virtual void putString(const std::string& path, const std::string& value) override;
     virtual boost::optional<std::string> getString(const std::string& path) override;
-
+    virtual boost::property_tree::ptree getRecursive(const std::string&) override;
   private:
     /// Parsed INI file
     boost::property_tree::ptree mPropertyTree;
