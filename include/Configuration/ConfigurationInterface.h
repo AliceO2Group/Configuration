@@ -21,14 +21,10 @@ using KeyValueMap = std::unordered_map<std::string, std::string>;
 
 /// \brief Interface for configuration back ends.
 ///
-/// Interface for configuration back ends, to put and get configuration parameters.
-///
-/// The non-string put/get are not pure virtual and have default implementations that use the string put/get and
-/// boost::lexical_cast for conversion. This is because most back ends convert to/from strings anyway.
+/// Interface for configuration back-ends, to put and get configuration parameters.
 ///
 /// To maintain runtime polymorphism, while also having a convenient template-like interface,
-/// the implementations of put/get operations are in the virtual methods,
-/// and template methods are provided that redirect to these, functioning as a kind of syntactic sugar.
+/// the implementations of put/get operations are in the virtual methods.
 class ConfigurationInterface
 {
   public:
@@ -58,18 +54,18 @@ class ConfigurationInterface
 
     /// Template convenience interface for get operations.
     /// \param path The path of the value
-    /// \return The retrieved value. Supported types are "std::string", "int" and "double"
+    /// \return The retrieved value.
     /// \throw std::runtime_error when value does not exist
     template<typename T>
     T get(const std::string& path);
 
-    /// Template convenience interface for get operations with additiona parameter default value
+    /// Template convenience interface for get operations with a  default value
     /// \param path The path of the value
-    /// \param defaultValue default value which is assigned when requested key does not exist
+    /// \param defaultValue default value which is returned when requested key does not exist
     template<typename T>
     T get(const std::string& path, const T& defaultValue);
 
-    /// Sets a 'prefix' or 'directory' for the backend.
+    /// Sets a prefix
     /// After this call, all paths given to this object will be prefixed with this.
     /// The implementation of this is very backend-dependent and it may not be a trivial call.
     /// \param prefix The prefix path
