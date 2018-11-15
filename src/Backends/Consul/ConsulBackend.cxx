@@ -88,18 +88,22 @@ boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 
 boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
-  auto requestKey = replaceDefaultWithSlash(addPrefix(path)) + "[]";
+  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
   auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
-  bool isArray = true;
   if (items.size() == 0) {
-    isArray = false;
-    requestKey = requestKey.substr(0, requestKey.size() - 2);
-    items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
+    return {};
   }
+  bool isArray = false;
   boost::property_tree::ptree tree;
   for (const auto& item : items) {
     if (!item.value.empty()) {
-      tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
+      // detect whether this is array
+      if (item.key.substr(requestKey.size()).substr(0, 2) == "[]") {
+        tree.put(replaceSlashWithDefault(stripRequestKey(requestKey + "[]", item.key)), std::move(item.value));
+        isArray = true;
+      } else {
+        tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
+      }
     }
   }
 
