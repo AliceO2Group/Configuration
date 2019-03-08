@@ -75,7 +75,7 @@ boost::optional<std::string> IniBackend::getString(const std::string& path)
   return mPropertyTree.get_optional<std::string>(decltype(mPropertyTree)::path_type(addPrefix(path), getSeparator()));
 }
 
-boost::property_tree::ptree IniBackend::getRecursive(const std::string& path)
+boost::property_tree::ptree IniBackend::getRecursive(const std::string&/* path*/)
 {
   return mPropertyTree;
 }

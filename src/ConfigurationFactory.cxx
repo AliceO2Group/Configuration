@@ -50,18 +50,21 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
   return backend;
 }
 
+#ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
-#ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
   auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
   if (!uri.path.empty()) {
     consul->setPrefix(uri.path.substr(1));
   }
   return consul;
-#else
-  throw std::runtime_error("Back-end 'consul' not enabled");
-#endif
 }
+#else
+auto getConsul(const http::url& /*uri*/) -> UniqueConfiguration
+{
+  throw std::runtime_error("Back-end 'consul' not enabled");
+}
+#endif
 } // Anonymous namespace
 
 auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueConfiguration
