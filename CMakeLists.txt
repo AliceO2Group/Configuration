@@ -52,7 +52,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET)
-find_package(Ppconsul MODULE)
+find_package(ppconsul CONFIG)
 find_package(CURL REQUIRED MODULE)
 
 
@@ -92,7 +92,7 @@ target_link_libraries(Configuration
     Boost::boost
   PRIVATE
     CURL::CURL
-    $<$<BOOL:${Ppconsul_FOUND}>:Ppconsul::Ppconsul>
+    $<$<BOOL:${Ppconsul_FOUND}>:ppconsul>
 )
 
 # Handle Ppconsul optional dependency
