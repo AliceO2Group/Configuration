@@ -49,18 +49,18 @@ matrix:
         on:
           branch: dev
 before_install:
-  - git clone https://github.com/oliora/ppconsul.git; mkdir ppconsul_install; mkdir ppconsul/build
+  - if [[ $TOOL == "test" ]]; then git clone https://github.com/oliora/ppconsul.git; mkdir ppconsul_install; mkdir ppconsul/build; fi
 install:
-  - cd ppconsul/build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/ppconsul_install && make -j install
-  - cd $TRAVIS_BUILD_DIR
+  - if [[ $TOOL == "test" ]]; then cd ppconsul/build; fi
+  - if [[ $TOOL == "test" ]]; then cmake .. -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/ppconsul_install && make -j install; fi
+  - if [[ $TOOL == "test" ]]; then cd $TRAVIS_BUILD_DIR; fi
 before_script: 
-  - mkdir build; cd build
+  - if [[ $TOOL == "test" ]]; then mkdir build; cd build; fi
 script:
-  - cmake .. -DPpconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install
+  - if [[ $TOOL == "test" ]]; then cmake .. -DPpconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install; fi
   - if [[ $TOOL == "test" ]]; then make -j; fi
   - if [[ $TOOL == "test" && "$TRAVIS_OS_NAME" == "linux" ]]; then make test; fi
-  - if [[ $TOOL == "doxygen" ]]; then make doc; fi
+  - if [[ $TOOL == "doxygen" ]]; then cmake ..; make doc; fi
   - if [[ $TOOL == "clang-format" ]] && [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
       cd $TRAVIS_BUILD_DIR;
       BASE_COMMIT=$(git rev-parse $TRAVIS_BRANCH);
