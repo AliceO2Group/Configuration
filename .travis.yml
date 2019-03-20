@@ -1,8 +1,8 @@
 language: cpp
-dist: xenial
 matrix:
   include:
     - os: linux
+      dist: xenial
       env: TOOL=clang-format
       addons:
         apt:
@@ -15,11 +15,12 @@ matrix:
       osx_image: xcode10.2
       env: TOOL=test
     - os: linux
+      dist: xenial
       env: TOOL=test
-       addons:
+      addons:
         apt:
           sources:
-           - ubuntu-toolchain-r-test
+            - ubuntu-toolchain-r-test
           packages:
             - gcc-8
             - g++-8
@@ -29,6 +30,7 @@ matrix:
             - libboost-test1.58-dev
             - libboost-program-options1.58-dev
     - os: linux
+      dist: xenial
       env: TOOL=doxygen
       addons:
         apt:
