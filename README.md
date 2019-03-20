@@ -1,4 +1,4 @@
-[![travis-ci](https://travis-ci.org/AliceO2Group/Configuration.svg?branch=master)](https://travis-ci.org/AliceO2Group/Configuration)
+[![Travis Status](https://travis-ci.com/AliceO2Group/Configuration.svg?branch=master)](https://travis-ci.com/AliceO2Group/Configuration)
 [![JIRA](https://img.shields.io/badge/JIRA-issues-blue.svg)](https://alice.its.cern.ch/jira/projects/OCONF)
 
 # Configuration module

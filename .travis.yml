@@ -1,23 +1,36 @@
-sudo: required
 language: cpp
-dist: trusty
 matrix:
-  allow_failures:
+  include:
     - os: linux
+      dist: xenial
       env: TOOL=clang-format
       addons:
         apt:
-          sources: *sources
-          packages: ['clang-format-3.9']
+          sources:
+            - llvm-toolchain-xenial-7
+          packages:
+            - clang-format-7
       compiler: clang
-
-  include:
     - os: osx
-      osx_image: xcode9.2
+      osx_image: xcode10.2
       env: TOOL=test
     - os: linux
+      dist: xenial
       env: TOOL=test
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+            - g++-8
+            - cmake
+            - libboost-system1.58-dev
+            - libboost-filesystem1.58-dev
+            - libboost-test1.58-dev
+            - libboost-program-options1.58-dev
     - os: linux
+      dist: xenial
       env: TOOL=doxygen
       addons:
         apt:
@@ -36,33 +49,23 @@ matrix:
         on:
           branch: dev
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ..; wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar xf boost_1_64_0.tar.gz; cd $TRAVIS_BUILD_DIR; fi
-  - git clone https://github.com/oliora/ppconsul.git; mkdir ppconsul_install; mkdir ppconsul/build
+  - if [[ $TOOL == "test" ]]; then git clone https://github.com/oliora/ppconsul.git; mkdir ppconsul_install; mkdir ppconsul/build; fi
 install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq g++-6; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ../boost_1_64_0; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./bootstrap.sh --with-libraries=test,program_options,system,filesystem; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ./b2 -j 4 install > /dev/null 2>&1; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd $TRAVIS_BUILD_DIR; fi
-  - cd ppconsul/build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/ppconsul_install && make -j install
-  - cd $TRAVIS_BUILD_DIR
+  - if [[ $TOOL == "test" ]]; then cd ppconsul/build; fi
+  - if [[ $TOOL == "test" ]]; then cmake .. -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/ppconsul_install && make -j install; fi
+  - if [[ $TOOL == "test" ]]; then cd $TRAVIS_BUILD_DIR; fi
 before_script: 
-  - mkdir build; cd build
+  - if [[ $TOOL == "test" ]]; then mkdir build; cd build; fi
 script:
-  - cmake .. -DPpconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install
+  - if [[ $TOOL == "test" ]]; then cmake .. -DPpconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install; fi
   - if [[ $TOOL == "test" ]]; then make -j; fi
   - if [[ $TOOL == "test" && "$TRAVIS_OS_NAME" == "linux" ]]; then make test; fi
-  - if [[ $TOOL == "doxygen" ]]; then make doc; fi
+  - if [[ $TOOL == "doxygen" ]]; then cmake ..; make doc; fi
   - if [[ $TOOL == "clang-format" ]] && [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
       cd $TRAVIS_BUILD_DIR;
       BASE_COMMIT=$(git rev-parse $TRAVIS_BRANCH);
       COMMIT_FILES=$(git diff --name-only $BASE_COMMIT | grep -i -v LinkDef);
-      RESULT_OUTPUT="$(git-clang-format-3.9 --commit $BASE_COMMIT --diff --binary `which clang-format-3.9` $COMMIT_FILES)";
+      RESULT_OUTPUT="$(git-clang-format-7 --commit $BASE_COMMIT --diff --binary `which clang-format-7` $COMMIT_FILES)";
       if [ "$RESULT_OUTPUT" == "no modified files to format" ] || [ "$RESULT_OUTPUT" == "clang-format did not modify any files" ]; then
         echo "clang-format passed";
         exit 0;
