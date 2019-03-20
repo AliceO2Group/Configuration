@@ -57,7 +57,8 @@ install:
 before_script: 
   - if [[ $TOOL == "test" ]]; then mkdir build; cd build; fi
 script:
-  - if [[ $TOOL == "test" ]]; then cmake .. -DPpconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install; fi
+  - if [[ $TOOL == "test" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake .. -Dppconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install/cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8; fi
+  - if [[ $TOOL == "test" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake .. -Dppconsul_DIR=$TRAVIS_BUILD_DIR/ppconsul_install/cmake; fi
   - if [[ $TOOL == "test" ]]; then make -j; fi
   - if [[ $TOOL == "test" && "$TRAVIS_OS_NAME" == "linux" ]]; then make test; fi
   - if [[ $TOOL == "doxygen" ]]; then cmake ..; make doc; fi
