@@ -49,7 +49,7 @@ class BackendBase: public ConfigurationInterface, public boost::noncopyable
     /// \param A path prefix
     virtual void setPrefix(const std::string& prefix) override
     {
-      mPrefix = prefix + getSeparator();
+      mPrefix = prefix.empty() ? "" : prefix + getSeparator();
     }
 
   protected:
