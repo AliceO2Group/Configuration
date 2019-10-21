@@ -51,7 +51,7 @@ void loadConfigFile(const std::string& filePath, boost::property_tree::ptree& pt
         } else {
           ss << perr.message() << " " << perr.filename();
         }
-        throw ss.str();
+        throw std::runtime_error(ss.str());
       }
       return;
     }
