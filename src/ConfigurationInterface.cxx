@@ -66,6 +66,18 @@ template<> double ConfigurationInterface::get(const std::string& path)
   return (optional != boost::none) ? std::stod(optional.value()) : throw std::runtime_error("Could not find: " + path);
 }
 
+template<> bool ConfigurationInterface::get(const std::string& path)
+{
+  auto optional = getString(path);
+  if (optional != boost::none) {
+    bool boolValue;
+    std::istringstream(optional.value()) >> std::boolalpha >> boolValue;
+    return boolValue;
+  }
+
+  throw std::runtime_error("Could not find: " + path);
+}
+
 template<> auto ConfigurationInterface::get(const std::string& path, const std::string& defaultValue) -> std::string
 {
   auto optional = getString(path);
@@ -82,6 +94,18 @@ template<> auto ConfigurationInterface::get(const std::string& path, const doubl
 {
   auto optional = getString(path);
   return (optional != boost::none) ? std::stod(optional.value()) : defaultValue;
+}
+
+template<> auto ConfigurationInterface::get(const std::string& path, const bool& defaultValue) -> bool
+{
+  auto optional = getString(path);
+  if (optional != boost::none) {
+    bool boolValue;
+    std::istringstream(optional.value()) >> std::boolalpha >> boolValue;
+    return boolValue;
+  }
+
+  return defaultValue;
 }
 
 } // namespace configuration
