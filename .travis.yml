@@ -15,7 +15,7 @@ matrix:
       osx_image: xcode10.2
       env: TOOL=test
     - os: linux
-      dist: xenial
+      dist: bionic
       env: TOOL=test
       addons:
         apt:
@@ -25,10 +25,10 @@ matrix:
             - gcc-8
             - g++-8
             - cmake
-            - libboost-system1.58-dev
-            - libboost-filesystem1.58-dev
-            - libboost-test1.58-dev
-            - libboost-program-options1.58-dev
+            - libboost-system1.65-dev
+            - libboost-filesystem1.65-dev
+            - libboost-test1.65-dev
+            - libboost-program-options1.65-dev
     - os: linux
       dist: xenial
       env: TOOL=doxygen
