@@ -78,7 +78,7 @@ message(STATUS "  Compiling INI backend")
 message(STATUS "  Compiling JSON backend")
 
 # Create library
-add_library(Configuration SHARED ${SRCS} $<$<BOOL:${Ppconsul_FOUND}>:src/Backends/Consul/ConsulBackend.cxx>)
+add_library(Configuration SHARED ${SRCS} $<$<BOOL:${ppconsul_FOUND}>:src/Backends/Consul/ConsulBackend.cxx>)
 target_include_directories(Configuration
   PUBLIC 
     $<INSTALL_INTERFACE:include>    
@@ -93,18 +93,18 @@ target_link_libraries(Configuration
     Boost::boost
   PRIVATE
     CURL::CURL
-    $<$<BOOL:${Ppconsul_FOUND}>:ppconsul>
+    $<$<BOOL:${ppconsul_FOUND}>:ppconsul>
 )
 
 # Handle Ppconsul optional dependency
-if(Ppconsul_FOUND)
+if(ppconsul_FOUND)
   message(STATUS "  Compiling Ppconsul backend")
 endif()
 
 # Handle custom compile definitions
 target_compile_definitions(Configuration
   PRIVATE
-    $<$<BOOL:${Ppconsul_FOUND}>:FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED>
+    $<$<BOOL:${ppconsul_FOUND}>:FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED>
   )
 
 # Use C++14
@@ -123,7 +123,7 @@ set(TEST_SRCS
   test/TestJson.cxx
 )
 
-if(Ppconsul_FOUND)
+if(ppconsul_FOUND)
   list(APPEND TEST_SRCS test/TestConsul.cxx)
 endif()
 
