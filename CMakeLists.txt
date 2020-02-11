@@ -157,18 +157,11 @@ target_link_libraries(configuration-convert
 ####################################
 
 include(GNUInstallDirs)
+include(O2DefineOutputPaths)
+include(O2DefineRPATH)
 
-# Build targets with install rpath on Mac to dramatically speed up installation
-# https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  if("${isSystemDir}" STREQUAL "-1")
-    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
-  endif()
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-endif()
-unset(isSystemDir)
+o2_define_output_paths()
+o2_define_rpath()
 
 # Install library
 install(TARGETS Configuration configuration-convert
