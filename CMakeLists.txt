@@ -56,6 +56,21 @@ find_package(Git QUIET)
 find_package(ppconsul CONFIG)
 find_package(CURL REQUIRED MODULE)
 
+####################################
+# Handle RPATH
+####################################
+include(GNUInstallDirs)
+
+# https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  if("${isSystemDir}" STREQUAL "-1")
+    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
+  endif()
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
+unset(isSystemDir)
 
 ####################################
 # Library
@@ -155,20 +170,6 @@ target_link_libraries(configuration-convert
 ####################################
 # Install
 ####################################
-
-include(GNUInstallDirs)
-
-# Build targets with install rpath on Mac to dramatically speed up installation
-# https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  if("${isSystemDir}" STREQUAL "-1")
-    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
-  endif()
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-endif()
-unset(isSystemDir)
 
 # Install library
 install(TARGETS Configuration configuration-convert
