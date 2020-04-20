@@ -55,7 +55,7 @@ auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
   auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
   if (!uri.path.empty()) {
-    consul->setPrefix(uri.path.substr(1));
+    consul->setBasePrefix(uri.path.substr(1));
   }
   return consul;
 }
