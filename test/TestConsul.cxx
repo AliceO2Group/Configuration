@@ -68,16 +68,19 @@ BOOST_AUTO_TEST_CASE(ConsulPrefix)
 {
   auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
   conf->setPrefix("configLibTest");
-  auto subTree = conf->getRecursive("configLibTest");
-  BOOST_CHECK_EQUAL(subTree.get<int>("one", 1), 1);
+  auto subTree = conf->getRecursive("tree");
+  BOOST_CHECK_EQUAL(subTree.get<int>("one"), 1);
   BOOST_CHECK_EQUAL(conf->get<std::string>("my_string"), "configuration");
   BOOST_CHECK_EQUAL(conf->get<int>("tree.one"), 1);
+}
 
+BOOST_AUTO_TEST_CASE(ConsulPrefix2)
+{
   auto confPath = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT + "/configLibTest");
-  auto subTreePath = confPath->getRecursive("configLibTest");
-  BOOST_CHECK_EQUAL(subTreePath.get<int>("one", 1), 1);
-  BOOST_CHECK_EQUAL(confPath->get<std::string>("my_string"), "configuration");
-  BOOST_CHECK_EQUAL(confPath->get<int>("tree.one"), 1);
+  auto subTreePath = confPath->getRecursive("tree");
+  BOOST_CHECK_EQUAL(subTreePath.get<int>("one"), 1);
+  confPath->setPrefix("tree");
+  BOOST_CHECK_EQUAL(confPath->get<int>("one"), 1);
 }
 
 BOOST_AUTO_TEST_CASE(ConsulArray)
