@@ -65,7 +65,7 @@ void ConsulBackend::putRecursive(const std::string& path, const boost::property_
   std::function<void(const ptree&, std::string)> parse = [&](const ptree& pt, std::string key) {
      if (!key.empty()) {
       if (!pt.data().empty()) {
-        putString(key, pt.data());
+        putString(path + getSeparator() + key, pt.data());
       }
       key += getSeparator();
     }
