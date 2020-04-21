@@ -43,7 +43,21 @@ class ConsulBackend final : public BackendBase
     virtual KeyValueMap getRecursiveMap(const std::string&) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
 
+    void setBasePrefix(const std::string& path)
+    {
+      mBasePrefix = path;
+    }
+
   private:
+    /// Prepends path with the consul and current prefix
+    /// A full consul key is needed by the ppconsul invocation
+    /// \param path A path
+    /// \return Provided path with prepended prefix, i.e. full consul key
+    auto addConsulPrefix(const std::string& path)
+    {
+      return mBasePrefix.empty() ? addPrefix(path) : mBasePrefix + getSeparator() + addPrefix(path);
+    }
+
     /// Replaces DEFAULT_SEPARATOR with '/', this is required by ppconsul
     /// \param path A path with DEFAULT_SEPARATOR
     /// \retrun A path with '/' separator
@@ -59,6 +73,9 @@ class ConsulBackend final : public BackendBase
 
     /// Key-value object
     ppconsul::kv::Kv mStorage;
+
+    /// Base Consul key
+    std::string mBasePrefix;
 };
 
 } // namespace backends

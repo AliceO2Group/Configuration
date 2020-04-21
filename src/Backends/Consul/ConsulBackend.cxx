@@ -87,7 +87,7 @@ void ConsulBackend::putRecursive(const std::string& path, const boost::property_
 
 boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 {
-  auto item = mStorage.item(replaceDefaultWithSlash(addPrefix(path)),
+  auto item = mStorage.item(replaceDefaultWithSlash(addConsulPrefix(path)),
       ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   if (item.valid()) {
     return std::move(item.value);
@@ -98,7 +98,7 @@ boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 
 boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
-  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
+  auto requestKey = replaceDefaultWithSlash(addConsulPrefix(path));
   auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   if (items.size() == 0) {
     return {};
@@ -142,7 +142,7 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 
 KeyValueMap ConsulBackend::getRecursiveMap(const std::string& path)
 {
-  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
+  auto requestKey = replaceDefaultWithSlash(addConsulPrefix(path));
   auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   KeyValueMap map;
   for (const auto& item : items) {
