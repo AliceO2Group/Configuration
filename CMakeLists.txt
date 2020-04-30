@@ -148,7 +148,7 @@ foreach (test ${TEST_SRCS})
 
   add_executable(${test_name} ${test})
   target_link_libraries(${test_name}
-    PRIVATE 
+    PRIVATE
       Configuration Boost::unit_test_framework
   )
   add_test(NAME ${test_name} COMMAND ${test_name})
@@ -166,6 +166,8 @@ target_link_libraries(configuration-convert
     Configuration
     Boost::program_options
 )
+
+set_target_properties(configuration-convert PROPERTIES OUTPUT_NAME "o2-configuration-convert")
 
 ####################################
 # Install
