@@ -1,3 +1,13 @@
+// Copyright CERN and copyright holders of ALICE O2. This software is
+// distributed under the terms of the GNU General Public License v3 (GPL
+// Version 3), copied verbatim in the file "COPYING".
+//
+// See http://alice-o2.web.cern.ch/license for full licensing information.
+//
+// In applying this license CERN does not waive the privileges and immunities
+// granted to it by virtue of its status as an Intergovernmental Organization
+// or submit itself to any jurisdiction.
+
 /// \file ConfigurationFactory.cxx
 /// \brief Factory for instantiating specialized configuration interfaces
 ///
@@ -40,18 +50,21 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
   return backend;
 }
 
+#ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
-#ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
   auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
   if (!uri.path.empty()) {
-    consul->setPrefix(uri.path.substr(1));
+    consul->setBasePrefix(uri.path.substr(1));
   }
   return consul;
-#else
-  throw std::runtime_error("Back-end 'consul' not enabled");
-#endif
 }
+#else
+auto getConsul(const http::url& /*uri*/) -> UniqueConfiguration
+{
+  throw std::runtime_error("Back-end 'consul' not enabled");
+}
+#endif
 } // Anonymous namespace
 
 auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueConfiguration

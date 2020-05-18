@@ -1,3 +1,13 @@
+// Copyright CERN and copyright holders of ALICE O2. This software is
+// distributed under the terms of the GNU General Public License v3 (GPL
+// Version 3), copied verbatim in the file "COPYING".
+//
+// See http://alice-o2.web.cern.ch/license for full licensing information.
+//
+// In applying this license CERN does not waive the privileges and immunities
+// granted to it by virtue of its status as an Intergovernmental Organization
+// or submit itself to any jurisdiction.
+
 /// \file ConsulBackend.h
 /// \brief Configuration interface to the Consul key-value store
 ///
@@ -55,7 +65,7 @@ void ConsulBackend::putRecursive(const std::string& path, const boost::property_
   std::function<void(const ptree&, std::string)> parse = [&](const ptree& pt, std::string key) {
      if (!key.empty()) {
       if (!pt.data().empty()) {
-        putString(key, pt.data());
+        putString(path + getSeparator() + key, pt.data());
       }
       key += getSeparator();
     }
@@ -77,7 +87,7 @@ void ConsulBackend::putRecursive(const std::string& path, const boost::property_
 
 boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 {
-  auto item = mStorage.item(replaceDefaultWithSlash(addPrefix(path)),
+  auto item = mStorage.item(replaceDefaultWithSlash(addConsulPrefix(path)),
       ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   if (item.valid()) {
     return std::move(item.value);
@@ -88,7 +98,7 @@ boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 
 boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 {
-  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
+  auto requestKey = replaceDefaultWithSlash(addConsulPrefix(path));
   auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   if (items.size() == 0) {
     return {};
@@ -132,7 +142,7 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
 
 KeyValueMap ConsulBackend::getRecursiveMap(const std::string& path)
 {
-  auto requestKey = replaceDefaultWithSlash(addPrefix(path));
+  auto requestKey = replaceDefaultWithSlash(addConsulPrefix(path));
   auto items = mStorage.items(requestKey, ppconsul::kw::consistency = ppconsul::Consistency::Stale);
   KeyValueMap map;
   for (const auto& item : items) {

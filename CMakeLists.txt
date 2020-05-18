@@ -3,6 +3,7 @@
 ####################################
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5.2 FATAL_ERROR)
+SET(BUILD_SHARED_LIBS ON)
 
 # Set cmake policy by version: https://cmake.org/cmake/help/latest/manual/cmake-policies.7.html
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
@@ -52,9 +53,24 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET)
-find_package(Ppconsul MODULE)
+find_package(ppconsul CONFIG)
 find_package(CURL REQUIRED MODULE)
 
+####################################
+# Handle RPATH
+####################################
+include(GNUInstallDirs)
+
+# https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  if("${isSystemDir}" STREQUAL "-1")
+    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
+  endif()
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
+unset(isSystemDir)
 
 ####################################
 # Library
@@ -77,7 +93,7 @@ message(STATUS "  Compiling INI backend")
 message(STATUS "  Compiling JSON backend")
 
 # Create library
-add_library(Configuration SHARED ${SRCS} $<$<BOOL:${Ppconsul_FOUND}>:src/Backends/Consul/ConsulBackend.cxx>)
+add_library(Configuration SHARED ${SRCS} $<$<BOOL:${ppconsul_FOUND}>:src/Backends/Consul/ConsulBackend.cxx>)
 target_include_directories(Configuration
   PUBLIC 
     $<INSTALL_INTERFACE:include>    
@@ -92,18 +108,18 @@ target_link_libraries(Configuration
     Boost::boost
   PRIVATE
     CURL::CURL
-    $<$<BOOL:${Ppconsul_FOUND}>:Ppconsul::Ppconsul>
+    $<$<BOOL:${ppconsul_FOUND}>:ppconsul>
 )
 
 # Handle Ppconsul optional dependency
-if(Ppconsul_FOUND)
+if(ppconsul_FOUND)
   message(STATUS "  Compiling Ppconsul backend")
 endif()
 
 # Handle custom compile definitions
 target_compile_definitions(Configuration
   PRIVATE
-    $<$<BOOL:${Ppconsul_FOUND}>:FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED>
+    $<$<BOOL:${ppconsul_FOUND}>:FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED>
   )
 
 # Use C++14
@@ -122,7 +138,7 @@ set(TEST_SRCS
   test/TestJson.cxx
 )
 
-if(Ppconsul_FOUND)
+if(ppconsul_FOUND)
   list(APPEND TEST_SRCS test/TestConsul.cxx)
 endif()
 
@@ -132,7 +148,7 @@ foreach (test ${TEST_SRCS})
 
   add_executable(${test_name} ${test})
   target_link_libraries(${test_name}
-    PRIVATE 
+    PRIVATE
       Configuration Boost::unit_test_framework
   )
   add_test(NAME ${test_name} COMMAND ${test_name})
@@ -151,23 +167,11 @@ target_link_libraries(configuration-convert
     Boost::program_options
 )
 
+set_target_properties(configuration-convert PROPERTIES OUTPUT_NAME "o2-configuration-convert")
+
 ####################################
 # Install
 ####################################
-
-include(GNUInstallDirs)
-
-# Build targets with install rpath on Mac to dramatically speed up installation
-# https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  if("${isSystemDir}" STREQUAL "-1")
-    set(CMAKE_INSTALL_RPATH "@loader_path/../lib")
-  endif()
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-endif()
-unset(isSystemDir)
 
 # Install library
 install(TARGETS Configuration configuration-convert
