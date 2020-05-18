@@ -76,7 +76,8 @@ boost::optional<std::string> IniBackend::getString(const std::string &path) {
 }
 
 boost::property_tree::ptree IniBackend::getRecursive(const std::string& path) {
-  return mPropertyTree.get_child(decltype(mPropertyTree)::path_type(addPrefix(path), getSeparator()));
+  return mPropertyTree.get_child(
+      decltype(mPropertyTree)::path_type(addPrefix(path), getSeparator()));
 }
 
 } // namespace backends
