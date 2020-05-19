@@ -86,6 +86,7 @@ set(INCLUDE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 
 set(SRCS
   src/Backends/Ini/IniBackend.cxx
+  src/Backends/String/StringBackend.cxx
   src/Backends/Json/JsonBackend.cxx
   src/ConfigurationInterface.cxx
   src/ConfigurationFactory.cxx

@@ -13,12 +13,13 @@
 ///
 /// \author Pascal Boeschoten, CERN
 
+#include "Configuration/ConfigurationFactory.h"
+#include "Backends/Json/JsonBackend.h"
+#include "Backends/String/StringBackend.h"
+#include <Backends/Ini/IniBackend.h>
 #include <functional>
 #include <map>
 #include <stdexcept>
-#include <Backends/Ini/IniBackend.h>
-#include "Configuration/ConfigurationFactory.h"
-#include "Backends/Json/JsonBackend.h"
 
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
@@ -50,6 +51,13 @@ auto getJson(const http::url& uri) -> UniqueConfiguration
   return backend;
 }
 
+auto getString(const http::url& uri) -> UniqueConfiguration
+{
+  auto path = uri.host + uri.path;
+  auto backend = std::make_unique<backends::StringBackend>(path);
+  return backend;
+}
+
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 auto getConsul(const http::url& uri) -> UniqueConfiguration
 {
@@ -76,11 +84,12 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
     throw std::runtime_error("Ill-formed URI");
   }
 
-  static const std::map<std::string, std::function<UniqueConfiguration(const http::url&)>> map = {
-      {"ini", getIni},
-      {"json", getJson},
-      {"consul", getConsul},
-  };
+  static const std::map<std::string,
+                        std::function<UniqueConfiguration(const http::url&)>>
+    map = {{"ini", getIni},
+           {"json", getJson},
+           {"consul", getConsul},
+           {"str", getString}};
 
   auto iterator = map.find(parsedUrl.protocol);
   if (iterator != map.end()) {
