@@ -16,7 +16,8 @@
 
 using namespace o2::configuration;
 
-namespace {
+namespace
+{
 
 BOOST_AUTO_TEST_CASE(StringSimple)
 {
@@ -34,7 +35,6 @@ BOOST_AUTO_TEST_CASE(StringEntireRec)
   BOOST_CHECK_EQUAL(tree.get<int>("key2"), 2);
   BOOST_CHECK_EQUAL(tree.get<double>("key2.key3"), 3.3);
 }
-
 
 BOOST_AUTO_TEST_CASE(StringSubRec)
 {
