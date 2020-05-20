@@ -8,7 +8,7 @@
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
 
-/// \file JsonBackend.cxx
+/// \file StringBackend.cxx
 /// \brief Configuration interface for files. Port of Configuration.h & Configuration.cxx
 ///
 
@@ -47,12 +47,6 @@ StringBackend::StringBackend(const std::string& s)
 }
 
 void StringBackend::putString(const std::string&, const std::string&)
-{
-  throw std::runtime_error("String backend does not support putting values");
-}
-
-void StringBackend::putRecursive(const std::string&,
-                                 const boost::property_tree::ptree&)
 {
   throw std::runtime_error("String backend does not support putting values");
 }
