@@ -77,40 +77,12 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
   if (items.size() == 0) {
     return {};
   }
-  bool isArray = false;
   boost::property_tree::ptree tree;
   for (const auto& item : items) {
     if (!item.value.empty()) {
-      // detect whether this is array
-      if (item.key.substr(requestKey.size()).substr(0, 2) == "[]") {
-        tree.put(replaceSlashWithDefault(stripRequestKey(requestKey + "[]", item.key)), std::move(item.value));
-        isArray = true;
-      } else {
-        tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
-      }
+      tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));
     }
   }
-
-  using boost::property_tree::ptree;
-  std::function<void(ptree&, bool)> parse = [&](ptree& node, bool replace) {
-    if (replace) {
-      ptree children;
-      for (auto& it: node) {
-        children.push_back(std::make_pair("", it.second));
-      }
-      node.swap(children);
-    }
-    for (ptree::iterator it = node.begin(); it != node.end(); it++) {
-      if (it->first.back() == ']') {
-        parse(it->second, true);
-        node.insert(it, make_pair(it->first.substr(0, it->first.length() - 2), it->second));
-        node.erase(it);
-      } else {
-        parse(it->second, false);
-      }
-    }
-  };
-  parse(tree, isArray);
   return tree;
 }
 

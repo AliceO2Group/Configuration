@@ -83,27 +83,6 @@ BOOST_AUTO_TEST_CASE(ConsulPrefix2)
   BOOST_CHECK_EQUAL(confPath->get<int>("one"), 1);
 }
 
-BOOST_AUTO_TEST_CASE(ConsulArray)
-{
-  boost::property_tree::ptree tree, children;
-  for (int i = 0; i < 3; i++) {
-    boost::property_tree::ptree node;
-    node.put("one", "1");
-    node.put("two", 2);
-    children.push_back(std::make_pair("", node));
-  }
-  tree.put("test_key", "test_value");
-  tree.add_child("sample_array", children);
-
-  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
-  conf->putRecursive("configLibTest", tree);
-  auto anArray = conf->getRecursive("configLibTest.sample_array[]");
-  for (auto const &it: anArray) {
-    BOOST_CHECK_EQUAL(it.second.get<std::string>("one"), "1");
-    BOOST_CHECK_EQUAL(it.second.get<int>("two"), 2);
-  }
-}
-
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(Dummy)
