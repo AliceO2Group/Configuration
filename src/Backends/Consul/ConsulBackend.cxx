@@ -59,32 +59,6 @@ void ConsulBackend::putString(const std::string& path, const std::string& value)
   mStorage.set(replaceDefaultWithSlash(addPrefix(path)), value);
 }
 
-void ConsulBackend::putRecursive(const std::string& path, const boost::property_tree::ptree& tree)
-{
-  using boost::property_tree::ptree;
-  std::function<void(const ptree&, std::string)> parse = [&](const ptree& pt, std::string key) {
-     if (!key.empty()) {
-      if (!pt.data().empty()) {
-        putString(path + getSeparator() + key, pt.data());
-      }
-      key += getSeparator();
-    }
-    int index = 0;
-    for (ptree::const_iterator it = pt.begin(); it != pt.end(); it++) {
-      if (it->first.empty()) {
-        if (it == pt.begin()) {
-          key.pop_back();
-          key = key + "[]" + getSeparator();
-        }
-        parse(it->second, key + std::to_string(index++));
-      } else {
-        parse(it->second, key + it->first);
-      }
-    }
-  };
-  parse(tree, "");
-}
-
 boost::optional<std::string> ConsulBackend::getString(const std::string& path)
 {
   auto item = mStorage.item(replaceDefaultWithSlash(addConsulPrefix(path)),
