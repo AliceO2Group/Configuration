@@ -86,6 +86,7 @@ set(INCLUDE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 
 set(SRCS
   src/Backends/Ini/IniBackend.cxx
+  src/Backends/String/StringBackend.cxx
   src/Backends/Json/JsonBackend.cxx
   src/ConfigurationInterface.cxx
   src/ConfigurationFactory.cxx
@@ -95,12 +96,13 @@ set(SRCS
 message(STATUS "Backends")
 message(STATUS "  Compiling INI backend")
 message(STATUS "  Compiling JSON backend")
+message(STATUS "  Compiling STRING backend")
 
 # Create library
 add_library(Configuration SHARED ${SRCS} $<$<BOOL:${ppconsul_FOUND}>:src/Backends/Consul/ConsulBackend.cxx>)
 target_include_directories(Configuration
-  PUBLIC 
-    $<INSTALL_INTERFACE:include>    
+  PUBLIC
+    $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -140,6 +142,7 @@ set(TEST_SRCS
   test/TestExamples.cxx
   test/TestIni.cxx
   test/TestJson.cxx
+  test/TestString.cxx
 )
 
 if(ppconsul_FOUND)
