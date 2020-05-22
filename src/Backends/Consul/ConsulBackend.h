@@ -52,9 +52,13 @@ class ConsulBackend final : public BackendBase
     /// A full consul key is needed by the ppconsul invocation
     /// \param path A path
     /// \return Provided path with prepended prefix, i.e. full consul key
-    auto addConsulPrefix(const std::string& path)
+    std::string addConsulPrefix(const std::string& path)
     {
-      return mBasePrefix.empty() ? addPrefix(path) : mBasePrefix + getSeparator() + addPrefix(path);
+      if (path.empty()) {
+        return mBasePrefix.empty() ? "" : mBasePrefix;
+      } else {
+        return mBasePrefix.empty() ? addPrefix(path) : mBasePrefix + getSeparator() + addPrefix(path);
+      }
     }
 
     /// Replaces DEFAULT_SEPARATOR with '/', this is required by ppconsul

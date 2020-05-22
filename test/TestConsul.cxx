@@ -119,6 +119,16 @@ BOOST_AUTO_TEST_CASE(ConsulIni)
   BOOST_CHECK_EQUAL(ini.get<std::string>("section.key_string"), "hello");
 }
 
+BOOST_AUTO_TEST_CASE(ConsulJsonPrefix)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT + "/configLibTest.json");
+  auto json = conf->getRecursive("");
+
+  BOOST_CHECK_EQUAL(json.get<std::string>("configuration_library.id"), "file");
+  BOOST_CHECK_EQUAL(json.get<std::string>("configuration_library.popup.menuitem.one.onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(json.get<int>("configuration_library.popup.menuitem.one.value"), 123);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(Dummy)
