@@ -47,6 +47,7 @@ The URI is constructed based on the table below:
 | INI file     | `ini://`     | -     | - | File path | - |
 | JSON file    | `json://`    | -     | - | File path | - |
 | Consul       | `consul://`  | Server's hostname | Server's port | - | [ppconsul](https://github.com/oliora/ppconsul) |
+| String       | `str://`     | -     | - | List of `;` separated key-values; `.` is used to define levels (as in `ptree`) | - |
 
 
 
