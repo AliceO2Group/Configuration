@@ -46,11 +46,6 @@ void JsonBackend::putString(const std::string&, const std::string&)
   throw std::runtime_error("JsonBackend does not support putting values");
 }
 
-void JsonBackend::putRecursive(const std::string& path, const boost::property_tree::ptree& tree)
-{
-  write_json(path, tree);
-}
-
 boost::optional<std::string> JsonBackend::getString(const std::string& path)
 {
   // To use a custom separator instead of the default '.', we need to construct the path_type object explicitly
