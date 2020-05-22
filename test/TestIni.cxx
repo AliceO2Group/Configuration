@@ -38,11 +38,10 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   {
     std::ofstream stream(TEMP_FILE);
     stream <<
-      "key=value\n"
-        "[section]\n"
-        "key_int=123\n"
-        "key_float=4.56\n"
-        "key_string=hello\n";
+      "[section]\n"
+      "key_int=123\n"
+      "key_float=4.56\n"
+      "key_string=hello\n";
   }
 
   // Get file configuration interface from factory
@@ -61,7 +60,6 @@ BOOST_AUTO_TEST_CASE(IniFileTest)
   BOOST_CHECK_THROW(conf->get<int>("this_is.a_bad.key"), std::runtime_error);
 
   // Check with default separator
-  BOOST_CHECK(conf->get<std::string>("key") == "value");
   BOOST_CHECK(conf->get<int>("section.key_int") == 123);
   BOOST_CHECK(conf->get<double>("section.key_float") == 4.56);
   BOOST_CHECK(conf->get<std::string>("section.key_string") == "hello");
@@ -71,7 +69,6 @@ BOOST_AUTO_TEST_CASE(IniFileTestPtreeGetTotal)
 {
   auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
   auto tree = conf->getRecursive();
-  BOOST_CHECK_EQUAL(tree.get<std::string>("key"), "value");
   BOOST_CHECK_EQUAL(tree.get<double>("section.key_float"), 4.56);
   BOOST_CHECK_EQUAL(tree.get<std::string>("section.key_string"), "hello");
 }

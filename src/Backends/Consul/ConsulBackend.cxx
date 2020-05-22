@@ -14,6 +14,8 @@
 /// \author Pascal Boeschoten, CERN
 
 #include "ConsulBackend.h"
+#include <boost/property_tree/ini_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace o2
 {
@@ -78,6 +80,16 @@ boost::property_tree::ptree ConsulBackend::getRecursive(const std::string& path)
     return {};
   }
   boost::property_tree::ptree tree;
+  if (items.size() == 1 && !requestKey.compare(items.front().key)) {
+    std::stringstream ss;
+    ss << items.front().value;
+    if (items.front().value.front() == '{') {
+      boost::property_tree::read_json(ss, tree);
+    } else if (items.front().value.front() == '[') {
+      boost::property_tree::ini_parser::read_ini(ss, tree);
+    }
+    return tree;
+  }
   for (const auto& item : items) {
     if (!item.value.empty()) {
       tree.put(replaceSlashWithDefault(stripRequestKey(requestKey, item.key)), std::move(item.value));

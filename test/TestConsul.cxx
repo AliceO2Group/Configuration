@@ -22,9 +22,7 @@ namespace {
 
 const std::string CONSUL_ENDPOINT = "127.0.0.1:8500";
 
-
 BOOST_AUTO_TEST_SUITE(optionalTest, * boost::unit_test::disabled())
-
 
 BOOST_AUTO_TEST_CASE(simpleReadWrite)
 {
@@ -81,6 +79,44 @@ BOOST_AUTO_TEST_CASE(ConsulPrefix2)
   BOOST_CHECK_EQUAL(subTreePath.get<int>("one"), 1);
   confPath->setPrefix("tree");
   BOOST_CHECK_EQUAL(confPath->get<int>("one"), 1);
+}
+
+BOOST_AUTO_TEST_CASE(ConsulJson)
+{
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.json";
+  auto confJson = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
+  auto tree = confJson->getRecursive("configuration_library.popup");
+  BOOST_CHECK_EQUAL(tree.get<int>("menuitem.one.value"), 123);
+
+  std::ifstream jsonFile(TEMP_FILE);
+  std::stringstream buffer;
+  buffer << jsonFile.rdbuf();
+
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
+  conf->put<std::string>("configLibTest.json", buffer.str());
+  auto json = conf->getRecursive("configLibTest.json");
+
+  BOOST_CHECK_EQUAL(json.get<std::string>("configuration_library.id"), "file");
+  BOOST_CHECK_EQUAL(json.get<std::string>("configuration_library.popup.menuitem.one.onclick"), "CreateNewDoc");
+  BOOST_CHECK_EQUAL(json.get<int>("configuration_library.popup.menuitem.one.value"), 123);
+}
+
+BOOST_AUTO_TEST_CASE(ConsulIni)
+{
+  const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.ini";
+  auto confIni = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
+  auto tree = confIni->getRecursive("section");
+  BOOST_CHECK_EQUAL(tree.get<double>("key_float"), 4.56);
+
+  std::ifstream iniFile(TEMP_FILE);
+  std::stringstream buffer;
+  buffer << iniFile.rdbuf();
+
+  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
+  conf->put<std::string>("configLibTest.ini", buffer.str());
+  auto ini = conf->getRecursive("configLibTest.ini");
+  BOOST_CHECK_EQUAL(ini.get<int>("section.key_int"), 123);
+  BOOST_CHECK_EQUAL(ini.get<std::string>("section.key_string"), "hello");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
