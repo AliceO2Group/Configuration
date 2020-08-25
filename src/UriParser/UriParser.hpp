@@ -67,7 +67,7 @@ namespace http {
         int port;
         std::string portstring = TailSlice(hostport, ":");
         try { port = atoi(portstring.c_str()); }
-        catch (std::exception e) { port = -1; }
+        catch (std::exception& e) { port = -1; }
         return port;
     }
 
