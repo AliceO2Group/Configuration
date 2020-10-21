@@ -111,3 +111,5 @@ conf->put<int>("my_dir.my_key", 123);
 
 ## Consul server setup
 See [detailed instructions](doc/Consul.md).
+
+PLEASE DO NOT MERGE THIS PULL REQUEST
