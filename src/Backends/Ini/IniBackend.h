@@ -33,7 +33,7 @@ class IniBackend final : public BackendBase
 {
   public:
     /// Read and parse INI file
-    IniBackend(const std::string& filePath);
+    IniBackend(const std::string& file, bool isStream = false);
 
     /// Default destructor
     virtual ~IniBackend() = default;

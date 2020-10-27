@@ -31,8 +31,8 @@ class JsonBackend final : public BackendBase
 {
   public:
     /// Opens and parses JSON file
-    /// \param filePath A file path to JSON file
-    JsonBackend(const std::string& filePath);
+    /// \param file A file path to JSON file or JSON data
+    JsonBackend(const std::string& file);
 
     /// Default destructor
     virtual ~JsonBackend() = default;
@@ -41,7 +41,7 @@ class JsonBackend final : public BackendBase
     virtual boost::optional<std::string> getString(const std::string& path) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
     virtual KeyValueMap getRecursiveMap(const std::string& path) override;
-    void readJsonFile();
+    void readJsonFile(bool isStream = false);
   private:
     /// Parsed JSON file
     boost::property_tree::ptree mTree;

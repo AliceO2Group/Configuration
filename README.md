@@ -42,13 +42,14 @@ std::unique_ptr<ConfigurationInterface> = ConfigurationFactory::getConfiguration
 
 The URI is constructed based on the table below:
 
-| Backend name | URI backned  | Host  | Port | Path  | Dependency |
-| ------------ |:------------:|:-----:|:----:|:-----:|-----------:|
-| INI file     | `ini://`     | -     | - | File path | - |
-| JSON file    | `json://`    | -     | - | File path | - |
-| Consul       | `consul://`  | Server's hostname | Server's port | - | [ppconsul](https://github.com/oliora/ppconsul) |
-| String       | `str://`     | -     | - | List of `;` separated key-values; `.` is used to define levels (as in `ptree`) | - |
-
+| Backend name | URI backned      | Host  | Port | Path  | Dependency |
+| ------------ |:----------------:|:-----:|:----:|:-----:|-----------:|
+| INI file     | `ini://`         | -     | - | File path | - |
+| JSON file    | `json://`        | -     | - | File path | - |
+| Consul       | `consul://`      | Server's hostname | Server's port | - | [ppconsul](https://github.com/oliora/ppconsul) |
+| Consul JSON  | `consul-json://` | Consul host | Consul port | Path to a value with JSON data | [ppconsul](https://github.com/oliora/ppconsul) |
+| Consul INI   | `consul-ini://`  | Consul host | Consul port | Path to a value with INI data | [ppconsul](https://github.com/oliora/ppconsul) |
+| String       | `str://`         | -     | - | List of `;` separated key-values; `.` is used to define levels (as in `ptree`) | - |
 
 
 ## Getting values

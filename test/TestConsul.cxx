@@ -40,6 +40,23 @@ BOOST_AUTO_TEST_CASE(simpleReadWrite)
 
   BOOST_CHECK_THROW(conf->get<int>("configuration_library.popup.menuitem.one.wrong_key"), std::runtime_error);
   BOOST_CHECK_THROW(conf->get<std::string>("configuration_library.popup.menuitem.one.wrong_key_string"), std::runtime_error);
+
+  std::string iniContent = "key=value\n"
+    "[section]\n"
+    "key_int=123\n"
+    "key_float=4.56\n"
+    "key_string=hello\n"; 
+  conf->put<std::string>("configLibTest.file.ini", iniContent);
+
+  std::string jsonContent = R"({"configuration_library": {
+    "id": "file",
+    "complex_array": [
+      {"host": "127.0.0.1", "port": 123},
+      {"host": "192.168.1.1", "port": 123},
+      {"host": "255.0.0.0", "port": 9012}
+    ]
+  }})";
+  conf->put<std::string>("configLibTest.file.json", jsonContent);
 }
 
 BOOST_AUTO_TEST_CASE(ConsulMap)
@@ -83,25 +100,42 @@ BOOST_AUTO_TEST_CASE(ConsulPrefix2)
   BOOST_CHECK_EQUAL(confPath->get<int>("one"), 1);
 }
 
-BOOST_AUTO_TEST_CASE(ConsulArray)
+BOOST_AUTO_TEST_CASE(ConsulIni)
 {
-  boost::property_tree::ptree tree, children;
-  for (int i = 0; i < 3; i++) {
-    boost::property_tree::ptree node;
-    node.put("one", "1");
-    node.put("two", 2);
-    children.push_back(std::make_pair("", node));
-  }
-  tree.put("test_key", "test_value");
-  tree.add_child("sample_array", children);
+  auto conf = ConfigurationFactory::getConfiguration("consul-ini://" + CONSUL_ENDPOINT + "/configLibTest.file.ini");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("key"), "value");
+  BOOST_CHECK_EQUAL(conf->get<int>("section.key_int"), 123);
+  BOOST_CHECK_EQUAL(conf->get<double>("section.key_float"), 4.56);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("section.key_string"), "hello");
+}
 
-  auto conf = ConfigurationFactory::getConfiguration("consul://" + CONSUL_ENDPOINT);
-  conf->putRecursive("configLibTest", tree);
-  auto anArray = conf->getRecursive("configLibTest.sample_array[]");
+BOOST_AUTO_TEST_CASE(ConsulIni2)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul-ini://" + CONSUL_ENDPOINT + "/configLibTest.file.ini");
+  auto tree = conf->getRecursive();
+  BOOST_CHECK_EQUAL(tree.get<std::string>("key"), "value");
+  BOOST_CHECK_EQUAL(tree.get<double>("section.key_float"), 4.56);
+  BOOST_CHECK_EQUAL(tree.get<std::string>("section.key_string"), "hello");
+}
+
+BOOST_AUTO_TEST_CASE(ConsulJson)
+{
+  auto conf = ConfigurationFactory::getConfiguration("consul-json://" + CONSUL_ENDPOINT + "/configLibTest.file.json");
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library.id"), "file");
+
+  auto subTree = conf->getRecursive("");
+  BOOST_CHECK_EQUAL(subTree.get<std::string>("configuration_library.id"), "file");
+
+  auto anArray = conf->getRecursive("configuration_library.complex_array");
+  int ports = 0;
+  std::string hosts = ""; 
   for (auto const &it: anArray) {
-    BOOST_CHECK_EQUAL(it.second.get<std::string>("one"), "1");
-    BOOST_CHECK_EQUAL(it.second.get<int>("two"), 2);
+    hosts += it.second.get<std::string>("host");
+    ports += it.second.get<int>("port");
   }
+  BOOST_CHECK_EQUAL(ports, 9258);
+  BOOST_CHECK_EQUAL(hosts, "127.0.0.1192.168.1.1255.0.0.0");
+ 
 }
 
 BOOST_AUTO_TEST_SUITE_END()

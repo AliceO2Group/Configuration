@@ -23,18 +23,24 @@ namespace configuration
 namespace backends
 {
 
-JsonBackend::JsonBackend(const std::string& filePath)
+JsonBackend::JsonBackend(const std::string& file)
 {
-  if (filePath.length() == 0) {
+  if (file.length() == 0) {
     throw std::runtime_error("JSON filepath is empty");
   }
-  mPath = filePath;
+  mPath = file;
 }
 
-void JsonBackend::readJsonFile()
+void JsonBackend::readJsonFile(bool isStream)
 {
   try {
-    boost::property_tree::read_json(mPath, mTree);
+    if (isStream) {
+      std::istringstream ss; 
+      ss.str(mPath);
+      boost::property_tree::read_json(ss, mTree);
+    } else {
+      boost::property_tree::read_json(mPath, mTree);
+    }
   }
   catch (const boost::property_tree::ptree_error &error) {
      throw std::runtime_error("Unable to read JSON file: " + mPath);
