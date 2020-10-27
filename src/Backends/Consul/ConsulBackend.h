@@ -38,7 +38,6 @@ class ConsulBackend final : public BackendBase
     /// Default destructor
     virtual ~ConsulBackend() = default;
     virtual void putString(const std::string& path, const std::string& value) override;
-    virtual void putRecursive(const std::string& path, const boost::property_tree::ptree& tree) override;
     virtual boost::optional<std::string> getString(const std::string& path) override;
     virtual KeyValueMap getRecursiveMap(const std::string&) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
