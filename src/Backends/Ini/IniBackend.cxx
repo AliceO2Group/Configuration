@@ -36,37 +36,35 @@ namespace backends
 ///              file formats):
 ///                 .ini, .cfg    see example.cfg
 /// \exception   Throws a <std::string> exception on error.
-void loadConfigFile(const std::string& filePath,
-                    boost::property_tree::ptree& pt)
+void loadConfigFile(const std::string& file, boost::property_tree::ptree& pt, bool isStream)
 {
-  if (filePath.length() == 0) {
+  if (file.length() == 0) {
     throw std::runtime_error("Invalid argument");
   }
-
-  // INI file
-  for (auto suffix : {".ini", ".cfg"}) {
-    if (boost::algorithm::ends_with(filePath, suffix)) {
-      try {
-        boost::property_tree::ini_parser::read_ini(filePath, pt);
-      } catch (const boost::property_tree::ini_parser::ini_parser_error& perr) {
-        std::stringstream ss;
-        if (perr.line()) {
-          ss << perr.message() << " in " << perr.filename() << " line "
-             << perr.line();
-        } else {
-          ss << perr.message() << " " << perr.filename();
-        }
-        throw std::runtime_error(ss.str());
-      }
-      return;
+  try {
+    if (isStream) {
+      std::istringstream ss;
+      ss.str(file);
+      boost::property_tree::ini_parser::read_ini(ss, pt);
+    } else {
+      boost::property_tree::ini_parser::read_ini(file, pt);
     }
+  } catch (const boost::property_tree::ini_parser::ini_parser_error& perr) {
+    std::stringstream ss;
+    if (perr.line()) {
+      ss << perr.message() << " in " << perr.filename() << " line "
+         << perr.line();
+    } else {
+      ss << perr.message() << " " << perr.filename();
+    }
+    throw std::runtime_error(ss.str());
   }
-  throw std::runtime_error("Invalid type in file name");
+  return;
 }
 
-IniBackend::IniBackend(const std::string& filePath)
+IniBackend::IniBackend(const std::string& file, bool isStream)
 {
-  loadConfigFile(filePath, mPropertyTree);
+  loadConfigFile(file, mPropertyTree, isStream);
 }
 
 void IniBackend::putString(const std::string&, const std::string&)

@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "Configuration/ConfigurationFactory.h"
 #include "Configuration/ConfigurationInterface.h"
+#include "../src/Backends/Ini/IniBackend.h"
 
 #define BOOST_TEST_MODULE IniBackend
 #define BOOST_TEST_MAIN
@@ -91,6 +92,18 @@ BOOST_AUTO_TEST_CASE(IniFileTestPrefix)
   BOOST_CHECK_EQUAL(conf->get<int>("key_int"), 123);
   BOOST_CHECK_EQUAL(conf->get<double>("key_float"), 4.56);
   BOOST_CHECK_EQUAL(conf->get<std::string>("key_string"), "hello");
+}
+
+BOOST_AUTO_TEST_CASE(IniFileUseStream)
+{
+  std::string iniContent = "key=value\n"
+        "[section]\n"
+        "key_int=123\n"
+        "key_float=4.56\n"
+        "key_string=hello\n";
+  auto conf = std::make_unique<backends::IniBackend>(iniContent, true);
+  BOOST_CHECK(conf->get<std::string>("key") == "value");
+  BOOST_CHECK(conf->get<int>("section.key_int") == 123);
 }
 
 } // Anonymous namespace

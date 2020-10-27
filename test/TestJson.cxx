@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "Configuration/ConfigurationFactory.h"
 #include "Configuration/ConfigurationInterface.h"
+#include "../src/Backends/Json/JsonBackend.h"
 
 #define BOOST_TEST_MODULE JsonBackend
 #define BOOST_TEST_MAIN
@@ -118,6 +119,34 @@ BOOST_AUTO_TEST_CASE(JsonFileArray)
 BOOST_AUTO_TEST_CASE(JsonFileNestedArray)
 {
   auto conf = ConfigurationFactory::getConfiguration("json:/" + TEMP_FILE);
+  auto anArray = conf->getRecursive("configuration_library.complex_array");
+  int ports = 0;
+  std::string hosts = "";
+  for (auto const &it: anArray) {
+    hosts += it.second.get<std::string>("host");
+    ports += it.second.get<int>("port");
+  }
+  BOOST_CHECK_EQUAL(ports, 9258);
+  BOOST_CHECK_EQUAL(hosts, "127.0.0.1192.168.1.1255.0.0.0");
+}
+
+BOOST_AUTO_TEST_CASE(JsonStream)
+{
+  std::string temp = R"({"configuration_library": {
+    "id": "file",
+    "complex_array": [
+      {"host": "127.0.0.1", "port": 123},
+      {"host": "192.168.1.1", "port": 123},
+      {"host": "255.0.0.0", "port": 9012}
+    ]
+  }})";
+  auto conf = std::make_unique<backends::JsonBackend>(temp);
+  conf->readJsonFile(true);
+  BOOST_CHECK_EQUAL(conf->get<std::string>("configuration_library.id"), "file");
+
+  auto subTree = conf->getRecursive("");
+  BOOST_CHECK_EQUAL(subTree.get<std::string>("configuration_library.id"), "file");
+
   auto anArray = conf->getRecursive("configuration_library.complex_array");
   int ports = 0;
   std::string hosts = "";

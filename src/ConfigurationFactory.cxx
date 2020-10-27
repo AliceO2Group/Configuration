@@ -67,10 +67,35 @@ auto getConsul(const http::url& uri) -> UniqueConfiguration
   }
   return consul;
 }
+
+auto getConsulIni(const http::url& uri) -> UniqueConfiguration
+{
+  auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
+  auto iniFile = consul->get<std::string>(uri.path.substr(1));
+  return std::make_unique<backends::IniBackend>(iniFile, true);
+}
+
+auto getConsulJson(const http::url& uri) -> UniqueConfiguration
+{
+  auto consul = std::make_unique<backends::ConsulBackend>(uri.host, uri.port);
+  auto jsonFile = consul->get<std::string>(uri.path.substr(1));
+  auto backend = std::make_unique<backends::JsonBackend>(jsonFile);
+  backend->readJsonFile(true);
+  return backend;
+}
+
 #else
 auto getConsul(const http::url& /*uri*/) -> UniqueConfiguration
 {
   throw std::runtime_error("Back-end 'consul' not enabled");
+}
+auto getConsulIni(const http::url& /*uri*/) -> UniqueConfiguration
+{
+  throw std::runtime_error("Back-end 'consul-ini' not enabled");
+}
+auto getConsulJson(const http::url& /*uri*/) -> UniqueConfiguration
+{
+  throw std::runtime_error("Back-end 'consul-json' not enabled");
 }
 #endif
 } // Anonymous namespace
@@ -89,6 +114,8 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
     map = {{"ini", getIni},
            {"json", getJson},
            {"consul", getConsul},
+           {"consul-ini", getConsulIni},
+           {"consul-json", getConsulJson},
            {"str", getString}};
 
   auto iterator = map.find(parsedUrl.protocol);
