@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(TestIllFormedUri)
   }
 }
 
-const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test_file.ini";
+const std::string TEMP_FILE = "/tmp/alice_o2_configuration_test.ini";
 BOOST_AUTO_TEST_CASE(IniFileTest)
 {
   // Put stuff in temp file
