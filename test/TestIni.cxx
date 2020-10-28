@@ -77,6 +77,25 @@ BOOST_AUTO_TEST_CASE(IniFileTestPtreeGetTotal)
   BOOST_CHECK_EQUAL(tree.get<std::string>("section.key_string"), "hello");
 }
 
+BOOST_AUTO_TEST_CASE(IniFileTestPtreeGetTotalSlash)
+{
+  auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
+  auto tree = conf->getRecursive("/");
+  BOOST_CHECK_EQUAL(tree.get<std::string>("key"), "value");
+  BOOST_CHECK_EQUAL(tree.get<double>("section.key_float"), 4.56);
+  BOOST_CHECK_EQUAL(tree.get<std::string>("section.key_string"), "hello");
+}
+
+BOOST_AUTO_TEST_CASE(IniFileTestPtreeGetTotalDot)
+{
+  auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
+  auto tree = conf->getRecursive(".");
+  BOOST_CHECK_EQUAL(tree.get<std::string>("key"), "value");
+  BOOST_CHECK_EQUAL(tree.get<double>("section.key_float"), 4.56);
+  BOOST_CHECK_EQUAL(tree.get<std::string>("section.key_string"), "hello");
+}
+
+
 BOOST_AUTO_TEST_CASE(IniFileTestPtreeGetSub)
 {
   auto conf = ConfigurationFactory::getConfiguration("ini:/" + TEMP_FILE);
