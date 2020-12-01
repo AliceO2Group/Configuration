@@ -19,7 +19,7 @@ jobs:
         cd ppconsul/build
         cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/ppconsul_install && make -j install
     - name: Run CMake
-      run: mkdir build && cd build && -Dppconsul_DIR=$GITHUB_WORKSPACE/ppconsul_install/cmake
+      run: mkdir build && cd build && cmake .. -Dppconsul_DIR=$GITHUB_WORKSPACE/ppconsul_install/cmake
     - name: Build project
       run: cd build && make -j
     - name: Test
