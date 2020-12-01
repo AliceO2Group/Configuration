@@ -1,0 +1,45 @@
+name: Build and test
+
+on: [pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install boost and curl
+      run: |
+        sudo apt-get update
+        sudo apt-get install -yq libcurl4-openssl-dev libboost-system1.65-dev libboost-filesystem1.65-dev libboost-test1.65-dev libboost-program-options1.65-dev
+    - name: Install ppconsul
+      run: |
+        set -x
+        git clone https://github.com/oliora/ppconsul.git
+        mkdir ppconsul_install; mkdir ppconsul/build
+        cd ppconsul/build
+        cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/ppconsul_install && make -j install
+    - name: Run CMake
+      run: mkdir build && cd build && cmake .. -Dppconsul_DIR=$GITHUB_WORKSPACE/ppconsul_install/cmake
+    - name: Build project
+      run: cd build && make -j
+    - name: Test
+      run: cd build && make test
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install boost
+      run: brew install boost
+    - name: Install ppconsul
+      run: |
+        set -x
+        git clone https://github.com/oliora/ppconsul.git
+        mkdir ppconsul_install; mkdir ppconsul/build
+        cd ppconsul/build
+        cmake .. -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/ppconsul_install && make -j install
+    - name: Run CMake
+      run: mkdir build && cd build && cmake ..
+    - name: Build project
+      run: cd build && make -j
+    - name: Test
+      run: cd build && make test
