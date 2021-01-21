@@ -128,8 +128,8 @@ target_compile_definitions(Configuration
     $<$<BOOL:${ppconsul_FOUND}>:FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED>
   )
 
-# Use C++14
-target_compile_features(Configuration PUBLIC cxx_std_14)
+# Use C++17
+target_compile_features(Configuration PUBLIC cxx_std_17)
 
 
 ####################################
@@ -167,21 +167,26 @@ endforeach()
 # Executables
 ####################################
 
-add_executable(configuration-convert src/CommandLineUtilities/Convert.cxx)
-target_link_libraries(configuration-convert
+add_executable(convert src/CommandLineUtilities/Convert.cxx)
+target_link_libraries(convert
   PRIVATE
     Configuration
     Boost::program_options
 )
-
-set_target_properties(configuration-convert PROPERTIES OUTPUT_NAME "o2-configuration-convert")
-
+set_target_properties(convert PROPERTIES OUTPUT_NAME "o2-configuration-convert")
+add_executable(test-backend src/CommandLineUtilities/TestBackend.cxx)
+target_link_libraries(test-backend
+  PRIVATE
+    Configuration
+    Boost::program_options
+)
+set_target_properties(test-backend PROPERTIES OUTPUT_NAME "o2-configuration-test-backend")
 ####################################
 # Install
 ####################################
 
 # Install library
-install(TARGETS Configuration configuration-convert
+install(TARGETS Configuration convert test-backend
   EXPORT ConfigurationTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
