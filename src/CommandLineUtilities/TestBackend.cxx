@@ -24,11 +24,10 @@ int main(int argc, char *argv[]) {
     ("backend", boost::program_options::value<std::string>(&uri)->required(), "Backend URI")
     ("get-key", boost::program_options::value<std::string>(), "Key to get a value (optional)")
   ;
-  
+
   boost::program_options::variables_map vm;
   boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
   boost::program_options::notify(vm);
-
 
   using namespace o2::configuration;
   std::cout << "Testing backned: " << uri << std::endl;
