@@ -44,8 +44,8 @@ The URI is constructed based on the table below:
 
 | Backend name | URI backned      | Host  | Port | Path  | Dependency |
 | ------------ |:----------------:|:-----:|:----:|:-----:|-----------:|
-| INI file     | `ini://`         | -     | - | File path | - |
-| JSON file    | `json://`        | -     | - | File path | - |
+| INI file     | `ini://`         | -     | - | Relative or absolute file path | - |
+| JSON file    | `json://`        | -     | - | Relative or absolute file path | - |
 | Consul       | `consul://`      | Server's hostname | Server's port | - | [ppconsul](https://github.com/oliora/ppconsul) |
 | Consul JSON  | `consul-json://` | Consul host | Consul port | Path to a value with JSON data | [ppconsul](https://github.com/oliora/ppconsul) |
 | Consul INI   | `consul-ini://`  | Consul host | Consul port | Path to a value with INI data | [ppconsul](https://github.com/oliora/ppconsul) |
@@ -58,13 +58,13 @@ Use `.` as path separator.
 #### Getting a value
 Simply use templated `get` method and provide `path` as parameter:
 ```cpp
-auto conf = ConfigurationFactory::getConfiguration("ini:///temp/config.ini");
+auto conf = ConfigurationFactory::getConfiguration("ini://temp/config.ini"); // absolute path
 int value = conf->get<int>("my_dir.my_key");
 ```
 #### Using prefix
 If you need to `get` multiple values from a single node consider using `setPrefix`:
 ```cpp
-auto conf = ConfigurationFactory::getConfiguration("json:///temp/config.json");
+auto conf = ConfigurationFactory::getConfiguration("json://config.json"); // relative path
 conf->setPrefix("my_dir");
 int value = conf->get<int>("my_key");
 ```
@@ -75,7 +75,7 @@ When the value under requested path does not exist use one of the following ways
 1. Catch an exception
 
 ```cpp
-auto conf = ConfigurationFactory::getConfiguration("ini:///temp/config.ini");
+auto conf = ConfigurationFactory::getConfiguration("ini://temp/config.ini");
 try {
   conf->get<int>("my_dir.my_wrong_key");
 } catch (std::runtime_error&) { ... }
@@ -85,7 +85,7 @@ try {
 2. Provide default value as a second parameter to `get` method
 
 ```cpp
-auto conf = ConfigurationFactory::getConfiguration("ini:///temp/config.ini");
+auto conf = ConfigurationFactory::getConfiguration("ini://temp/config.ini");
 int value = conf->get<int>("my_dir.my_wrong_key", 321);
 ```
 
