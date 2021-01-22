@@ -42,10 +42,8 @@ auto verifyFilePath(const http::url& uri) -> std::string
   auto relative = uri.host + uri.path;
   auto absolute = "/" + relative;
   if (std::filesystem::exists(std::filesystem::path(absolute))) {
-    std::cout << "ABS: " << absolute << std::endl;
     return absolute;
   } else if (std::filesystem::exists(std::filesystem::path(relative))) {
-    std::cout << "REL: " << relative << std::endl;
     return relative;
   } else {
     std::string error = "File does not exists, tried: '" + relative + "' and '" + absolute +  "' ";
