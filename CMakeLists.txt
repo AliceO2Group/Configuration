@@ -18,7 +18,7 @@ endif()
 
 # Define project
 project(Configuration
-  VERSION 1.5.2
+  VERSION 2.6.0
   DESCRIPTION "O2 Configuration library"
   LANGUAGES CXX
 )
