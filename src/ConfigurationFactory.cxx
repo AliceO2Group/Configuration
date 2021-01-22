@@ -36,7 +36,6 @@ namespace
 {
 using UniqueConfiguration = std::unique_ptr<ConfigurationInterface>;
 
-
 /// Make sure to support relative and absolute paths
 auto verifyFilePath(const http::url& uri) -> std::string
 {
@@ -48,7 +47,7 @@ auto verifyFilePath(const http::url& uri) -> std::string
   } else if (fs::exists(fs::path(relative))) {
     return relative;
   } else {
-    std::string error = "File does not exists, tried: '" + relative + "' and '" + absolute +  "' ";
+    std::string error = "File does not exists, tried: '" + relative + "' and '" + absolute + "' ";
     throw std::runtime_error(error);
   }
   return {};
