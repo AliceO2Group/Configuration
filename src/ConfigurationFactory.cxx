@@ -20,6 +20,7 @@
 #include <functional>
 #include <map>
 #include <stdexcept>
+#include <filesystem>
 
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
@@ -34,19 +35,33 @@ namespace
 {
 using UniqueConfiguration = std::unique_ptr<ConfigurationInterface>;
 
+
+/// Make sure to support relative and absolute paths
+auto verifyFilePath(const http::url& uri) -> std::string
+{
+  auto relative = uri.host + uri.path;
+  auto absolute = "/" + relative;
+  if (std::filesystem::exists(std::filesystem::path(absolute))) {
+    std::cout << "ABS: " << absolute << std::endl;
+    return absolute;
+  } else if (std::filesystem::exists(std::filesystem::path(relative))) {
+    std::cout << "REL: " << relative << std::endl;
+    return relative;
+  } else {
+    std::string error = "File does not exists, tried: '" + relative + "' and '" + absolute +  "' ";
+    throw std::runtime_error(error);
+  }
+  return {};
+}
+
 auto getIni(const http::url& uri) -> UniqueConfiguration
 {
-  // If the "authority" part of the URI is missing (host, port, etc), the parser
-  // will consider the thing before the first delimiter ('/') of the path as authority,
-  // so we have to include that in the path we use.
-  auto path = "/" + uri.host + uri.path;
-  return std::make_unique<backends::IniBackend>(path);
+  return std::make_unique<backends::IniBackend>(verifyFilePath(uri));
 }
 
 auto getJson(const http::url& uri) -> UniqueConfiguration
 {
-  auto path = "/" + uri.host + uri.path;
-  auto backend = std::make_unique<backends::JsonBackend>(path);
+  auto backend = std::make_unique<backends::JsonBackend>(verifyFilePath(uri));
   backend->readJsonFile();
   return backend;
 }
