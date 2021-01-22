@@ -18,7 +18,7 @@ endif()
 
 # Define project
 project(Configuration
-  VERSION 1.5.2
+  VERSION 2.6.0
   DESCRIPTION "O2 Configuration library"
   LANGUAGES CXX
 )
@@ -55,7 +55,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options filesystem REQUIRED)
 find_package(Git QUIET)
 find_package(ppconsul CONFIG)
 find_package(CURL REQUIRED MODULE)
@@ -115,6 +115,7 @@ target_link_libraries(Configuration
   PRIVATE
     CURL::CURL
     $<$<BOOL:${ppconsul_FOUND}>:ppconsul>
+    Boost::filesystem
 )
 
 # Handle Ppconsul optional dependency
