@@ -14,13 +14,6 @@ Get remaining additional prerequisite packages:
 sudo yum -y install wget git cmake cmake3 autoconf automake
 ```
 
-#### libcurl
-Should be available in your OS's package manager, or else: https://curl.haxx.se/download.html
-For CC7:
-```
-sudo yum -y install curl-devel
-```
-
 #### Boost
 Note: ppconsul requires 1.55 or newer
 ```
