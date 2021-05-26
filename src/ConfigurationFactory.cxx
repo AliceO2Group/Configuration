@@ -20,8 +20,7 @@
 #include <functional>
 #include <map>
 #include <stdexcept>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
@@ -39,7 +38,7 @@ using UniqueConfiguration = std::unique_ptr<ConfigurationInterface>;
 /// Make sure to support relative and absolute paths
 auto verifyFilePath(const http::url& uri) -> std::string
 {
-  namespace fs = boost::filesystem;
+  namespace fs = std::filesystem;
   auto relative = uri.host + uri.path;
   auto absolute = "/" + relative;
   if (fs::exists(fs::path(absolute))) {
