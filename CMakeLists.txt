@@ -60,7 +60,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options filesystem REQUIRED)
+find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
 find_package(Git QUIET)
 find_package(ppconsul CONFIG)
 
@@ -118,7 +118,6 @@ target_link_libraries(Configuration
     Boost::boost
   PRIVATE
     $<$<BOOL:${ppconsul_FOUND}>:ppconsul>
-    Boost::filesystem
 )
 
 # Handle Ppconsul optional dependency
