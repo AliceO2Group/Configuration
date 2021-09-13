@@ -137,7 +137,12 @@ BOOST_AUTO_TEST_CASE(ConsulJson)
   BOOST_CHECK_EQUAL(hosts, "127.0.0.1192.168.1.1255.0.0.0");
  
 }
-
+  
+BOOST_AUTO_TEST_CASE(ConsulJsonInvalid)
+{
+  BOOST_CHECK_THROW(ConfigurationFactory::getConfiguration("consul-json://" + CONSUL_ENDPOINT + "/invalid.json"), std::runtime_error);
+}
+  
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(Dummy)
