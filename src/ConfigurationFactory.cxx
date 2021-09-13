@@ -26,7 +26,7 @@
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
 # include "Backends/Consul/ConsulBackend.h"
 #endif
-#include "UriParser/UriParser.hpp"
+#include "UriParser/UriParser.h"
 
 namespace o2
 {
