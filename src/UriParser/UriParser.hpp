@@ -19,10 +19,12 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef ALICEO2_CONFIGURATION_HTTPPARSER_H
+#define ALICEO2_CONFIGURATION_HTTPPARSER_H
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
-
 
 namespace http {
     struct url {
@@ -95,3 +97,5 @@ namespace http {
         return ret;
     }
 }
+
+#endif
