@@ -50,6 +50,7 @@ The URI is constructed based on the table below:
 | Consul JSON  | `consul-json://` | Consul host | Consul port | Path to a value with JSON data | [ppconsul](https://github.com/oliora/ppconsul) |
 | Consul INI   | `consul-ini://`  | Consul host | Consul port | Path to a value with INI data | [ppconsul](https://github.com/oliora/ppconsul) |
 | String       | `str://`         | -     | - | List of `;` separated key-values; `.` is used to define levels (as in `ptree`) | - |
+| Apricot      | `apricot://`     | Server's hostname | Server's port | - | `cURL` |
 
 
 ## Getting values

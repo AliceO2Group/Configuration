@@ -48,6 +48,7 @@ class ApricotBackend final : public BackendBase
     }
 
   private:
+    /// Runs request against Apricot server
     std::string get(const std::string& path);
     auto addApricotPrefix(const std::string& path)
     {   
