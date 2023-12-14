@@ -74,6 +74,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(CURL MODULE REQUIRED)
 find_package(Git QUIET)
 find_package(ppconsul CONFIG)
 
@@ -105,6 +106,7 @@ set(SRCS
   src/Backends/Ini/IniBackend.cxx
   src/Backends/String/StringBackend.cxx
   src/Backends/Json/JsonBackend.cxx
+  src/Backends/Apricot/ApricotBackend.cxx
   src/ConfigurationInterface.cxx
   src/ConfigurationFactory.cxx
 )
@@ -131,6 +133,7 @@ target_link_libraries(Configuration
     Boost::boost
   PRIVATE
     $<$<BOOL:${ppconsul_FOUND}>:ppconsul>
+    CURL::libcurl
 )
 
 # Handle Ppconsul optional dependency
@@ -159,6 +162,7 @@ set(TEST_SRCS
   test/TestIni.cxx
   test/TestJson.cxx
   test/TestString.cxx
+  test/TestApricot.cxx
 )
 
 if(ppconsul_FOUND)

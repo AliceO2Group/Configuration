@@ -18,6 +18,7 @@
 #include "Backends/Json/JsonBackend.h"
 #include "Backends/String/StringBackend.h"
 #include <Backends/Ini/IniBackend.h>
+#include <Backends/Apricot/ApricotBackend.h>
 #include <functional>
 #include <map>
 #include <stdexcept>
@@ -70,6 +71,15 @@ auto getString(const http::url& uri) -> UniqueConfiguration
   auto path = uri.host + uri.path;
   auto backend = std::make_unique<backends::StringBackend>(path);
   return backend;
+}
+
+auto getApricot(const http::url& uri) -> UniqueConfiguration
+{
+  auto apricot = std::make_unique<backends::ApricotBackend>(uri.host, uri.port);
+  if (!uri.path.empty()) {
+    apricot->setBasePrefix(uri.path.substr(1));
+  }
+  return apricot;
 }
 
 #ifdef FLP_CONFIGURATION_BACKEND_CONSUL_ENABLED
@@ -130,7 +140,8 @@ auto ConfigurationFactory::getConfiguration(const std::string& uri) -> UniqueCon
            {"consul", getConsul},
            {"consul-ini", getConsulIni},
            {"consul-json", getConsulJson},
-           {"str", getString}};
+           {"str", getString},
+           {"apricot", getApricot}};
 
   auto iterator = map.find(parsedUrl.protocol);
   if (iterator != map.end()) {
