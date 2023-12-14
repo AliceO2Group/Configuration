@@ -10,7 +10,7 @@ jobs:
     - name: Install boost (and curl for ppconsul)
       run: |
         sudo apt-get update
-        sudo apt-get install -yq libcurl4-openssl-dev libboost-system1.71-dev libboost-test1.71-dev libboost-program-options1.71-dev
+        sudo apt-get install -yq libcurl4-openssl-dev libboost-system1.74-dev libboost-test1.74-dev libboost-program-options1.74-dev
     - name: Install ppconsul
       run: |
         set -x
