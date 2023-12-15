@@ -79,6 +79,9 @@ auto getApricot(const http::url& uri) -> UniqueConfiguration
   if (!uri.path.empty()) {
     apricot->setBasePrefix(uri.path.substr(1));
   }
+  if (!uri.search.empty()) {
+    apricot->setParams(uri.search);
+  }
   return apricot;
 }
 

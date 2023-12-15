@@ -37,13 +37,10 @@ ApricotBackend::ApricotBackend(const std::string& host, int port) :
   curl_easy_setopt(mCurl, CURLOPT_SSL_VERIFYPEER, 0); 
   curl_easy_setopt(mCurl, CURLOPT_CONNECTTIMEOUT, 3);
   curl_easy_setopt(mCurl, CURLOPT_TIMEOUT, 3);
-  mHeaders = curl_slist_append(mHeaders, "Accept: application/json");
-  mHeaders = curl_slist_append(mHeaders, "Content-Type: application/json"); 
 }
 
 ApricotBackend::~ApricotBackend()
 {
-  curl_slist_free_all(mHeaders);
   curl_easy_cleanup(mCurl);
   curl_global_cleanup();
 }

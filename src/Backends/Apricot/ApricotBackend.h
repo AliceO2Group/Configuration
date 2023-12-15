@@ -47,13 +47,24 @@ class ApricotBackend final : public BackendBase
       mBasePrefix = path;
     }
 
-  private:
-    /// Runs request against Apricot server
-    std::string get(const std::string& path);
-    auto addApricotPrefix(const std::string& path)
-    {   
-      return mBasePrefix.empty() ? addPrefix(path) : mBasePrefix + getSeparator() + addPrefix(path);
+    auto setParams(const std::string& params)
+    {
+      mQueryParams = params;
     }
+
+  private:
+    /// Query params
+    std::string mQueryParams;
+
+    /// Base prefix
+    std::string mBasePrefix;
+
+    /// CURL handle
+    CURL *mCurl;
+
+    /// Apricot URL
+    std::string mUrl;
+
     /// Replaces DEFAULT_SEPARATOR with '/', this is required by ppconsul
     /// \param path A path with DEFAULT_SEPARATOR
     /// \retrun A path with '/' separator
@@ -64,17 +75,14 @@ class ApricotBackend final : public BackendBase
     /// \return A path with DEFAULT_SEPARATOR
     std::string replaceSlashWithDefault(const std::string& path);
 
-    /// Base prefix
-    std::string mBasePrefix;
+    /// Runs request against Apricot server
+    std::string get(const std::string& path);
 
-    /// CURL handle
-    CURL *mCurl;
-
-    /// HTTP headers struct
-    struct curl_slist *mHeaders;
-
-    /// Apricot URL
-    std::string mUrl;
+    /// Adds base prefix to requested path
+    auto addApricotPrefix(const std::string& path)
+    {
+      return mBasePrefix.empty() ? addPrefix(path) : mBasePrefix + getSeparator() + addPrefix(path);
+    }
 };
 
 } // namespace backends
