@@ -65,7 +65,7 @@ boost::optional<std::string> ApricotBackend::getString(const std::string& path)
 
 std::string ApricotBackend::get(const std::string& path) {
   std::string response;
-  std::string url = mUrl + "/" + replaceDefaultWithSlash(addApricotPrefix(path));
+  std::string url = mUrl + "/" + replaceDefaultWithSlash(addApricotPrefix(path)) +  mQueryParams;
   CURLcode res;
   long responseCode;
   curl_easy_setopt(mCurl, CURLOPT_URL, url.c_str());

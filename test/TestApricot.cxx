@@ -32,14 +32,21 @@ BOOST_AUTO_TEST_CASE(simpleCheck)
 }
 
 
-BOOST_AUTO_TEST_CASE(simpleCheckQuery)
+BOOST_AUTO_TEST_CASE(simpleWithProcess)
 {
-  auto conf = ConfigurationFactory::getConfiguration("apricot://" + APRICOT_ENDPOINT + "/components/qc/ANY/any/tpc-full-qcmn?process=true&run_type=PHYSICS");
+  auto conf = ConfigurationFactory::getConfiguration("apricot://" + APRICOT_ENDPOINT + "/components/qc/ANY/apricottest/Adam?run_type=PHYSICS");
   auto tree = conf->getRecursive("");
-  BOOST_CHECK_EQUAL(tree.get<std::string>("qc.config.database.implementation"), "CCDB");
-  BOOST_CHECK_EQUAL(tree.get<std::string>("qc.tasks.RawDigits.moduleName"), "QcTPC");
+  BOOST_CHECK_EQUAL(tree.get<std::string>("bookkeeping.url"), "localhost:4001");
+  BOOST_CHECK_EQUAL(tree.get<std::string>("Barth"), "true");
 }
 
+BOOST_AUTO_TEST_CASE(simpleWithoutProcess)
+{
+  auto conf = ConfigurationFactory::getConfiguration("apricot://" + APRICOT_ENDPOINT + "/components/qc/ANY/apricottest/Adam");
+  auto tree = conf->getRecursive("");
+  BOOST_CHECK_EQUAL(tree.get<std::string>("Barth"), "true");
+  BOOST_CHECK_THROW(tree.get<std::string>("bookkeeping.url"), boost::wrapexcept<boost::property_tree::ptree_bad_path>);
+}
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_CASE(Dummy)
