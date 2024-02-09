@@ -42,11 +42,13 @@ class ApricotBackend final : public BackendBase
     virtual KeyValueMap getRecursiveMap(const std::string&) override;
     virtual boost::property_tree::ptree getRecursive(const std::string& path) override;
 
+
     void setBasePrefix(const std::string& path)
     {
-      // OCTRL-842: remove the `o2` prefix if it is there
+      // OCTRL-842: remove the `o2/` prefix if it is there (including if there is an initial /
       std::string prefix = "o2/";
-      if (path.compare(0, prefix.length(), prefix) == 0) {
+      size_t position = path.find(prefix);
+      if (position == 0 || (path[0] == '/' && position == 1)) {
         mBasePrefix = path.substr(prefix.length());
       } else {
         mBasePrefix = path;
