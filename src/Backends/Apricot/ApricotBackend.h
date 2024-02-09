@@ -44,7 +44,13 @@ class ApricotBackend final : public BackendBase
 
     void setBasePrefix(const std::string& path)
     {
-      mBasePrefix = path;
+      // OCTRL-842: remove the `o2` prefix if it is there
+      std::string prefix = "o2/";
+      if (path.compare(0, prefix.length(), prefix) == 0) {
+        mBasePrefix = path.substr(prefix.length());
+      } else {
+        mBasePrefix = path;
+      }
     }
 
     auto setParams(const std::string& params)

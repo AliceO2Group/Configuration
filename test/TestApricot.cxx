@@ -28,9 +28,19 @@ BOOST_AUTO_TEST_CASE(simpleCheck)
   auto tree = conf->getRecursive("components.qc.ANY.any.tpc-full-qcmn");
   BOOST_CHECK_EQUAL(tree.get<std::string>("qc.config.database.implementation"), "CCDB");
   BOOST_CHECK_EQUAL(tree.get<std::string>("qc.tasks.RawDigits.moduleName"), "QcTPC");
-  
 }
 
+BOOST_AUTO_TEST_CASE(simpleWithPathLikeConsul)
+{
+  auto conf = ConfigurationFactory::getConfiguration("apricot://" + APRICOT_ENDPOINT + "/components/qc/ANY/any/tpc-full-qcmn");
+  auto tree = conf->getRecursive("");
+  BOOST_CHECK_EQUAL(tree.get<std::string>("qc.config.database.implementation"), "CCDB");
+
+  // now with `o2` prefix
+  auto conf2 = ConfigurationFactory::getConfiguration("apricot://" + APRICOT_ENDPOINT + "/o2/components/qc/ANY/any/tpc-full-qcmn");
+  auto tree2 = conf2->getRecursive("");
+  BOOST_CHECK_EQUAL(tree2.get<std::string>("qc.config.database.implementation"), "CCDB");
+}
 
 BOOST_AUTO_TEST_CASE(simpleWithProcess)
 {
