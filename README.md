@@ -113,3 +113,9 @@ conf->put<int>("my_dir.my_key", 123);
 
 ## Consul server setup
 See [detailed instructions](doc/Consul.md).
+
+## Release
+1. Update the version number in the CMakeLists.txt
+2. Commit, push 
+3. New Release in github
+3. Update version in alidist
