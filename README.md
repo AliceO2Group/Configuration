@@ -118,4 +118,4 @@ See [detailed instructions](doc/Consul.md).
 1. Update the version number in the CMakeLists.txt
 2. Commit, push 
 3. New Release in github
-3. Update version in alidist
+3. Check in alidist that there is a PR to bump the version of configuration. It should be created by itself via a GH action. 
